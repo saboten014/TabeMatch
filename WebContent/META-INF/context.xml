@@ -4,12 +4,12 @@
 
 <Context reloadable="true">
 	<Resource
-		name="jdbc/tabematch"
+		name="jdbc/book"
 		auth="Container"
 		type="javax.sql.DataSource"
-		driverClassName="org.h2.Driver"
-		url="jdbc:h2:tcp://localhost/~/tabematch"
-		username="sa"
-		password=""
+		driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql://localhost:5432/book"
+		username="postgres"
+		password="pass"
 	/>
 </Context>
