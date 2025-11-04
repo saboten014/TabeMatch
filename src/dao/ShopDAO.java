@@ -10,15 +10,38 @@ import bean.Shop;
 
 public class ShopDAO extends DAO {
 
-	// すべての条件で検索
+	// 全店舗を取得
+	public List<Shop> getAllShops() throws Exception {
+		List<Shop> shopList = new ArrayList<>();
+		Connection con = getConnection();
+
+		String sql = "SELECT * FROM SHOP ORDER BY SHOP_ID";
+
+		PreparedStatement stmt = con.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+
+		while (rs.next()) {
+			Shop shop = mapResultSetToShop(rs);
+			shopList.add(shop);
+		}
+
+		rs.close();
+		stmt.close();
+		con.close();
+
+		return shopList;
+	}
+
+	// すべての条件で検索（アレルギー情報含む）
 	public List<Shop> searchAll(String searchArea, String shopName, String genre,
-			String priceRange, String businessHours) throws Exception {
+			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? " +
-				"AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ?";
+				"AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ? " +
+				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, "%" + searchArea + "%");
@@ -41,14 +64,52 @@ public class ShopDAO extends DAO {
 		return shopList;
 	}
 
-	// 検索エリアのみで検索（店名なし）
-	public List<Shop> searchByArea(String searchArea, String genre,
+	// アレルギー情報なしで検索
+	public List<Shop> searchWithoutAllergy(String searchArea, String shopName, String genre,
 			String priceRange, String businessHours) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
 		Connection con = getConnection();
 
+		StringBuilder sql = new StringBuilder("SELECT * FROM SHOP WHERE 1=1");
+
+		if (!isEmpty(searchArea)) sql.append(" AND SHOP_ADDRESS LIKE ?");
+		if (!isEmpty(shopName)) sql.append(" AND SHOP_NAME LIKE ?");
+		if (!isEmpty(genre)) sql.append(" AND SHOP_GENRE LIKE ?");
+		if (!isEmpty(priceRange)) sql.append(" AND SHOP_PRICE LIKE ?");
+		if (!isEmpty(businessHours)) sql.append(" AND SHOP_TIME LIKE ?");
+
+		PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+		int paramIndex = 1;
+		if (!isEmpty(searchArea)) stmt.setString(paramIndex++, "%" + searchArea + "%");
+		if (!isEmpty(shopName)) stmt.setString(paramIndex++, "%" + shopName + "%");
+		if (!isEmpty(genre)) stmt.setString(paramIndex++, "%" + genre + "%");
+		if (!isEmpty(priceRange)) stmt.setString(paramIndex++, "%" + priceRange + "%");
+		if (!isEmpty(businessHours)) stmt.setString(paramIndex++, "%" + businessHours + "%");
+
+		ResultSet rs = stmt.executeQuery();
+
+		while (rs.next()) {
+			Shop shop = mapResultSetToShop(rs);
+			shopList.add(shop);
+		}
+
+		rs.close();
+		stmt.close();
+		con.close();
+
+		return shopList;
+	}
+
+	// 検索エリアのみで検索（店名なし）
+	public List<Shop> searchByArea(String searchArea, String genre,
+			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
+		List<Shop> shopList = new ArrayList<>();
+		Connection con = getConnection();
+
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ?";
+				"AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ? " +
+				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, "%" + searchArea + "%");
@@ -72,12 +133,13 @@ public class ShopDAO extends DAO {
 
 	// 検索エリアと店名で検索（ジャンルなし）
 	public List<Shop> searchByAreaAndName(String searchArea, String shopName,
-			String priceRange, String businessHours) throws Exception {
+			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_NAME LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ?";
+				"AND SHOP_NAME LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ? " +
+				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, "%" + searchArea + "%");
@@ -101,12 +163,13 @@ public class ShopDAO extends DAO {
 
 	// 検索エリア、店名、ジャンルで検索（価格帯なし）
 	public List<Shop> searchByAreaNameGenre(String searchArea, String shopName,
-			String genre, String businessHours) throws Exception {
+			String genre, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_TIME LIKE ?";
+				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_TIME LIKE ? " +
+				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, "%" + searchArea + "%");
@@ -130,12 +193,13 @@ public class ShopDAO extends DAO {
 
 	// 検索エリア、店名、ジャンル、価格帯で検索（営業時間なし）
 	public List<Shop> searchByAreaNameGenrePrice(String searchArea, String shopName,
-			String genre, String priceRange) throws Exception {
+			String genre, String priceRange, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ?";
+				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? " +
+				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, "%" + searchArea + "%");
@@ -155,6 +219,96 @@ public class ShopDAO extends DAO {
 		con.close();
 
 		return shopList;
+	}
+
+	// 柔軟な検索（入力された項目のみで検索、アレルギー情報含む）
+	public List<Shop> searchFlexible(String searchArea, String shopName, String genre,
+			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
+		List<Shop> shopList = new ArrayList<>();
+		Connection con = getConnection();
+
+		StringBuilder sql = new StringBuilder("SELECT * FROM SHOP WHERE 1=1");
+
+		if (!isEmpty(searchArea)) sql.append(" AND SHOP_ADDRESS LIKE ?");
+		if (!isEmpty(shopName)) sql.append(" AND SHOP_NAME LIKE ?");
+		if (!isEmpty(genre)) sql.append(" AND SHOP_GENRE LIKE ?");
+		if (!isEmpty(priceRange)) sql.append(" AND SHOP_PRICE LIKE ?");
+		if (!isEmpty(businessHours)) sql.append(" AND SHOP_TIME LIKE ?");
+		sql.append(buildAllergyCondition(allergyInfo));
+
+		PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+		int paramIndex = 1;
+		if (!isEmpty(searchArea)) stmt.setString(paramIndex++, "%" + searchArea + "%");
+		if (!isEmpty(shopName)) stmt.setString(paramIndex++, "%" + shopName + "%");
+		if (!isEmpty(genre)) stmt.setString(paramIndex++, "%" + genre + "%");
+		if (!isEmpty(priceRange)) stmt.setString(paramIndex++, "%" + priceRange + "%");
+		if (!isEmpty(businessHours)) stmt.setString(paramIndex++, "%" + businessHours + "%");
+
+		ResultSet rs = stmt.executeQuery();
+
+		while (rs.next()) {
+			Shop shop = mapResultSetToShop(rs);
+			shopList.add(shop);
+		}
+
+		rs.close();
+		stmt.close();
+		con.close();
+
+		return shopList;
+	}
+
+	// 柔軟な検索（アレルギー情報なし）
+	public List<Shop> searchFlexibleWithoutAllergy(String searchArea, String shopName, String genre,
+			String priceRange, String businessHours) throws Exception {
+		return searchWithoutAllergy(searchArea, shopName, genre, priceRange, businessHours);
+	}
+
+	// アレルギー条件を構築するヘルパーメソッド
+	private String buildAllergyCondition(String[] allergyInfo) {
+		if (allergyInfo == null || allergyInfo.length == 0) {
+			return "";
+		}
+
+		StringBuilder condition = new StringBuilder(" AND (");
+		for (int i = 0; i < allergyInfo.length; i++) {
+			if (i > 0) {
+				condition.append(" OR ");
+			}
+			condition.append("SHOP_ALLERGY LIKE '%").append(allergyInfo[i]).append("%'");
+		}
+		condition.append(")");
+
+		return condition.toString();
+	}
+
+	// 空文字チェック
+	private boolean isEmpty(String value) {
+		return value == null || value.trim().isEmpty();
+	}
+
+	// 店舗IDで店舗情報を取得
+	public Shop getShopById(String shopId) throws Exception {
+		Shop shop = null;
+		Connection con = getConnection();
+
+		String sql = "SELECT * FROM SHOP WHERE SHOP_ID = ?";
+
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, shopId);
+
+		ResultSet rs = stmt.executeQuery();
+
+		if (rs.next()) {
+			shop = mapResultSetToShop(rs);
+		}
+
+		rs.close();
+		stmt.close();
+		con.close();
+
+		return shop;
 	}
 
 	// ResultSetからShopオブジェクトへのマッピング

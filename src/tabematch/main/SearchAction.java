@@ -25,62 +25,78 @@ public class SearchAction extends Action {
 		String genre = req.getParameter("genre");
 		String priceRange = req.getParameter("priceRange");
 		String businessHours = req.getParameter("businessHours");
+		String[] allergyInfo = req.getParameterValues("allergyInfo");
 
 		// DBからデータ取得 3
 		// ビジネスロジック 4
 
 		// 検索エリアが入力されなかった場合（他入力済み）
-		if (isEmpty(searchArea) && !isEmpty(shopName, genre, priceRange, businessHours)) {
+		if (isEmpty(searchArea) && !isEmpty(shopName, genre, priceRange, businessHours) && allergyInfo != null && allergyInfo.length > 0) {
 			// 代替フロー①へ
 			req.setAttribute("errorMessage", "検索エリアを入力してください。");
 			url = "search.jsp";
 		}
+		// アレルギー情報が選択がすべて外されている場合
+		else if ((allergyInfo == null || allergyInfo.length == 0) && !isEmpty(searchArea, shopName, genre, priceRange, businessHours)) {
+			// 代替フロー⑦へ
+			req.setAttribute("warningMessage", "アレルギー情報が設定されていません。");
+			shopList = shopDao.searchWithoutAllergy(searchArea, shopName, genre, priceRange, businessHours);
+			req.setAttribute("shopList", shopList);
+			url = "search-result.jsp";
+		}
+		// 何も入力されなかった場合（アレルギー情報も未選択）
+		else if (isEmpty(searchArea, shopName, genre, priceRange, businessHours) && (allergyInfo == null || allergyInfo.length == 0)) {
+			// 代替フロー⑥へ
+			shopList = shopDao.getAllShops();
+			req.setAttribute("shopList", shopList);
+			url = "search-result.jsp";
+		}
 		// 店名が入力されなかった場合（他入力済み）
-		else if (isEmpty(shopName) && !isEmpty(searchArea, genre, priceRange, businessHours)) {
+		else if (isEmpty(shopName) && !isEmpty(searchArea, genre, priceRange, businessHours) && allergyInfo != null && allergyInfo.length > 0) {
 			// 代替フロー②へ
-			shopList = shopDao.searchByArea(searchArea, genre, priceRange, businessHours);
+			shopList = shopDao.searchByArea(searchArea, genre, priceRange, businessHours, allergyInfo);
 			req.setAttribute("shopList", shopList);
 			url = "search-result.jsp";
 		}
 		// ジャンルが入力されなかった場合（他入力済み）
-		else if (isEmpty(genre) && !isEmpty(searchArea, shopName, priceRange, businessHours)) {
+		else if (isEmpty(genre) && !isEmpty(searchArea, shopName, priceRange, businessHours) && allergyInfo != null && allergyInfo.length > 0) {
 			// 代替フロー③へ
-			shopList = shopDao.searchByAreaAndName(searchArea, shopName, priceRange, businessHours);
+			shopList = shopDao.searchByAreaAndName(searchArea, shopName, priceRange, businessHours, allergyInfo);
 			req.setAttribute("shopList", shopList);
 			url = "search-result.jsp";
 		}
 		// 価格帯が入力されなかった場合（他入力済み）
-		else if (isEmpty(priceRange) && !isEmpty(searchArea, shopName, genre, businessHours)) {
+		else if (isEmpty(priceRange) && !isEmpty(searchArea, shopName, genre, businessHours) && allergyInfo != null && allergyInfo.length > 0) {
 			// 代替フロー④へ
-			shopList = shopDao.searchByAreaNameGenre(searchArea, shopName, genre, businessHours);
+			shopList = shopDao.searchByAreaNameGenre(searchArea, shopName, genre, businessHours, allergyInfo);
 			req.setAttribute("shopList", shopList);
 			url = "search-result.jsp";
 		}
 		// 営業時間が入力されなかった場合（他入力済み）
-		else if (isEmpty(businessHours) && !isEmpty(searchArea, shopName, genre, priceRange)) {
+		else if (isEmpty(businessHours) && !isEmpty(searchArea, shopName, genre, priceRange) && allergyInfo != null && allergyInfo.length > 0) {
 			// 代替フロー⑤へ
-			shopList = shopDao.searchByAreaNameGenrePrice(searchArea, shopName, genre, priceRange);
+			shopList = shopDao.searchByAreaNameGenrePrice(searchArea, shopName, genre, priceRange, allergyInfo);
 			req.setAttribute("shopList", shopList);
 			url = "search-result.jsp";
-		}
-		// 何も入力されなかった場合
-		else if (isEmpty(searchArea, shopName, genre, priceRange, businessHours)) {
-			// 代替フロー⑥へ
-			req.setAttribute("errorMessage", "検索条件を入力してください。");
-			url = "search.jsp";
 		}
 		// すべて入力された場合（基本フロー）
-		else if (!isEmpty(searchArea, shopName, genre, priceRange, businessHours)) {
+		else if (!isEmpty(searchArea, shopName, genre, priceRange, businessHours) && allergyInfo != null && allergyInfo.length > 0) {
 			// 基本フロー
-			shopList = shopDao.searchAll(searchArea, shopName, genre, priceRange, businessHours);
+			shopList = shopDao.searchAll(searchArea, shopName, genre, priceRange, businessHours, allergyInfo);
 			req.setAttribute("shopList", shopList);
 			url = "search-result.jsp";
 		}
-		// バリデーションエラー（一部項目が未入力の複雑なパターン）
+		// その他の組み合わせ（部分的に入力されている場合）
 		else {
-			// 代替フロー⑦へ
-			req.setAttribute("errorMessage", "入力項目に不足があります。");
-			url = "search.jsp";
+			// 入力されている項目で検索
+			if (allergyInfo != null && allergyInfo.length > 0) {
+				shopList = shopDao.searchFlexible(searchArea, shopName, genre, priceRange, businessHours, allergyInfo);
+			} else {
+				req.setAttribute("warningMessage", "アレルギー情報が設定されていません。");
+				shopList = shopDao.searchFlexibleWithoutAllergy(searchArea, shopName, genre, priceRange, businessHours);
+			}
+			req.setAttribute("shopList", shopList);
+			url = "search-result.jsp";
 		}
 
 		// DBへデータ保存 5
