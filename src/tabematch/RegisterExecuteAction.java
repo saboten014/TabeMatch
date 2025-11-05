@@ -32,10 +32,14 @@ public class RegisterExecuteAction extends Action {
 			password == null || password.trim().isEmpty() ||
 			passwordConfirm == null || passwordConfirm.trim().isEmpty() ||
 			userName == null || userName.trim().isEmpty() ||
-			allergenId == null || allergenId.trim().isEmpty() ||
-			usersTypeId == null || usersTypeId.trim().isEmpty()) {
+			allergenId == null || allergenId.trim().isEmpty()) {
 			// 必須項目が入力されていない
 			req.setAttribute("errorMessage", "すべての項目を入力してください。");
+			url = "register.jsp";
+		}
+		// メールアドレス形式チェック
+		else if (!userId.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+			req.setAttribute("errorMessage", "正しいメールアドレス形式で入力してください。");
 			url = "register.jsp";
 		}
 		// パスワード確認
@@ -45,23 +49,27 @@ public class RegisterExecuteAction extends Action {
 		}
 		// ユーザーID重複チェック
 		else if (userDao.getUserById(userId) != null) {
-			req.setAttribute("errorMessage", "このユーザーIDは既に使用されています。");
+			req.setAttribute("errorMessage", "このメールアドレスは既に使用されています。");
 			url = "register.jsp";
 		}
 		// ユーザーID長さチェック（VARCHAR(20)）
-		else if (userId.length() > 20) {
-			req.setAttribute("errorMessage", "ユーザーIDは20文字以内で入力してください。");
+		else if (userId.length() > 50) {
+			req.setAttribute("errorMessage", "メールアドレスは50文字以内で入力してください。");
 			url = "register.jsp";
 		}
-		// パスワード長さチェック（VARCHAR(20)）
-		else if (password.length() > 20) {
-			req.setAttribute("errorMessage", "パスワードは20文字以内で入力してください。");
+		// パスワード長さチェック（VARCHAR(225)）
+		else if (password.length() > 225) {
+			req.setAttribute("errorMessage", "パスワードは225文字以内で入力してください。");
 			url = "register.jsp";
 		}
-		// ユーザー名長さチェック（VARCHAR(10)）
-		else if (userName.length() > 10) {
-			req.setAttribute("errorMessage", "ユーザー名は10文字以内で入力してください。");
+		// ユーザー名長さチェック（VARCHAR(50)）
+		else if (userName.length() > 50) {
+			req.setAttribute("errorMessage", "ユーザー名は50文字以内で入力してください。");
 			url = "register.jsp";
+		}
+		// ユーザー区分が一般ユーザー（1）でない場合は強制的に1にする
+		else if (usersTypeId == null || !usersTypeId.equals("1")) {
+			usersTypeId = "1";
 		}
 		else {
 			// ユーザー登録処理

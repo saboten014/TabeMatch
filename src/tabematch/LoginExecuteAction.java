@@ -56,7 +56,7 @@ public class LoginExecuteAction extends Action {
 				}
 			} else {
 				// ログイン失敗
-				req.setAttribute("errorMessage", "ユーザーIDまたはパスワードが間違っています。");
+				req.setAttribute("errorMessage", "メールアドレスまたはパスワードが間違っています。");
 				url = "login.jsp";
 			}
 		}

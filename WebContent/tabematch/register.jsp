@@ -18,9 +18,9 @@
 <form action="RegisterExecute.action" method="post">
     <table>
         <tr>
-            <td>ユーザーID:</td>
-            <td><input type="text" name="userId" size="30" maxlength="20" required>
-                <small>(20文字以内)</small>
+            <td>メールアドレス:</td>
+            <td><input type="email" name="userId" size="30" maxlength="50" required>
+                <small>(50文字以内)</small>
             </td>
         </tr>
         <tr>
@@ -59,17 +59,8 @@
                 <small>※該当するアレルギーを選択してください</small>
             </td>
         </tr>
-        <tr>
-            <td>ユーザー区分:</td>
-            <td>
-                <select name="usersTypeId" required>
-                    <option value="">選択してください</option>
-                    <option value="1">一般ユーザー</option>
-                    <option value="2">店舗ユーザー</option>
-                    <option value="3">管理ユーザー</option>
-                </select>
-            </td>
-        </tr>
+        <!-- ユーザー区分を一般ユーザー（1）で固定 -->
+        <input type="hidden" name="usersTypeId" value="1">
         <tr>
             <td colspan="2" align="center">
                 <input type="submit" value="登録">

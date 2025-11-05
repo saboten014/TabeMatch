@@ -22,7 +22,7 @@ public class LogoutAction extends Action {
 		//なし
 
 		//ビジネスロジック 4
-		if (session.getAttribute("user") != null) {
+		if (session.getAttribute("users") != null) {
 			session.invalidate();
 		}
 

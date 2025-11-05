@@ -23,8 +23,8 @@
 <form action="LoginExecute.action" method="post">
     <table>
         <tr>
-            <td>ユーザーID:</td>
-            <td><input type="text" name="login" size="30" required></td>
+            <td>メールアドレス:</td>
+            <td><input type="email" name="login" size="30" required></td>
         </tr>
         <tr>
             <td>パスワード:</td>

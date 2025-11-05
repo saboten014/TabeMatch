@@ -1,9 +1,9 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@page import="bean.User" %>
+<%@page import="bean.Users" %>
 <%@include file="../../header.html" %>
 
 <%
-    User user = (User)session.getAttribute("user");
+    Users user = (Users)session.getAttribute("user");
     if (user == null) {
         response.sendRedirect("../Login.action");
         return;
