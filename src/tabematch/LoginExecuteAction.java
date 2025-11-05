@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import bean.User;
+import bean.Users;
 import dao.UserDAO;
 import tool.Action;
 
@@ -32,7 +32,7 @@ public class LoginExecuteAction extends Action {
 			url = "login.jsp";
 		} else {
 			// ログイン認証
-			User user = userDao.login(userId, password);
+			Users user = userDao.login(userId, password);
 
 			if (user != null) {
 				// ログイン成功

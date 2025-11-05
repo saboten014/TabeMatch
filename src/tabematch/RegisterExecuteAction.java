@@ -3,7 +3,7 @@ package tabematch;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.User;
+import bean.Users;
 import dao.UserDAO;
 import tool.Action;
 
@@ -65,7 +65,7 @@ public class RegisterExecuteAction extends Action {
 		}
 		else {
 			// ユーザー登録処理
-			User user = new User();
+			Users user = new Users();
 			user.setUserId(userId);
 			user.setPassword(password);
 			user.setUserName(userName);

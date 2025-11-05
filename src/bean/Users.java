@@ -1,6 +1,6 @@
 package bean;
 
-public class User {
+public class Users {
 	private String userId;
 	private String password;
 	private String userName;
@@ -8,7 +8,7 @@ public class User {
 	private String usersTypeId;
 
 	// コンストラクタ
-	public User() {
+	public Users() {
 	}
 
 	// Getter and Setter
