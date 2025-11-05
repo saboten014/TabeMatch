@@ -13,8 +13,8 @@ public class UserDAO extends DAO {
 		Users user = null;
 		Connection con = getConnection();
 
-		String sql = "SELECT USER_ID, PASSWORD, USER_NAME, ALLERGEN_ID, USERS_TYPE_ID " +
-				"FROM USER WHERE USER_ID = ? AND PASSWORD = ?";
+		String sql = "SELECT user_id, password, user_name, allergen_id, users_type_id " +
+				"FROM users WHERE user_id = ? AND password = ?";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, userId);
@@ -24,11 +24,11 @@ public class UserDAO extends DAO {
 
 		if (rs.next()) {
 			user = new Users();
-			user.setUserId(rs.getString("USER_ID"));
-			user.setPassword(rs.getString("PASSWORD"));
-			user.setUserName(rs.getString("USER_NAME"));
-			user.setAllergenId(rs.getString("ALLERGEN_ID"));
-			user.setUsersTypeId(rs.getString("USERS_TYPE_ID"));
+			user.setUserId(rs.getString("user_id"));
+			user.setPassword(rs.getString("password"));
+			user.setUserName(rs.getString("user_name"));
+			user.setAllergenId(rs.getString("allergen_id"));
+			user.setUsersTypeId(rs.getString("users_type_id"));
 		}
 
 		rs.close();
@@ -43,8 +43,8 @@ public class UserDAO extends DAO {
 		Users user = null;
 		Connection con = getConnection();
 
-		String sql = "SELECT USER_ID, PASSWORD, USER_NAME, ALLERGEN_ID, USERS_TYPE_ID " +
-				"FROM USER WHERE USER_ID = ?";
+		String sql = "SELECT user_id, password, user_name, allergen_id, users_type_id " +
+				"FROM users WHERE user_id = ?";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, userId);
@@ -53,11 +53,11 @@ public class UserDAO extends DAO {
 
 		if (rs.next()) {
 			user = new Users();
-			user.setUserId(rs.getString("USER_ID"));
-			user.setPassword(rs.getString("PASSWORD"));
-			user.setUserName(rs.getString("USER_NAME"));
-			user.setAllergenId(rs.getString("ALLERGEN_ID"));
-			user.setUsersTypeId(rs.getString("USERS_TYPE_ID"));
+			user.setUserId(rs.getString("user_id"));
+			user.setPassword(rs.getString("password"));
+			user.setUserName(rs.getString("user_name"));
+			user.setAllergenId(rs.getString("allergen_id"));
+			user.setUsersTypeId(rs.getString("users_type_id"));
 		}
 
 		rs.close();
@@ -71,7 +71,7 @@ public class UserDAO extends DAO {
 	public boolean registerUser(Users user) throws Exception {
 		Connection con = getConnection();
 
-		String sql = "INSERT INTO USER (USER_ID, PASSWORD, USER_NAME, ALLERGEN_ID, USERS_TYPE_ID) " +
+		String sql = "INSERT INTO users (user_id, password, user_name, allergen_id, users_type_id) " +
 				"VALUES (?, ?, ?, ?, ?)";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
