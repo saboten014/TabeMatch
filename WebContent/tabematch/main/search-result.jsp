@@ -2,6 +2,7 @@
 <%@page import="java.util.List" %>
 <%@page import="bean.Shop" %>
 <%@include file="../../header.html" %>
+<%@include file="user_menu.jsp" %>
 
 <h1>検索結果</h1>
 
