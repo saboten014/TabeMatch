@@ -3,6 +3,7 @@
 <%@page import="bean.Allergen" %>
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../../header.html" %>
+<%@include file="user_menu.jsp" %>
 
 <h1>店舗検索</h1>
 

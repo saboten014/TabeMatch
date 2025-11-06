@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page pageEncoding="UTF-8" %>
+<%@include file="manager_menu.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,83 +8,136 @@
 
 <style>
   body {
-    font-family: "Meiryo", sans-serif;
-    background-color: #d7f8d3; /* 全体の淡い緑 */
-    margin: 0;
-    padding: 0;
-  }
-
-  /* 外枠 */
-  .container {
-    width: 80%;
-    margin: 40px auto;
-    background-color: #c6f0c1;
-    border: 2px solid #57a360;
-    border-radius: 8px;
-    box-shadow: 0 0 3px rgba(0,0,0,0.2);
-  }
-
-  /* ヘッダー */
-  .header {
-    background-color: #7bc97b;
-    padding: 15px 25px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-
-  .header h1 {
-    color: #ff8c00; /* オレンジ文字 */
-    margin: 0;
-    font-size: 28px;
-  }
-
-  /* ボタン配置部分 */
-  .content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    padding: 40px 0;
-  }
-
-  /* 各ボタン（カード） */
-  .card {
-    background-color: #fff;
-    width: 180px;
-    height: 100px;
-    border: 1px solid #666;
-    border-radius: 6px;
-    box-shadow: 1px 2px 3px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
+    background-color: #e8f8e8;
+    font-family: "Kosugi Maru", "Meiryo", sans-serif;
     text-align: center;
-    text-decoration: none;
-    color: #000;
-    transition: 0.2s;
+    padding-top: 50px;
   }
 
-  .card:hover {
-    background-color: #f0fff0;
-    transform: translateY(-3px);
+  /* ===== 共通ボタンスタイル ===== */
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 14px;
+    border: 2px solid #aaa;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s, border-color 0.3s;
   }
+
+  button:hover {
+    transform: scale(1.07);
+  }
+
+  /* ===== メインボタン ===== */
+  .main-btn {
+    padding: 25px 70px;
+    font-size: 24px;
+    margin: 20px;
+  }
+
+  /* ホバー時の色変化 */
+  .user-btn:hover {
+    background-color: #ff4d4d;
+    color: white;
+    border-color: #ff4d4d;
+  }
+
+  .store-btn:hover {
+    background-color: #ffcc00;
+    color: black;
+    border-color: #ffcc00;
+  }
+
+  .admin-btn:hover {
+    background-color: #3399ff;
+    color: white;
+    border-color: #3399ff;
+  }
+
+  /* ===== 機能ボタンエリア ===== */
+  .feature-box {
+    display: none;
+    margin: 35px auto;
+    padding: 35px;
+    border-radius: 15px;
+    width: 65%;
+  }
+
+  .user-box {
+    border: 2px solid #ffb3b3;
+    background-color: #ffe5e5;
+  }
+
+  .store-box {
+    border: 2px solid #ffe680;
+    background-color: #fff8cc;
+  }
+
+  .admin-box {
+    border: 2px solid #99ccff;
+    background-color: #e6f3ff;
+  }
+
+  /* ===== 機能ボタン ===== */
+  .feature-btn {
+    display: inline-block;
+    margin: 20px;
+    padding: 20px 50px;
+    font-size: 20px;
+  }
+
+  /* 機能ボタンのホバー色統一 */
+  .user-feature:hover {
+    background-color: #ff4d4d;
+    color: white;
+    border-color: #ff4d4d;
+  }
+
+  .store-feature:hover {
+    background-color: #ffcc00;
+    color: black;
+    border-color: #ffcc00;
+  }
+
+  .admin-feature:hover {
+    background-color: #3399ff;
+    color: white;
+    border-color: #3399ff;
+  }
+
 </style>
+
+<script>
+function showMenu(type) {
+  document.querySelectorAll('.feature-box').forEach(box => box.style.display = 'none');
+  document.querySelector('.' + type + '-box').style.display = 'block';
+}
+</script>
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>たべまっち</h1>
-    </div>
+  <h2>管理者ホーム</h2>
 
-    <div class="content">
-      <a href="" class="card">ユーザーの管理</a>
-      <a href="" class="card">掲載リクエスト承認</a>
-      <a href="" class="card">管理者アカウント追加</a>
-      <a href="" class="card">店舗の管理</a>
-      <a href="" class="card">お知らせ配信</a>
-    </div>
+  <!-- メインボタン -->
+  <button class="main-btn user-btn" onclick="showMenu('user')">ユーザー</button>
+  <button class="main-btn store-btn" onclick="showMenu('store')">店舗</button>
+  <button class="main-btn admin-btn" onclick="showMenu('admin')">管理者</button>
+
+  <!-- 機能ボタン枠 -->
+  <div class="feature-box user-box">
+    <button class="feature-btn user-feature">ユーザー管理</button>
   </div>
+
+  <div class="feature-box store-box">
+    <button class="feature-btn store-feature">掲載リクエスト承認</button>
+    <button class="feature-btn store-feature">店舗管理</button>
+  </div>
+
+  <div class="feature-box admin-box">
+    <button class="feature-btn admin-feature">管理者アカウント追加</button>
+    <button class="feature-btn admin-feature">お知らせ配信</button>
+  </div>
+
 </body>
 </html>
