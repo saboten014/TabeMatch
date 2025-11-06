@@ -1,6 +1,6 @@
 <%@page pageEncoding="UTF-8" %>
 
-
+<title>ユーザーメニュー</title>
 
 <style>
   .header {

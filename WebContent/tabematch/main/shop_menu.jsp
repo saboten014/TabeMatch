@@ -1,5 +1,6 @@
 <%@page pageEncoding="UTF-8" %>
 
+<title>店舗メニュー</title>
 
 <style>
   .header {
