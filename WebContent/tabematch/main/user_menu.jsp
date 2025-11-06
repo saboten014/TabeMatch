@@ -1,5 +1,7 @@
 <%@page pageEncoding="UTF-8" %>
 
+<title>ユーザーメニュー | たべまっち</title>
+
 <style>
   .header {
     display: flex;
