@@ -30,6 +30,7 @@ public class ShopRequestExecuteAction extends Action {
 		String seat = req.getParameter("seat");
 		String link = req.getParameter("link");
 		String number = req.getParameter("number");
+		String email = req.getParameter("email");
 
 		// DBからデータ取得 3
 		// なし
@@ -45,7 +46,8 @@ public class ShopRequestExecuteAction extends Action {
 			payment == null || payment.trim().isEmpty() ||
 			genre == null || genre.trim().isEmpty() ||
 			seat == null || seat.trim().isEmpty() ||
-			number == null || number.trim().isEmpty()) {
+			number == null || number.trim().isEmpty()||
+			email == null || email.trim().isEmpty()) {
 			// 必須項目が入力されていない
 			req.setAttribute("errorMessage", "必須項目をすべて入力してください。");
 			url = "shop-request.jsp";
@@ -82,6 +84,7 @@ public class ShopRequestExecuteAction extends Action {
 			request.setLink(link);
 			request.setNumber(number);
 			request.setCertification(1); // 1=未承認
+			request.setEmail(email);
 
 			// DBへデータ保存 5
 			boolean result = requestDao.insertRequest(request);

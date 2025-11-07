@@ -15,7 +15,7 @@ public class RequestDAO extends DAO {
 		Connection con = getConnection();
 
 		String sql = "INSERT INTO requests (request_id, address, restaurant_name, allergy_support, " +
-				"reservation, business_hours, payment, genre, photo, price_range, seat, link, phone_number, certification) " +
+				"reservation, business_hours, payment, genre, photo, price_range, seat, link, phone_number, certification, request_mail) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
@@ -33,6 +33,7 @@ public class RequestDAO extends DAO {
 		stmt.setString(12, request.getLink());
 		stmt.setString(13, request.getNumber());
 		stmt.setInt(14, request.getCertification());
+		stmt.setString(15,request.getEmail() );
 
 		int result = stmt.executeUpdate();
 

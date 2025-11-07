@@ -15,6 +15,7 @@ public class Request {
 	private String link;
 	private String phone_number;
 	private Integer certification;
+	private String request_mail;
 
 	// コンストラクタ
 	public Request() {
@@ -132,4 +133,13 @@ public class Request {
 	public void setCertification(Integer certification) {
 		this.certification = certification;
 	}
+
+	public String getEmail(){
+		return request_mail;
+	}
+
+	public void setEmail(String email){
+		this.request_mail = email;
+	}
+
 }
