@@ -49,7 +49,7 @@ public class LoginExecuteAction extends Action {
 					url = "shop/shop-management.jsp";
 				} else if ("3".equals(usersTypeId)) {
 					// 管理ユーザー → 管理画面トップページ
-					url = "admin/admin-top.jsp";
+					url = "main/manager_home.jsp";
 				} else {
 					// 想定外の区分ID
 					url = "main/top.jsp";

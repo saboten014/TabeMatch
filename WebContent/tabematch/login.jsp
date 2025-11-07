@@ -39,5 +39,6 @@
 </form>
 
 <p><a href="Register.action">新規ユーザー登録はこちら</a></p>
+<p><a href="ShopRequest.action">店舗掲載リクエストはこちら</a></p>
 
 <%@include file="../footer.html" %>
