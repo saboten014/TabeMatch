@@ -13,7 +13,7 @@ public class Request {
 	private String priceRange;
 	private String seat;
 	private String link;
-	private String number;
+	private String phone_number;
 	private Integer certification;
 
 	// コンストラクタ
@@ -118,11 +118,11 @@ public class Request {
 	}
 
 	public String getNumber() {
-		return number;
+		return phone_number;
 	}
 
 	public void setNumber(String number) {
-		this.number = number;
+		this.phone_number = number;
 	}
 
 	public Integer getCertification() {
