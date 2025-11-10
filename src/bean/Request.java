@@ -142,4 +142,11 @@ public class Request {
 		this.request_mail = email;
 	}
 
+	public String getRequest_mail() {
+		return request_mail;
+	}
+
+	public void setRequest_mail(String request_mail) {
+		this.request_mail = request_mail;
+	}
 }

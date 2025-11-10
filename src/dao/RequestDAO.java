@@ -14,6 +14,7 @@ public class RequestDAO extends DAO {
 	public boolean insertRequest(Request request) throws Exception {
 		Connection con = getConnection();
 
+		// INSERT文にrequest_mailカラムが含まれていることを確認
 		String sql = "INSERT INTO requests (request_id, address, restaurant_name, allergy_support, " +
 				"reservation, business_hours, payment, genre, photo, price_range, seat, link, phone_number, certification, request_mail) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

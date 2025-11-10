@@ -111,6 +111,10 @@
             </td>
         </tr>
     </table>
+    <div class="form-group">
+        <label for="email">メールアドレス<span class="required">*</span></label>
+        <input type="email" class="form-control" id="email" name="request_mail" required>
+    </div>
 </form>
 
 <p><a href="Login.action">ログイン画面に戻る</a></p>

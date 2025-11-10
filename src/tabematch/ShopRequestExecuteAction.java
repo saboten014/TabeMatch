@@ -31,6 +31,7 @@ public class ShopRequestExecuteAction extends Action {
 		String link = req.getParameter("link");
 		String number = req.getParameter("number");
 		String email = req.getParameter("email");
+		String request_mail = req.getParameter("request_mail");
 
 		// DBからデータ取得 3
 		// なし
@@ -85,6 +86,7 @@ public class ShopRequestExecuteAction extends Action {
 			request.setNumber(number);
 			request.setCertification(1); // 1=未承認
 			request.setEmail(email);
+			request.setRequest_mail(request_mail);
 
 			// DBへデータ保存 5
 			boolean result = requestDao.insertRequest(request);
@@ -105,5 +107,16 @@ public class ShopRequestExecuteAction extends Action {
 
 		// JSPへフォワード 7
 		req.getRequestDispatcher(url).forward(req, res);
+	}
+
+	// バリデーション
+	public static boolean validateEmail(String email) {
+		if (email == null || email.trim().isEmpty()) {
+			return false;
+		}
+		if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+			return false;
+		}
+		return true;
 	}
 }
