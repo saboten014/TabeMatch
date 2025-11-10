@@ -17,6 +17,7 @@
 <h2>メニュー</h2>
 <ul>
     <li><a href="search.jsp">店舗検索</a></li>
+    <li><a href="AdminRequestList.action">承諾</a></li>
     <li><a href="Logout.action">ログアウト</a></li>
 </ul>
 

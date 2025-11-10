@@ -171,7 +171,10 @@ function showMenu(type) {
   </div>
 
   <div class="feature-box store-box">
-    <button class="feature-btn store-feature">掲載リクエスト承認</button>
+    <button onclick="location.href='admin/AdminRequestList.action'">
+  	掲載リクエスト承認
+	</button>
+
     <button class="feature-btn store-feature">店舗管理</button>
   </div>
 
