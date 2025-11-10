@@ -134,14 +134,6 @@ public class Request {
 		this.certification = certification;
 	}
 
-	public String getEmail(){
-		return request_mail;
-	}
-
-	public void setEmail(String email){
-		this.request_mail = email;
-	}
-
 	public String getRequest_mail() {
 		return request_mail;
 	}

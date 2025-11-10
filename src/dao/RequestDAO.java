@@ -17,7 +17,7 @@ public class RequestDAO extends DAO {
 		// INSERT文にrequest_mailカラムが含まれていることを確認
 		String sql = "INSERT INTO requests (request_id, address, restaurant_name, allergy_support, " +
 				"reservation, business_hours, payment, genre, photo, price_range, seat, link, phone_number, certification, request_mail) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, request.getRequestId());
@@ -34,7 +34,7 @@ public class RequestDAO extends DAO {
 		stmt.setString(12, request.getLink());
 		stmt.setString(13, request.getNumber());
 		stmt.setInt(14, request.getCertification());
-		stmt.setString(15,request.getEmail() );
+		stmt.setString(15,request.getRequest_mail() );
 
 		int result = stmt.executeUpdate();
 
@@ -146,7 +146,7 @@ public class RequestDAO extends DAO {
 		request.setLink(rs.getString("link"));
 		request.setNumber(rs.getString("phone_number"));
 		request.setCertification(rs.getInt("certification"));
-		request.setEmail(rs.getString("request_mail"));
+		request.setRequest_mail(rs.getString("request_mail"));
 		return request;
 	}
 }

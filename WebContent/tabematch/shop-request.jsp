@@ -105,16 +105,16 @@
             <td><input type="text" name="number" size="30" maxlength="20" required></td>
         </tr>
         <tr>
+            <td>メールアドレス<span style="color: red;">*</span>:</td>
+            <td><input type="email" name="request_mail" size="50" maxlength="100" required></td>
+        </tr>
+        <tr>
             <td colspan="2" align="center">
                 <input type="submit" value="リクエスト送信">
                 <input type="reset" value="クリア">
             </td>
         </tr>
     </table>
-    <div class="form-group">
-        <label for="email">メールアドレス<span class="required">*</span></label>
-        <input type="email" class="form-control" id="email" name="request_mail" required>
-    </div>
 </form>
 
 <p><a href="Login.action">ログイン画面に戻る</a></p>

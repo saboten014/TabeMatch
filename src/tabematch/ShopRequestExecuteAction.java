@@ -48,7 +48,7 @@ public class ShopRequestExecuteAction extends Action {
 			genre == null || genre.trim().isEmpty() ||
 			seat == null || seat.trim().isEmpty() ||
 			number == null || number.trim().isEmpty()||
-			email == null || email.trim().isEmpty()) {
+			request_mail == null || request_mail.trim().isEmpty()) {
 			// 必須項目が入力されていない
 			req.setAttribute("errorMessage", "必須項目をすべて入力してください。");
 			url = "shop-request.jsp";
@@ -85,7 +85,6 @@ public class ShopRequestExecuteAction extends Action {
 			request.setLink(link);
 			request.setNumber(number);
 			request.setCertification(1); // 1=未承認
-			request.setEmail(email);
 			request.setRequest_mail(request_mail);
 
 			// DBへデータ保存 5
