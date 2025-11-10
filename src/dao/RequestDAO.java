@@ -145,6 +145,7 @@ public class RequestDAO extends DAO {
 		request.setLink(rs.getString("link"));
 		request.setNumber(rs.getString("phone_number"));
 		request.setCertification(rs.getInt("certification"));
+		request.setEmail(rs.getString("request_mail"));
 		return request;
 	}
 }
