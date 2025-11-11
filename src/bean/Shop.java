@@ -9,7 +9,7 @@ public class Shop {
 	private String shopName;
 	private String shopAllergy;
 	private String shopMail;
-	private Integer shopTel;
+	private String shopTel;
 	private Timestamp shopDate;
 	private Time shopTime;
 	private String shopReserve;
@@ -66,11 +66,11 @@ public class Shop {
 		this.shopMail = shopMail;
 	}
 
-	public Integer getShopTel() {
+	public String getShopTel() {
 		return shopTel;
 	}
 
-	public void setShopTel(Integer shopTel) {
+	public void setShopTel(String shopTel) {
 		this.shopTel = shopTel;
 	}
 

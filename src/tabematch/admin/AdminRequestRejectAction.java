@@ -59,7 +59,7 @@ public class AdminRequestRejectAction extends Action {
 				// 上記で完了
 
 				// 2. メール送信
-				String shopEmail = request.getNumber() + "@shop.tabematch.com"; // 仮のメール
+				String shopEmail = request.getRequest_mail();
 				try {
 					EmailSender.sendRejectionEmail(shopEmail, request.getRestaurantName(), reason);
 					req.setAttribute("successMessage", "却下が完了しました。店舗にメールを送信しました。");

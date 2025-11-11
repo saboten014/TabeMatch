@@ -24,7 +24,7 @@ public class ShopDAO extends DAO {
 		stmt.setString(3, shop.getShopName());
 		stmt.setString(4, shop.getShopAllergy());
 		stmt.setString(5, shop.getShopMail());
-		stmt.setInt(6, shop.getShopTel());
+		stmt.setString(6, shop.getShopTel());
 		stmt.setString(7, shop.getShopReserve());
 		stmt.setString(8, shop.getShopGenre());
 		stmt.setString(9, shop.getShopPicture());
@@ -350,7 +350,7 @@ public class ShopDAO extends DAO {
 		shop.setShopName(rs.getString("SHOP_NAME"));
 		shop.setShopAllergy(rs.getString("SHOP_ALLERGY"));
 		shop.setShopMail(rs.getString("SHOP_MAIL"));
-		shop.setShopTel(rs.getInt("SHOP_TEL"));
+		shop.setShopTel(rs.getString("SHOP_TEL"));
 		shop.setShopDate(rs.getTimestamp("SHOP_DATE"));
 		shop.setShopTime(rs.getTime("SHOP_TIME"));
 		shop.setShopReserve(rs.getString("SHOP_RESERVE"));

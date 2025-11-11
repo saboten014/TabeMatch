@@ -3,6 +3,7 @@
 <%@include file="../../header.html" %>
 
 <%
+    String contextPath = request.getContextPath();
     Users user = (Users)session.getAttribute("user");
     if (user == null) {
         response.sendRedirect("../Login.action");
@@ -17,8 +18,7 @@
 <h2>メニュー</h2>
 <ul>
     <li><a href="search.jsp">店舗検索</a></li>
-    <li><a href="AdminRequestList.action">承諾</a></li>
-    <li><a href="Logout.action">ログアウト</a></li>
+    <li><a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a></li>
 </ul>
 
 <%@include file="../../footer.html" %>

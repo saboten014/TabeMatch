@@ -46,10 +46,10 @@ public class LoginExecuteAction extends Action {
 					url = "main/top.jsp";
 				} else if ("2".equals(usersTypeId)) {
 					// 店舗ユーザー → 店舗情報管理画面
-					url = "shop/shop-management.jsp";
+					url = "main/shop-home.jsp";
 				} else if ("3".equals(usersTypeId)) {
 					// 管理ユーザー → 管理画面トップページ
-					url = "main/manager_home.jsp";
+					url = "main/admin_home.jsp";
 				} else {
 					// 想定外の区分ID
 					url = "main/top.jsp";

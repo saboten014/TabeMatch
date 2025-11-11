@@ -83,7 +83,7 @@ public class AdminRequestApproveAction extends Action {
 				shop.setShopName(request.getRestaurantName());
 				shop.setShopAllergy(request.getAllergySupport());
 				shop.setShopMail(shopEmail);
-				shop.setShopTel(Integer.parseInt(request.getNumber().replaceAll("[^0-9]", ""))); // 数字のみ抽出
+				shop.setShopTel(request.getNumber().replaceAll("[^0-9]", ""));
 				shop.setShopReserve(request.getReservation() == 1 ? "可能" : "不可");
 				shop.setShopGenre(request.getGenre());
 				shop.setShopPicture(request.getPhoto());

@@ -15,8 +15,8 @@ public class EmailSender {
 	// メール送信設定（環境に応じて変更してください）
 	private static final String SMTP_HOST = "smtp.gmail.com"; // SMTPサーバー
 	private static final String SMTP_PORT = "587"; // ポート番号
-	private static final String FROM_EMAIL = "aresuperionl@gmail.com"; // 送信元メールアドレス
-	private static final String FROM_PASSWORD = "mhtjawmqubsvpeep"; // アプリパスワード
+	private static final String FROM_EMAIL = "tabematch@gmail.com"; // 送信元メールアドレス
+	private static final String FROM_PASSWORD = "pecrdiwlpzheqysw"; // アプリパスワード
 
 	/**
 	 * 店舗アカウント承認メールを送信
