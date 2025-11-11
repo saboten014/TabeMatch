@@ -57,8 +57,7 @@ public class AdminRequestApproveAction extends Action {
 				String tempPassword = PasswordGenerator.generatePassword();
 
 				// 2. 店舗ユーザーアカウント作成（USERSテーブル）
-				// メールアドレスはnumberを使用（電話番号から変更が必要な場合は調整）
-				String shopEmail = request.getNumber() + "@shop.tabematch.com"; // 仮のメール生成
+				String shopEmail = request.getRequest_mail();
 
 				Users shopUser = new Users();
 				shopUser.setUserId(shopEmail);
@@ -79,6 +78,7 @@ public class AdminRequestApproveAction extends Action {
 				// 3. SHOPテーブルに店舗情報登録
 				Shop shop = new Shop();
 				shop.setShopId(PasswordGenerator.generateShopId());
+				shop.setPassword(tempPassword);
 				shop.setShopAddress(request.getAddress());
 				shop.setShopName(request.getRestaurantName());
 				shop.setShopAllergy(request.getAllergySupport());

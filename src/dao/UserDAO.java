@@ -68,24 +68,40 @@ public class UserDAO extends DAO {
 	}
 
 	// 新規ユーザー登録
+	// 新規ユーザー登録
 	public boolean registerUser(Users user) throws Exception {
-		Connection con = getConnection();
+	    Connection con = getConnection();
 
-		String sql = "INSERT INTO users (user_id, password, user_name, allergen_id, users_type_id) " +
-				"VALUES (?, ?, ?, ?, ?)";
+	    String sql = "INSERT INTO users (user_id, password, user_name, allergen_id, users_type_id) " +
+	                 "VALUES (?, ?, ?, ?, ?)";
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, user.getUserId());
-		stmt.setString(2, user.getPassword());
-		stmt.setString(3, user.getUserName());
-		stmt.setString(4, user.getAllergenId());
-		stmt.setString(5, user.getUsersTypeId());
+	    PreparedStatement stmt = con.prepareStatement(sql);
+	    stmt.setString(1, user.getUserId());
+	    stmt.setString(2, user.getPassword());
+	    stmt.setString(3, user.getUserName());
 
-		int result = stmt.executeUpdate();
+	    String allergenCsv = user.getAllergenId();
 
-		stmt.close();
-		con.close();
+	    if (allergenCsv != null && !allergenCsv.isEmpty()) {
+	        // カンマ区切りを配列に変換
+	        String[] allergenArray = allergenCsv.split(",");
 
-		return result > 0;
+	        // PostgreSQL用の配列オブジェクトを作成
+	        java.sql.Array sqlArray = con.createArrayOf("varchar", allergenArray);
+	        stmt.setArray(4, sqlArray);
+	    } else {
+	        // 空ならNULLをセット
+	        stmt.setNull(4, java.sql.Types.ARRAY);
+	    }
+
+	    stmt.setString(5, user.getUsersTypeId());
+
+	    int result = stmt.executeUpdate();
+
+	    stmt.close();
+	    con.close();
+
+	    return result > 0;
 	}
+
 }

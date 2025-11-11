@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 public class Shop {
 	private String shopId;
+	private String password;
 	private String shopAddress;
 	private String shopName;
 	private String shopAllergy;
@@ -33,6 +34,15 @@ public class Shop {
 	public void setShopId(String shopId) {
 		this.shopId = shopId;
 	}
+
+	public String getPassword() {
+	    return password;
+	}
+
+	public void setPassword(String password) {
+	    this.password = password;
+	}
+
 
 	public String getShopAddress() {
 		return shopAddress;

@@ -14,24 +14,26 @@ public class ShopDAO extends DAO {
 	public boolean insertShop(Shop shop) throws Exception {
 		Connection con = getConnection();
 
-		String sql = "INSERT INTO shop (shop_id, shop_address, shop_name, shop_allergy, shop_mail, " +
-				"shop_tel, shop_reserve, shop_genre, shop_picture, shop_price, shop_pay, shop_seat, shop_url) " +
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO shop (shop_id, password, shop_address, shop_name, shop_allergy, shop_mail, " +
+			    "shop_tel, shop_reserve, shop_genre, shop_picture, shop_price, shop_pay, shop_seat, shop_url) " +
+			    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, shop.getShopId());
-		stmt.setString(2, shop.getShopAddress());
-		stmt.setString(3, shop.getShopName());
-		stmt.setString(4, shop.getShopAllergy());
-		stmt.setString(5, shop.getShopMail());
-		stmt.setString(6, shop.getShopTel());
-		stmt.setString(7, shop.getShopReserve());
-		stmt.setString(8, shop.getShopGenre());
-		stmt.setString(9, shop.getShopPicture());
-		stmt.setString(10, shop.getShopPrice());
-		stmt.setString(11, shop.getShopPay());
-		stmt.setInt(12, shop.getShopSeat());
-		stmt.setString(13, shop.getShopUrl());
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, shop.getShopId());
+			stmt.setString(2, shop.getPassword()); // ←★★ 追加
+			stmt.setString(3, shop.getShopAddress());
+			stmt.setString(4, shop.getShopName());
+			stmt.setString(5, shop.getShopAllergy());
+			stmt.setString(6, shop.getShopMail());
+			stmt.setString(7, shop.getShopTel());
+			stmt.setString(8, shop.getShopReserve());
+			stmt.setString(9, shop.getShopGenre());
+			stmt.setString(10, shop.getShopPicture());
+			stmt.setString(11, shop.getShopPrice());
+			stmt.setString(12, shop.getShopPay());
+			stmt.setInt(13, shop.getShopSeat());
+			stmt.setString(14, shop.getShopUrl());
+
 
 		int result = stmt.executeUpdate();
 
