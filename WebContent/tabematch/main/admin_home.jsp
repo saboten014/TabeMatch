@@ -1,5 +1,5 @@
 <%@page pageEncoding="UTF-8" %>
-<%@include file="manager_menu.jsp" %>
+<%@include file="admin_menu.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
