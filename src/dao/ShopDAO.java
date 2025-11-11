@@ -20,7 +20,7 @@ public class ShopDAO extends DAO {
 
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, shop.getShopId());
-			stmt.setString(2, shop.getPassword()); // ←★★ 追加
+			stmt.setString(2, shop.getPassword());
 			stmt.setString(3, shop.getShopAddress());
 			stmt.setString(4, shop.getShopName());
 			stmt.setString(5, shop.getShopAllergy());
@@ -73,7 +73,7 @@ public class ShopDAO extends DAO {
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? " +
-				"AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ? " +
+				"AND SHOP_PRICE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
@@ -141,7 +141,7 @@ public class ShopDAO extends DAO {
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ? " +
+				"AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
@@ -171,7 +171,7 @@ public class ShopDAO extends DAO {
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_NAME LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME LIKE ? " +
+				"AND SHOP_NAME LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
@@ -201,7 +201,7 @@ public class ShopDAO extends DAO {
 		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
-				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_TIME LIKE ? " +
+				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
 		PreparedStatement stmt = con.prepareStatement(sql);
@@ -266,7 +266,7 @@ public class ShopDAO extends DAO {
 		if (!isEmpty(shopName)) sql.append(" AND SHOP_NAME LIKE ?");
 		if (!isEmpty(genre)) sql.append(" AND SHOP_GENRE LIKE ?");
 		if (!isEmpty(priceRange)) sql.append(" AND SHOP_PRICE LIKE ?");
-		if (!isEmpty(businessHours)) sql.append(" AND SHOP_TIME LIKE ?");
+		if (!isEmpty(businessHours)) sql.append(" AND SHOP_TIME::text LIKE ?");
 		sql.append(buildAllergyCondition(allergyInfo));
 
 		PreparedStatement stmt = con.prepareStatement(sql.toString());

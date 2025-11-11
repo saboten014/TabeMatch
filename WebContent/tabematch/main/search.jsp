@@ -25,7 +25,7 @@
     }
 %>
 
-<form action="Search.action" method="post">
+<form action="main/Search.action" method="post">
     <table>
         <tr>
             <td>検索エリア:</td>
