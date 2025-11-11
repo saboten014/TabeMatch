@@ -43,10 +43,10 @@ public class LoginExecuteAction extends Action {
 
 				if ("1".equals(usersTypeId)) {
 					// 一般ユーザー → トップページ
-					url = "main/top.jsp";
+					url = "main/search.jsp";
 				} else if ("2".equals(usersTypeId)) {
 					// 店舗ユーザー → 店舗情報管理画面
-					url = "main/shop-home.jsp";
+					url = "shop/shop-management.jsp";
 				} else if ("3".equals(usersTypeId)) {
 					// 管理ユーザー → 管理画面トップページ
 					url = "main/admin_home.jsp";

@@ -57,9 +57,12 @@
 </style>
 
 <div class="header">
-  <div class="logo">たべまっち　管理者ホーム</div>
+  <div class="logo">たべまっち</div>
   <div class="nav-links">
-    <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
+    <a href="">店舗関連</a>
+    <a href="">お知らせ</a>
+    <a href="search.jsp">検索</a>
+    <a href="login.jsp">ログイン</a>
   </div>
 </div>
 
