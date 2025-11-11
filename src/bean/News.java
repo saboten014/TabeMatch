@@ -1,29 +1,60 @@
 package bean;
+import java.sql.Timestamp;
 
 public class News {
-    private int newsId;
-    private String title;
-    private String content;
-    private String author;
+	private String newsId;
+	private String newsTitle;
+	private String newsText;
+	private Timestamp deliveryDate;
+	private Timestamp editDate;
+	private String role;
 
-    public News() {}
 
-    public News(int newsId, String title, String content, String author) {
-        this.newsId = newsId;
-        this.title = title;
-        this.content = content;
-        this.author = author;
-    }
+	public String getNewsId() {
+		return newsId;
+	}
+	public void setNewsId(String newsId) {
+		this.newsId = newsId;
+	}
 
-    public int getNewsId() { return newsId; }
-    public void setNewsId(int newsId) { this.newsId = newsId; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+	public String getNewsTitle() {
+		return newsTitle;
+	}
+	public void setNewsTitle(String newsTitle) {
+		this.newsTitle = newsTitle;
+	}
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+	public String getNewsText() {
+		return newsText;
+	}
+	public void setNewsText(String newsText) {
+		this.newsText = newsText;
+	}
+
+
+	public Timestamp getDeliveryDate() {
+		return deliveryDate;
+	}
+	public void setDeliveryDate(Timestamp deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+
+	public Timestamp getEditDate() {
+		return editDate;
+	}
+	public void setEditDate(Timestamp editDate) {
+		this.editDate = editDate;
+	}
+
+
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 }
