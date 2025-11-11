@@ -4,7 +4,7 @@
 <%@page import="bean.Users" %>
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../../header.html" %>
-<%@include file="user_menu.jsp" %>
+<%@include file="search_menu.jsp" %>
 
 <h1>店舗検索</h1>
 
@@ -19,7 +19,6 @@
 
 <%
     // ログインユーザーのアレルギー情報を取得
-    Users loginUser = (Users)session.getAttribute("user");
     String[] userAllergens = null;
     if (loginUser != null && loginUser.getAllergenId() != null && !loginUser.getAllergenId().isEmpty()) {
         userAllergens = loginUser.getAllergenId().split(",");
