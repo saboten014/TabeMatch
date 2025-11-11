@@ -45,7 +45,7 @@
   /* メインボタン ホバー色 */
   .user-btn:hover {
     background-color: #ff4d4d;
-    color: white;
+    color: black;
     border-color: #ff4d4d;
   }
   .shop-btn:hover {
@@ -55,7 +55,7 @@
   }
   .admin-btn:hover {
     background-color: #3399ff;
-    color: white;
+    color: black;
     border-color: #3399ff;
   }
 
@@ -95,7 +95,7 @@
   /* 機能ボタン ホバー色 */
   .user-feature:hover {
     background-color: #ff4d4d;
-    color: white;
+    color: black;
     border-color: #ff4d4d;
   }
   .shop-feature:hover {
@@ -105,7 +105,7 @@
   }
   .admin-feature:hover {
     background-color: #3399ff;
-    color: white;
+    color: black;
     border-color: #3399ff;
   }
 

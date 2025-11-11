@@ -82,7 +82,7 @@
     cursor: pointer;
   }
   input[type="submit"]:hover {
-    background-color: #ffcccc;
+    background-color: #00bfff;
   }
   a {
     display: block;
