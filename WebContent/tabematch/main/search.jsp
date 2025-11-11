@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@page import="java.util.List" %>
 <%@page import="bean.Allergen" %>
+<%@page import="bean.Users" %>
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../../header.html" %>
 <%@include file="user_menu.jsp" %>
@@ -13,6 +14,15 @@
 %>
     <p style="color: red;"><%= errorMessage %></p>
 <%
+    }
+%>
+
+<%
+    // ログインユーザーのアレルギー情報を取得
+    Users loginUser = (Users)session.getAttribute("user");
+    String[] userAllergens = null;
+    if (loginUser != null && loginUser.getAllergenId() != null && !loginUser.getAllergenId().isEmpty()) {
+        userAllergens = loginUser.getAllergenId().split(",");
     }
 %>
 
@@ -70,13 +80,39 @@
     List<Allergen> allergenList = allergenDao.getAllAllergens();
 
     for (Allergen allergen : allergenList) {
+        // ログインユーザーのアレルゲンと一致する場合は自動チェック
+        boolean isChecked = false;
+        if (userAllergens != null) {
+            for (String userAllergenId : userAllergens) {
+                if (userAllergenId.trim().equals(allergen.getAllergenId())) {
+                    isChecked = true;
+                    break;
+                }
+            }
+        }
 %>
-                <input type="checkbox" name="allergyInfo" value="<%= allergen.getAllergenName() %>" id="allergy_<%= allergen.getAllergenId() %>">
+                <input type="checkbox" name="allergyInfo" value="<%= allergen.getAllergenName() %>"
+                       id="allergy_<%= allergen.getAllergenId() %>"
+                       <%= isChecked ? "checked" : "" %>>
                 <label for="allergy_<%= allergen.getAllergenId() %>"><%= allergen.getAllergenName() %></label><br>
 <%
     }
 %>
-                <small style="color: #666;">※対応しているアレルゲンを選択してください</small>
+                <small style="color: #666;">※対応しているアレルゲンを選択してください（あなたのアレルギー情報:
+<%
+    if (userAllergens != null && userAllergens.length > 0) {
+        for (int i = 0; i < userAllergens.length; i++) {
+            Allergen userAllergen = allergenDao.getAllergenById(userAllergens[i].trim());
+            if (userAllergen != null) {
+                out.print(userAllergen.getAllergenName());
+                if (i < userAllergens.length - 1) out.print(", ");
+            }
+        }
+    } else {
+        out.print("未設定");
+    }
+%>
+                ）</small>
             </td>
         </tr>
         <tr>

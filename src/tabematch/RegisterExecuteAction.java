@@ -21,7 +21,7 @@ public class RegisterExecuteAction extends Action {
 		String password = req.getParameter("password");
 		String passwordConfirm = req.getParameter("passwordConfirm");
 		String userName = req.getParameter("userName");
-		String allergenId = req.getParameter("allergenId");
+		String[] allergenIds = req.getParameterValues("allergenIds"); // 複数選択対応
 		String usersTypeId = req.getParameter("usersTypeId");
 
 		// DBからデータ取得 3
@@ -32,9 +32,9 @@ public class RegisterExecuteAction extends Action {
 			password == null || password.trim().isEmpty() ||
 			passwordConfirm == null || passwordConfirm.trim().isEmpty() ||
 			userName == null || userName.trim().isEmpty() ||
-			allergenId == null || allergenId.trim().isEmpty()) {
+			allergenIds == null || allergenIds.length == 0) {
 			// 必須項目が入力されていない
-			req.setAttribute("errorMessage", "すべての項目を入力してください。");
+			req.setAttribute("errorMessage", "すべての項目を入力してください。アレルギー情報は少なくとも1つ選択してください。");
 			url = "register.jsp";
 		}
 		// メールアドレス形式チェック
@@ -52,7 +52,7 @@ public class RegisterExecuteAction extends Action {
 			req.setAttribute("errorMessage", "このメールアドレスは既に使用されています。");
 			url = "register.jsp";
 		}
-		// ユーザーID長さチェック（VARCHAR(20)）
+		// ユーザーID長さチェック（VARCHAR(50)）
 		else if (userId.length() > 50) {
 			req.setAttribute("errorMessage", "メールアドレスは50文字以内で入力してください。");
 			url = "register.jsp";
@@ -72,12 +72,15 @@ public class RegisterExecuteAction extends Action {
 			usersTypeId = "1";
 		}
 		else {
+			// 複数のアレルゲンIDをカンマ区切りで結合
+			String allergenIdString = String.join(",", allergenIds);
+
 			// ユーザー登録処理
 			Users user = new Users();
 			user.setUserId(userId);
 			user.setPassword(password);
 			user.setUserName(userName);
-			user.setAllergenId(allergenId);
+			user.setAllergenId(allergenIdString); // カンマ区切りで保存
 			user.setUsersTypeId(usersTypeId);
 
 			// DBへデータ保存 5

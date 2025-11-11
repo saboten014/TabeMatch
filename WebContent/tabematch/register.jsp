@@ -25,13 +25,22 @@
         </tr>
         <tr>
             <td>パスワード:</td>
-            <td><input type="password" name="password" size="30" maxlength="225" required>
-                <small>(225文字以内)</small>
+            <td>
+                <input type="password" name="password" id="registerPassword" size="30" maxlength="225" required>
+                <button type="button" onclick="togglePassword('registerPassword', this)" style="margin-left: 5px;">
+                    👁️ 表示
+                </button>
+                <br><small>(225文字以内)</small>
             </td>
         </tr>
         <tr>
             <td>パスワード確認:</td>
-            <td><input type="password" name="passwordConfirm" size="30" maxlength="225" required></td>
+            <td>
+                <input type="password" name="passwordConfirm" id="confirmPassword" size="30" maxlength="225" required>
+                <button type="button" onclick="togglePassword('confirmPassword', this)" style="margin-left: 5px;">
+                    👁️ 表示
+                </button>
+            </td>
         </tr>
         <tr>
             <td>ユーザー名:</td>
@@ -42,8 +51,6 @@
         <tr>
             <td>アレルギー情報:</td>
             <td>
-                <select name="allergenId" required>
-                    <option value="">選択してください</option>
 <%
     // アレルゲン一覧を取得
     AllergenDAO allergenDao = new AllergenDAO();
@@ -51,12 +58,12 @@
 
     for (Allergen allergen : allergenList) {
 %>
-                    <option value="<%= allergen.getAllergenId() %>"><%= allergen.getAllergenName() %></option>
+                <input type="checkbox" name="allergenIds" value="<%= allergen.getAllergenId() %>" id="reg_allergy_<%= allergen.getAllergenId() %>">
+                <label for="reg_allergy_<%= allergen.getAllergenId() %>"><%= allergen.getAllergenName() %></label><br>
 <%
     }
 %>
-                </select>
-                <small>※該当するアレルギーを選択してください</small>
+                <small>※該当するアレルギーをすべて選択してください（複数選択可）</small>
             </td>
         </tr>
         <!-- ユーザー区分を一般ユーザー（1）で固定 -->
@@ -71,5 +78,18 @@
 </form>
 
 <p><a href="Login.action">ログイン画面に戻る</a></p>
+
+<script>
+function togglePassword(inputId, button) {
+    var input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        button.textContent = "🔒 非表示";
+    } else {
+        input.type = "password";
+        button.textContent = "👁️ 表示";
+    }
+}
+</script>
 
 <%@include file="../footer.html" %>

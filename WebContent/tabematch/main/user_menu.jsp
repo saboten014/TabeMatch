@@ -1,4 +1,8 @@
 <%@page pageEncoding="UTF-8" %>
+<%
+  // コンテキストパスを取得
+  String contextPath = request.getContextPath();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,11 +68,11 @@
     <div class="logo">たべまっち</div>
     <div class="nav-links">
       <a href="">お知らせ</a>
-      <a href="search.jsp">店舗検索</a>
+      <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
       <a href="">お気に入り</a>
       <a href="">プロフィール</a>
       <a href="">予約管理</a>
-      <a href="Logout.action">ログアウト</a>
+      <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
     </div>
   </div>
 
@@ -76,4 +80,3 @@
 
 </body>
 </html>
-
