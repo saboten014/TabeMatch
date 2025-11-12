@@ -104,4 +104,33 @@ public class UserDAO extends DAO {
 	    return result > 0;
 	}
 
+	public boolean updateUser(Users user) throws Exception {
+	    Connection con = getConnection();
+
+	    String sql = "UPDATE users SET password = ?, user_name = ?, allergen_id = ? WHERE user_id = ?";
+	    PreparedStatement stmt = con.prepareStatement(sql);
+	    stmt.setString(1, user.getPassword());
+	    stmt.setString(2, user.getUserName());
+
+	    // ✅ 配列型としてセット
+	    if (user.getAllergenId() != null && !user.getAllergenId().isEmpty()) {
+	        String[] allergenArray = user.getAllergenId().split(",");
+	        java.sql.Array sqlArray = con.createArrayOf("varchar", allergenArray);
+	        stmt.setArray(3, sqlArray);
+	    } else {
+	        stmt.setNull(3, java.sql.Types.ARRAY);
+	    }
+
+	    stmt.setString(4, user.getUserId());
+
+	    int result = stmt.executeUpdate();
+
+	    stmt.close();
+	    con.close();
+
+	    return result > 0;
+	}
+
+
+
 }
