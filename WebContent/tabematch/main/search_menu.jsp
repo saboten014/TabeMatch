@@ -74,7 +74,7 @@
         <a href="<%= contextPath %>/tabematch/News.action">お知らせ</a>
         <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
         <a href="">お気に入り</a>
-        <a href="">プロフィール</a>
+        <a href="<%= contextPath %>/tabematch/main/UserProfileView.action">プロフィール</a>
         <a href="">予約管理</a>
         <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
       <% } else { %>
@@ -86,4 +86,5 @@
     </div>
   </div>
   <hr>
-</body></html>
+</body>
+</html>
