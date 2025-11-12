@@ -42,16 +42,18 @@ public class NewsDAO extends DAO{
 	public List<News> all() throws Exception {
 	    List<News> list = new ArrayList<>();
 
+	    // SQLを修正：カラムリストの末尾とFROMの間にスペースを追加。ソートキーを delivery_date に修正。
+	    String sql = "select news_id, news_title, news_text, delivery_date, edit_date, role "
+	               + "from notices order by delivery_date desc";
+
 	    // try-with-resources を使用して、リソースの自動クローズを保証
 	    try (Connection con = getConnection();
-	         PreparedStatement st = con.prepareStatement("select news_id, news_title, "
-	         		+ "news_text, delivery_date, edit_date, role"
-	         		+ "from NOTICES order by delivery desc");
+	         PreparedStatement st = con.prepareStatement(sql);
 	         ResultSet rs = st.executeQuery()) {
 
 	        while (rs.next()) {
 	            News n = new News();
-	            // データをBeanにセット
+	            // データをBeanにセット (列名は画像と一致しており、これで正しいです)
 	            n.setNewsId(rs.getString("news_id"));
 	            n.setNewsTitle(rs.getString("news_title"));
 	            n.setNewsText(rs.getString("news_text"));
@@ -62,9 +64,43 @@ public class NewsDAO extends DAO{
 	            list.add(n);
 	        }
 
-	    } // catchブロックやfinallyブロックなしで、con, st, rs が自動的にクローズされる
+	    }
 
 	    return list;
+	}
+
+	// NewsDAO.java に以下のメソッドを追加してください
+
+	// お知らせをIDで取得するメソッド
+	public News findById(String newsId) throws Exception {
+	    News news = null;
+
+	    // SQLクエリ：指定されたnews_idを持つレコードを検索
+	    String sql = "SELECT news_id, news_title, news_text, delivery_date, edit_date, role "
+	               + "FROM notices WHERE news_id = ?";
+
+	    try (Connection con = getConnection();
+	         PreparedStatement st = con.prepareStatement(sql)) {
+
+	        // プレースホルダにnewsIdをセット
+	        st.setString(1, newsId);
+
+	        try (ResultSet rs = st.executeQuery()) {
+	            if (rs.next()) {
+	                news = new News();
+	                // データをBeanにセット (all()メソッドと同じマッピング)
+	                news.setNewsId(rs.getString("news_id"));
+	                news.setNewsTitle(rs.getString("news_title"));
+	                news.setNewsText(rs.getString("news_text"));
+	                news.setDeliveryDate(rs.getTimestamp("delivery_date"));
+	                news.setEditDate(rs.getTimestamp("edit_date"));
+	                news.setRole(rs.getString("role"));
+	            }
+	        } // rsが自動的にクローズされる
+
+	    } // con, stが自動的にクローズされる
+
+	    return news;
 	}
 
 }

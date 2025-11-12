@@ -38,7 +38,7 @@ public class NewsAction extends Action{
 		session.setAttribute("admin", isAdmin);
 
 		// 5. 遷移先URLの返却
-		RequestDispatcher dispatcher = req.getRequestDispatcher("news_list.jsp");
+		RequestDispatcher dispatcher = req.getRequestDispatcher("main/news_list.jsp");
 		dispatcher.forward(req, res);
 	}
 }
