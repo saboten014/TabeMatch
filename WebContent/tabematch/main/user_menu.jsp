@@ -67,7 +67,7 @@
   <div class="header">
     <div class="logo">たべまっち</div>
     <div class="nav-links">
-      <a href="">お知らせ</a>
+      <a href="<%= contextPath %>/tabematch/News.action">お知らせ</a>
       <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
       <a href="">お気に入り</a>
       <a href="">プロフィール</a>
