@@ -63,7 +63,7 @@
   <div class="header">
     <div class="logo">たべまっち</div>
     <div class="nav-links">
-      <a href="">お知らせ</a>
+      <a href="News.action">お知らせ</a>
       <a href="">予約管理</a>
       <a href="">店舗プロフィール</a>
       <a href="Logout.action">ログアウト</a>
