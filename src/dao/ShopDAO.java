@@ -344,6 +344,45 @@ public class ShopDAO extends DAO {
 		return shop;
 	}
 
+	public Shop getShopByMail(String mail) throws Exception {
+	    Connection con = getConnection();
+	    String sql = "SELECT * FROM shop WHERE shop_mail = ?";
+	    PreparedStatement stmt = con.prepareStatement(sql);
+	    stmt.setString(1, mail);
+	    ResultSet rs = stmt.executeQuery();
+
+	    Shop shop = null;
+	    if (rs.next()) {
+	        shop = new Shop();
+	        shop.setShopId(rs.getString("shop_id"));
+	        shop.setShopName(rs.getString("shop_name"));
+	        shop.setShopAddress(rs.getString("shop_address"));
+	        shop.setShopTel(rs.getString("shop_tel"));
+	        shop.setShopUrl(rs.getString("shop_url"));
+	        shop.setShopAllergy(rs.getString("shop_allergy"));
+	    }
+
+	    rs.close(); stmt.close(); con.close();
+	    return shop;
+	}
+
+	public boolean updateShop(Shop shop) throws Exception {
+	    Connection con = getConnection();
+	    String sql = "UPDATE shop SET shop_name=?, shop_address=?, shop_tel=?, shop_url=?, shop_allergy=? WHERE shop_id=?";
+	    PreparedStatement stmt = con.prepareStatement(sql);
+	    stmt.setString(1, shop.getShopName());
+	    stmt.setString(2, shop.getShopAddress());
+	    stmt.setString(3, shop.getShopTel());
+	    stmt.setString(4, shop.getShopUrl());
+	    stmt.setString(5, shop.getShopAllergy());
+	    stmt.setString(6, shop.getShopId());
+
+	    int result = stmt.executeUpdate();
+	    stmt.close(); con.close();
+	    return result > 0;
+	}
+
+
 	// ResultSetからShopオブジェクトへのマッピング
 	private Shop mapResultSetToShop(ResultSet rs) throws Exception {
 		Shop shop = new Shop();

@@ -15,9 +15,10 @@ public class RequestDAO extends DAO {
 		Connection con = getConnection();
 
 		// INSERT文にrequest_mailカラムが含まれていることを確認
-		String sql = "INSERT INTO requests (news_id, news_title, news_text, delivery_date, " +
-				"edit_date, role) " +
-				"VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO requests (request_id, address, restaurant_name, " +
+		        "allergy_support, reservation, business_hours, payment, genre, " +
+		        "photo, price_range, seat, link, phone_number, certification, request_mail) " +
+		        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, request.getRequestId());
