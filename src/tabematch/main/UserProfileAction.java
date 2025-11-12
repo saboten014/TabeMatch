@@ -1,10 +1,14 @@
 package tabematch.main;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bean.Allergen;
 import bean.Users;
+import dao.AllergenDAO;
 import dao.UserDAO;
 import tool.Action;
 
@@ -33,10 +37,12 @@ public class UserProfileAction extends Action {
         String mode = req.getParameter("mode");
 
         if (mode == null) {
-            // 初回表示
             req.setAttribute("user", loginUser);
+            AllergenDAO allergenDao = new AllergenDAO();
+            List<Allergen> allergenList = allergenDao.getAllAllergens();
+            req.setAttribute("allergenList", allergenList);
             req.getRequestDispatcher("user-profile.jsp").forward(req, res);
-        } else if (mode.equals("update")) {
+        	} else if (mode.equals("update")) {
             // 入力値取得
             String userName = req.getParameter("userName");
             String password = req.getParameter("password");

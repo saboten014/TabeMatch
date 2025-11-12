@@ -10,7 +10,7 @@
   <div class="alert alert-success">
     <h4>情報を更新しました！</h4>
   </div>
-  <a href="Main.action" class="btn btn-primary">メインに戻る</a>
+  <a href="Search.action" class="btn btn-primary">メインに戻る</a>
 </div>
 </body>
 </html>

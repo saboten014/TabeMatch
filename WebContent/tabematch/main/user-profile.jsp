@@ -17,6 +17,8 @@
 <%
     bean.Users user = (bean.Users) request.getAttribute("user");
     String[] allergenValues = user.getAllergenId() != null ? user.getAllergenId().split(",") : new String[]{};
+
+    java.util.List<bean.Allergen> allergenList = (java.util.List<bean.Allergen>) request.getAttribute("allergenList");
 %>
 
 <form action="UserProfile.action?mode=update" method="post" class="card p-4 shadow-sm">
@@ -40,19 +42,24 @@
     <input type="password" class="form-control" name="confirmPassword" required>
   </div>
 
+  <!-- ✅ アレルゲン情報をDBから動的にチェックボックス表示 -->
   <div class="mb-3">
     <label class="form-label">アレルギー</label><br>
     <%
-      String[] allergenOptions = {"A01: 卵", "A02: 乳", "A03: 小麦", "A04: えび", "A05: かに", "A06: そば"};
-      for (String opt : allergenOptions) {
-        String code = opt.split(":")[0];
-        String label = opt.split(":")[1];
-        boolean checked = java.util.Arrays.asList(allergenValues).contains(code);
+      if (allergenList != null && !allergenList.isEmpty()) {
+          for (bean.Allergen allergen : allergenList) {
+              boolean checked = java.util.Arrays.asList(allergenValues).contains(allergen.getAllergenId());
     %>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" name="allergen" value="<%= code %>" <%= checked ? "checked" : "" %>>
-          <label class="form-check-label"><%= label %></label>
-        </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="allergen"
+                   value="<%= allergen.getAllergenId() %>" <%= checked ? "checked" : "" %>>
+            <label class="form-check-label"><%= allergen.getAllergenName() %></label>
+          </div>
+    <%
+          }
+      } else {
+    %>
+      <p>アレルゲン情報を取得できませんでした。</p>
     <% } %>
   </div>
 

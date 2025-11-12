@@ -59,7 +59,7 @@
 
             <div class="text-center mt-3">
                 <a href="UserProfile.action" class="btn btn-primary">プロフィールを編集</a>
-                <a href="Main.action" class="btn btn-secondary ms-2">戻る</a>
+                <a href="Search.action" class="btn btn-secondary ms-2">戻る</a>
             </div>
         </div>
     </div>
