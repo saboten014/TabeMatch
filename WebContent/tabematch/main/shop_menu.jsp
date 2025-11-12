@@ -65,7 +65,7 @@
     <div class="nav-links">
       <a href="News.action">お知らせ</a>
       <a href="">予約管理</a>
-      <a href="">店舗プロフィール</a>
+      <a href="ShopProfile.action">店舗プロフィール</a>
       <a href="Logout.action">ログアウト</a>
     </div>
   </div>
