@@ -82,7 +82,7 @@
     cursor: pointer;
   }
   input[type="submit"]:hover {
-    background-color: #00bfff;
+    background-color: #ffcccc;
   }
   a {
     display: block;
@@ -99,8 +99,6 @@
   .link-button {
     display: inline-block;
     padding: 12px 24px;
-    background-color: #ffffff;
-    border: 2px solid #b2d8b0;
     border-radius: 8px;
     color: #333;
     text-decoration: none;
@@ -115,14 +113,26 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   /* 新規ユーザー登録ボタン（赤） */
+  .register-button {
+    background-color: #ffcccc !important;
+    border: 2px solid #ff9999 !important;
+    color: #333 !important;
+    box-sizing: border-box;
+  }
   .register-button:hover {
-    background-color: #ffcccc;
-    border-color: #ff9999;
+    background-color: #ff9999 !important;
+    border-color: #ff6666 !important;
   }
   /* 店舗掲載リクエストボタン（黄色） */
+  .shop-button {
+    background-color: #fff9cc !important;
+    border: 2px solid #ffeb99 !important;
+    color: #333 !important;
+    box-sizing: border-box;
+  }
   .shop-button:hover {
-    background-color: #fff9cc;
-    border-color: #ffeb99;
+    background-color: #ffeb99 !important;
+    border-color: #ffd966 !important;
   }
   /* ===== メッセージ部分中央寄せ ===== */
   .message {
@@ -163,15 +173,26 @@
         </tr>
         <tr>
             <td colspan="2" align="center">
-                <input type="submit" value="ログイン">
+                <input type="submit" value="ログイン" class="login-button" id="loginSubmitBtn"
+                       onmouseover="this.style.setProperty('background-color', '#99ccff', 'important'); this.style.setProperty('border-color', '#3399ff', 'important');"
+                       onmouseout="this.style.setProperty('background-color', '#cce5ff', 'important'); this.style.setProperty('border-color', '#4da6ff', 'important');">
             </td>
         </tr>
     </table>
 </form>
 </div>
-<div style="text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
-    <a href="Register.action" class="link-button register-button">新規ユーザー登録はこちら</a>
-    <a href="ShopRequest.action" class="link-button shop-button">店舗掲載リクエストはこちら</a>
+<div style="text-align: center; margin-top: 50px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+    <!-- 新規登録セクション -->
+    <div style="border: 3px solid #ff9999; border-radius: 12px; padding: 30px 40px; background-color: #fff5f5; min-width: 320px; box-sizing: border-box;">
+        <p style="font-size: 18px; color: #333; margin-bottom: 20px; font-weight: 500;">初めてご利用の方はこちら</p>
+        <a href="Register.action" class="link-button register-button" style="display: block; white-space: nowrap;">新規ユーザー登録</a>
+    </div>
+
+    <!-- 店舗掲載リクエストセクション -->
+    <div style="border: 3px solid #ffeb99; border-radius: 12px; padding: 30px 40px; background-color: #fffef5; min-width: 320px; box-sizing: border-box;">
+        <p style="font-size: 18px; color: #333; margin-bottom: 20px; font-weight: 500;">店舗様向けサービスはこちら</p>
+        <a href="ShopRequest.action" class="link-button shop-button" style="display: block; white-space: nowrap;">店舗掲載リクエスト</a>
+    </div>
 </div>
 <script>
 function togglePassword(inputId, button) {
@@ -184,5 +205,15 @@ function togglePassword(inputId, button) {
         button.textContent = "👁️ 表示";
     }
 }
+
+// ログインボタンのスタイルを強制適用
+window.addEventListener('DOMContentLoaded', function() {
+    var loginBtn = document.querySelector('input[type="submit"].login-button');
+    if (loginBtn) {
+        loginBtn.style.backgroundColor = '#cce5ff';
+        loginBtn.style.border = '2px solid #4da6ff';
+        loginBtn.style.color = '#333';
+    }
+});
 </script>
 <%@include file="../footer.html" %>
