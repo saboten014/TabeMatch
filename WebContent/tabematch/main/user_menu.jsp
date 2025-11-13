@@ -1,8 +1,9 @@
-<%@page pageEncoding="UTF-8" %>
+<%@ page pageEncoding="UTF-8" import="bean.Users" %>
 <%
-  // コンテキストパスを取得
   String contextPath = request.getContextPath();
+  Users loginUser = (Users) session.getAttribute("user");
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,16 +68,27 @@
   <div class="header">
     <div class="logo">たべまっち</div>
     <div class="nav-links">
-      <a href="<%= contextPath %>/tabematch/News.action">お知らせ</a>
-      <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
-      <a href="">お気に入り</a>
-      <a href="<%= contextPath %>/tabematch/main/UserProfileView.action">プロフィール</a>
-      <a href="">予約管理</a>
-      <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
+      <%
+        if (loginUser != null) {
+      %>
+        <a href="<%= contextPath %>">お知らせ</a>
+        <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
+        <a href="<%= contextPath %>">お気に入り</a>
+        <a href="<%= contextPath %>">プロフィール</a>
+        <a href="<%= contextPath %>">予約管理</a>
+        <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
+      <%
+        } else {
+      %>
+        <a href="<%= contextPath %>">お知らせ</a>
+        <a href="<%= contextPath %>/tabematch/main/search.jsp">検索</a>
+        <a href="<%= contextPath %>/tabematch/login.jsp">ログイン</a>
+      <%
+        }
+      %>
     </div>
   </div>
 
   <hr>
-
 </body>
 </html>

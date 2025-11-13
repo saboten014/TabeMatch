@@ -4,7 +4,7 @@
 <%@page import="bean.Users" %>
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../../header.html" %>
-<%@include file="search_menu.jsp" %>
+<%@include file="user_menu.jsp" %>
 
 <h1>店舗検索</h1>
 
