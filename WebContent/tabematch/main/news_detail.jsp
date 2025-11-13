@@ -19,11 +19,19 @@
 <div class="container" style="text-align: center; margin-top: 50px;">
     <h2>エラー</h2>
     <p><%= errorMessage != null ? errorMessage : "指定されたお知らせは見つかりませんでした。" %></p>
-    <p><a href="NewsAction.action">お知らせ一覧へ戻る</a></p>
+    <%-- 修正1: NewsActionへのリンクにコンテキストパスを追加 --%>
+    <p><a href="${pageContext.request.contextPath}/tabematch/NewsAction.action">お知らせ一覧へ戻る</a></p>
 </div>
 <%
         // フッターに進む前に処理を終了
         return;
+    }
+
+    // NullPointerException対策のため、ここで日付フォーマッタを定義し、日付がnullでないか確認
+    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm");
+    String formattedDate = "";
+    if (news.getDeliveryDate() != null) {
+        formattedDate = sdf.format(news.getDeliveryDate());
     }
 %>
 
@@ -41,7 +49,7 @@
 }
 
 .detail-header {
-    border-bottom: 3px solid #007bff;
+    border-bottom: 3px solid #4CAF50; /* 色を統一 */
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
@@ -76,7 +84,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     text-decoration: none;
-    color: #007bff;
+    color: #4CAF50; /* 色を統一 */
     transition: background-color 0.2s;
 }
 
@@ -89,7 +97,8 @@
     <div class="detail-header">
         <h1 class="detail-title"><%= news.getNewsTitle() %></h1>
         <div class="detail-meta">
-            <span>投稿日時: <%= new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm").format(news.getDeliveryDate()) %></span>
+            <%-- 修正2: 定義したformattedDate変数を使用 --%>
+            <span>投稿日時: <%= formattedDate %></span>
         </div>
     </div>
 
@@ -97,7 +106,8 @@
         <%= news.getNewsText() %>
     </div>
 
-    <a href="News.action" class="back-link">← お知らせ一覧へ戻る</a>
+    <%-- 修正1: NewsActionへのリンクにコンテキストパスを追加 --%>
+    <a href="${pageContext.request.contextPath}/tabematch/News.action" class="back-link">← お知らせ一覧へ戻る</a>
 </div>
 
 <%@include file="../../footer.html" %>

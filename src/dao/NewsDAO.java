@@ -14,28 +14,27 @@ public class NewsDAO extends DAO{
 //詳細までフルで表示する（ALL）メソッド
 //IDで取得するやつか？？
 
-	//DB登録（書き込み用）メソッド
-	public boolean insertNews(News news) throws Exception {
-		Connection con = getConnection();
+	// お知らせを登録するメソッド
+	public boolean insert(News news) throws Exception {
+	    int result = 0;
 
-		//INSERT文
-		String sql = "INSERT INTO NOTICES (news_id, news_title, news_text, delivery_date, " +
-				"edit_date, role) VALUES (?, ?, ?, ?, ?, ?)";
 
-		PreparedStatement ps = con.prepareStatement(sql);
-		ps.setString(1, news.getNewsId());
-		ps.setString(2, news.getNewsTitle());
-		ps.setString(3, news.getNewsText());
-		ps.setTimestamp(4, news.getDeliveryDate());
-		ps.setTimestamp(5, news.getEditDate());
-		ps.setString(6, news.getRole());
+	    String sql = "INSERT INTO notices (news_title, news_text, delivery_date) VALUES (?, ?, CURRENT_TIMESTAMP)";
 
-		int result = ps.executeUpdate();
+	    try (Connection con = getConnection();
+	         PreparedStatement st = con.prepareStatement(sql)) {
 
-		ps.close();
-		con.close();
+	        // プレースホルダに値をセット
+	        st.setString(1, news.getNewsTitle());
+	        st.setString(2, news.getNewsText());
 
-		return result > 0;
+	        // 実行
+	        result = st.executeUpdate();
+
+	    } // con, stが自動的にクローズされる
+
+	    // 登録された行数が1であれば成功
+	    return result == 1;
 	}
 
 	// お知らせ取得用メソッド
@@ -54,7 +53,7 @@ public class NewsDAO extends DAO{
 	        while (rs.next()) {
 	            News n = new News();
 	            // データをBeanにセット (列名は画像と一致しており、これで正しいです)
-	            n.setNewsId(rs.getString("news_id"));
+	            n.setNewsId(rs.getInt("news_id"));
 	            n.setNewsTitle(rs.getString("news_title"));
 	            n.setNewsText(rs.getString("news_text"));
 	            n.setDeliveryDate(rs.getTimestamp("delivery_date"));
@@ -70,58 +69,53 @@ public class NewsDAO extends DAO{
 	}
 
 	// お知らせをIDで取得するメソッド
-	public News findById(String newsId) throws Exception {
+	public News findById(int newsId) throws Exception {
 	    News news = null;
-
-	    // SQLクエリ：指定されたnews_idを持つレコードを検索
-	    String sql = "SELECT news_id, news_title, news_text, delivery_date, edit_date, role "
-	               + "FROM notices WHERE news_id = ?";
+	    String sql = "SELECT news_id, news_title, news_text, delivery_date FROM notices WHERE news_id = ?";
 
 	    try (Connection con = getConnection();
 	         PreparedStatement st = con.prepareStatement(sql)) {
 
-	        // プレースホルダにnewsIdをセット
-	        st.setString(1, newsId);
+	        // プレースホルダにint型のIDをセット
+	        st.setInt(1, newsId);
 
 	        try (ResultSet rs = st.executeQuery()) {
 	            if (rs.next()) {
 	                news = new News();
-	                // データをBeanにセット (all()メソッドと同じマッピング)
-	                news.setNewsId(rs.getString("news_id"));
+	                // DBの型に合わせて int 型で取得
+	                news.setNewsId(rs.getInt("news_id"));
 	                news.setNewsTitle(rs.getString("news_title"));
 	                news.setNewsText(rs.getString("news_text"));
+	                // Timestamp 型で取得
 	                news.setDeliveryDate(rs.getTimestamp("delivery_date"));
-	                news.setEditDate(rs.getTimestamp("edit_date"));
-	                news.setRole(rs.getString("role"));
 	            }
-	        } // rsが自動的にクローズされる
-
-	    } // con, stが自動的にクローズされる
-
+	        }
+	    }
 	    return news;
 	}
 
 
-	// お知らせをIDで削除するメソッド
-	public boolean delete(String newsId) throws Exception {
+	// お知らせを削除するメソッド
+	// int型のIDを受け取るように変更
+	public boolean delete(int newsId) throws Exception {
 	    int result = 0;
 
-	    // SQLクエリ：指定されたnews_idを持つレコードを削除
+	    // SQLクエリ：指定されたIDの行を削除
 	    String sql = "DELETE FROM notices WHERE news_id = ?";
 
 	    try (Connection con = getConnection();
 	         PreparedStatement st = con.prepareStatement(sql)) {
 
-	        // プレースホルダにnewsIdをセット
-	        st.setString(1, newsId);
+	        // プレースホルダにint型のIDをセット
+	        st.setInt(1, newsId);
 
-	        // 削除実行
+	        // 実行
 	        result = st.executeUpdate();
 
-	    } // con, stが自動的にクローズされる
+	    }
 
-	    // 削除された行数が1以上であれば成功
-	    return result > 0;
+	    // 削除された行数が1であれば成功
+	    return result == 1;
 	}
 
 }

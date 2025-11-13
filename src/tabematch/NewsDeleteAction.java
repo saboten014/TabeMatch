@@ -13,42 +13,49 @@ public class NewsDeleteAction extends Action {
     public void execute(HttpServletRequest req, HttpServletResponse res)
             throws Exception {
 
-        // 1. セッションから管理者権限を確認 (セキュリティチェック)
         HttpSession session = req.getSession();
         Boolean isAdmin = (Boolean)session.getAttribute("admin");
 
-        // 管理者でない場合はアクセスを拒否し、エラーまたはトップへリダイレクト
+        // 1. セキュリティチェック
         if (isAdmin == null || !isAdmin) {
-            res.sendRedirect(req.getContextPath() + "/Error.action"); // 適切なエラーアクションにリダイレクト
+            res.sendRedirect(req.getContextPath() + "/Error.action");
             return;
         }
 
-        // 2. リクエストパラメータ（newsId）の取得
-        // news_list.jspのフォームで設定された name="newsId" を使用
-        String newsId = req.getParameter("newsId");
+        // 2. リクエストパラメータ（newsId）の取得と型変換
+        String newsIdStr = req.getParameter("newsId"); // Stringとして取得
+        int newsId = 0; // 削除対象のIDを保持
 
-        // IDがない場合は一覧へ戻す
-        if (newsId == null || newsId.isEmpty()) {
-            res.sendRedirect(req.getContextPath() + "/NewsAction.action");
+        // IDがないか、数値として不正な場合は一覧へ戻す
+        if (newsIdStr == null || newsIdStr.isEmpty()) {
+            res.sendRedirect(req.getContextPath() + "/tabematch/NewsAction.action");
             return;
         }
+
+        try {
+            // ★Stringからintへの変換
+            newsId = Integer.parseInt(newsIdStr);
+        } catch (NumberFormatException e) {
+            // 数値に変換できなかった場合もエラーとして一覧へ戻す
+            session.setAttribute("message", "不正なIDが指定されました。");
+            res.sendRedirect(req.getContextPath() + "/tabematch/NewsAction.action");
+            return;
+        }
+
 
         // 3. DAOを使ってデータを削除
         NewsDAO newsDao = new NewsDAO();
-
-        // 削除結果を保持するフラグ
+        // ★DAOのdeleteメソッドにはint型のIDを渡す
         boolean success = newsDao.delete(newsId);
 
         // 4. 処理結果に基づいてリダイレクト
         if (success) {
-            // 成功メッセージをセッションに一時的に保持してからリダイレクトすることも可能
             session.setAttribute("message", "お知らせの削除が完了しました。");
         } else {
-            session.setAttribute("message", "お知らせの削除に失敗しました。");
+            session.setAttribute("message", "お知らせの削除に失敗しました。（ID: " + newsId + "）");
         }
 
-        // 削除処理後、一覧画面にリダイレクト
-        // リダイレクトすることで、削除後の再読み込みで再び削除処理が走るのを防ぎます
+        // リダイレクト先を /tabematch/NewsAction.action に修正
         res.sendRedirect(req.getContextPath() + "/tabematch/News.action");
     }
 }

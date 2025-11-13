@@ -2,7 +2,7 @@ package bean;
 import java.sql.Timestamp;
 
 public class News {
-	private String newsId;
+	private int newsId;
 	private String newsTitle;
 	private String newsText;
 	private Timestamp deliveryDate;
@@ -10,13 +10,12 @@ public class News {
 	private String role;
 
 
-	public String getNewsId() {
+	public int getNewsId() {
 		return newsId;
 	}
-	public void setNewsId(String newsId) {
+	public void setNewsId(int newsId) {
 		this.newsId = newsId;
 	}
-
 
 	public String getNewsTitle() {
 		return newsTitle;

@@ -130,8 +130,8 @@
     <% } else { %>
         <% for (News news : list) { %>
 
-            <%-- ▼ 詳細画面へのリンクを修正: /tabematch/ を追加 ▼ --%>
-            <a href="${pageContext.request.contextPath}/tabematch/NewsDetail.action?news_id=<%= news.getNewsId() %>" class="news-link">
+            <%-- ▼ 詳細画面へのリンクを修正: news.getNewsId()をStringに変換 ▼ --%>
+            <a href="${pageContext.request.contextPath}/tabematch/NewsDetail.action?news_id=<%= String.valueOf(news.getNewsId()) %>" class="news-link">
                 <div class="news-item">
                     <div class="news-content">
                         <div class="news-header">
@@ -147,9 +147,9 @@
                     <%-- 管理者機能の表示 --%>
                     <% if (isAdmin) { %>
                         <div class="admin-actions">
-                            <%-- 削除ボタンのフォームアクションを修正: /tabematch/ を追加 --%>
+                            <%-- 削除ボタンのフォームアクションを修正: news.getNewsId()をStringに変換 --%>
                             <form action="${pageContext.request.contextPath}/tabematch/NewsDelete.action" method="post" onsubmit="return confirm('このお知らせを削除してもよろしいですか？')">
-                                <input type="hidden" name="newsId" value="<%= news.getNewsId() %>">
+                                <input type="hidden" name="newsId" value="<%= String.valueOf(news.getNewsId()) %>">
                                 <button type="submit" class="delete-button" onclick="event.stopPropagation()">削除</button>
                                 <%-- onclick="event.stopPropagation()" でリンク遷移を防止 --%>
                             </form>
@@ -166,7 +166,7 @@
 <%-- 管理者用の固定ボタン --%>
 <% if (isAdmin) { %>
     <div class="fixed-buttons-container">
-        <%-- 新規投稿ボタンのリンクを修正: /tabematch/ を追加 --%>
+        <%-- 新規投稿ボタンのリンクを修正: ${pageContext.request.contextPath} に戻す --%>
         <a href="${pageContext.request.contextPath}/tabematch/NewsPostForm.action" class="admin-button post-button">お知らせを投稿する</a>
     </div>
 <% } %>
