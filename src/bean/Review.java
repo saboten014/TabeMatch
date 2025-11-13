@@ -10,32 +10,47 @@ public class Review {
     private String comment;
     private LocalDate date;
 
-    public Review() {}
+	public int getReviewId() {
+		return reviewId;
+	}
+	public void setReviewId(int reviewId) {
+		this.reviewId = reviewId;
+	}
 
-    public Review(int reviewId, int userId, int restaurantId, int rating, String comment, LocalDate date) {
-        this.reviewId = reviewId;
-        this.userId = userId;
-        this.restaurantId = restaurantId;
-        this.rating = rating;
-        this.comment = comment;
-        this.date = date;
-    }
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 
-    public int getReviewId() { return reviewId; }
-    public void setReviewId(int reviewId) { this.reviewId = reviewId; }
+	public int getRestaurantId() {
+		return restaurantId;
+	}
+	public void setRestaurantId(int restaurantId) {
+		this.restaurantId = restaurantId;
+	}
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+	public int getRating() {
+		return rating;
+	}
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
 
-    public int getRestaurantId() { return restaurantId; }
-    public void setRestaurantId(int restaurantId) { this.restaurantId = restaurantId; }
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
+	public LocalDate getDate() {
+		return date;
+	}
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
 
-    public String getComment() { return comment; }
-    public void setComment(String comment) { this.comment = comment; }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
 }
