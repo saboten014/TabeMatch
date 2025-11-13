@@ -8,33 +8,22 @@ import tool.Action;
 
 public class LogoutAction extends Action {
 
-	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res)
-			throws Exception {
-		//ローカル変数の宣言 1
-		String url = "";
-		HttpSession session=req.getSession();
+    @Override
+    public void execute(HttpServletRequest req, HttpServletResponse res)
+            throws Exception {
+        // ローカル変数
+        String url = "";
 
-		//リクエストパラメータ―の取得 2
-		//なし
+        // セッション取得
+        HttpSession session = req.getSession(false); // すでにある場合のみ取得
 
-		//DBからデータ取得 3
-		//なし
+        // セッション破棄
+        if (session != null && session.getAttribute("user") != null) {
+            session.invalidate();
+        }
 
-		//ビジネスロジック 4
-		if (session.getAttribute("users") != null) {
-			session.invalidate();
-		}
-
-		//DBへデータ保存 5
-		//なし
-
-		//レスポンス値をセット 6
-		//なし
-
-		//JSPへフォワード 7
-		url = "logout.jsp";
-		req.getRequestDispatcher(url).forward(req, res);
-	}
-
+        // ログアウト完了画面へ
+        url = "logout.jsp";
+        req.getRequestDispatcher(url).forward(req, res);
+    }
 }

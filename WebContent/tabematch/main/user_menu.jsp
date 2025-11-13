@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" import="bean.Users" %>
+<%@ page session="true" pageEncoding="UTF-8" import="bean.Users" %>
 <%
   String contextPath = request.getContextPath();
   Users loginUser = (Users) session.getAttribute("user");
@@ -23,7 +23,7 @@
 
   /* ヘッダー全体 */
   .header {
-    background-color: #d2f0d0; /* 少し濃い緑 */
+    background-color: #d2f0d0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -37,9 +37,9 @@
     color: white;
     text-shadow:
       -2px -2px 0 #ff9966,
-      2px -2px 0 #ff9966,
-      -2px 2px 0 #ff9966,
-      2px 2px 0 #ff9966; /* オレンジ縁取り */
+       2px -2px 0 #ff9966,
+      -2px  2px 0 #ff9966,
+       2px  2px 0 #ff9966;
   }
 
   /* 右側ナビゲーション */
@@ -70,6 +70,7 @@
     <div class="nav-links">
       <%
         if (loginUser != null) {
+          // ログイン済み
       %>
         <a href="<%= contextPath %>">お知らせ</a>
         <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
@@ -79,6 +80,7 @@
         <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
       <%
         } else {
+          // 非ログイン時
       %>
         <a href="<%= contextPath %>">お知らせ</a>
         <a href="<%= contextPath %>/tabematch/main/search.jsp">検索</a>
@@ -90,5 +92,6 @@
   </div>
 
   <hr>
+
 </body>
 </html>
