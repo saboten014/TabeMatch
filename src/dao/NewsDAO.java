@@ -69,8 +69,6 @@ public class NewsDAO extends DAO{
 	    return list;
 	}
 
-	// NewsDAO.java に以下のメソッドを追加してください
-
 	// お知らせをIDで取得するメソッド
 	public News findById(String newsId) throws Exception {
 	    News news = null;
@@ -101,6 +99,29 @@ public class NewsDAO extends DAO{
 	    } // con, stが自動的にクローズされる
 
 	    return news;
+	}
+
+
+	// お知らせをIDで削除するメソッド
+	public boolean delete(String newsId) throws Exception {
+	    int result = 0;
+
+	    // SQLクエリ：指定されたnews_idを持つレコードを削除
+	    String sql = "DELETE FROM notices WHERE news_id = ?";
+
+	    try (Connection con = getConnection();
+	         PreparedStatement st = con.prepareStatement(sql)) {
+
+	        // プレースホルダにnewsIdをセット
+	        st.setString(1, newsId);
+
+	        // 削除実行
+	        result = st.executeUpdate();
+
+	    } // con, stが自動的にクローズされる
+
+	    // 削除された行数が1以上であれば成功
+	    return result > 0;
 	}
 
 }
