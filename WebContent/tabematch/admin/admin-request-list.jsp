@@ -22,7 +22,7 @@
     }
 %>
 
-<p><a href="../main/top.jsp">← 管理者トップに戻る</a></p>
+<p><a href="../main/admin_home.jsp">← 管理者トップに戻る</a></p>
 
 <%
     List<Request> pendingRequests = (List<Request>)request.getAttribute("pendingRequests");
