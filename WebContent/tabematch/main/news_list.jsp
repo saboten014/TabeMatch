@@ -29,18 +29,21 @@
     display: block;       /* ブロック要素にして全体をクリック可能に */
 }
 .news-item {
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid #e0e0e0; /* 薄いグレーのボーダー */
+    border-radius: 15px;      /* 角を丸くする */
     padding: 15px;
     margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    background-color: #f9f9f9;
-    transition: background-color 0.2s; /* ホバーエフェクト用 */
+    background-color: #ffffff; /* 白を基調 */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* 柔らかい影 */
+    transition: all 0.2s ease-in-out; /* ホバーエフェクト用 */
 }
 .news-item:hover {
-    background-color: #e0e0e0; /* ホバーで色を変えてクリック可能であることを示す */
+    background-color: #f8f8f8; /* ホバーでごく薄いグレーに */
+    transform: translateY(-3px); /* 少し上に浮き上がるアニメーション */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
     cursor: pointer;
 }
 .news-content {
@@ -52,16 +55,16 @@
     margin-bottom: 5px;
 }
 .news-title {
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: bold;
-    color: #333;
+    color: #4CAF50; /* パステルグリーン */
 }
 .news-date {
-    font-size: 0.8em;
-    color: #666;
+    font-size: 0.85em;
+    color: #888;
 }
 .news-text-preview {
-    font-size: 0.9em;
+    font-size: 0.95em;
     color: #555;
     margin-top: 5px;
     overflow: hidden;
@@ -70,10 +73,13 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
-/* 管理者アクションと固定ボタンのスタイルは変更なし */
+/* 管理者アクションのスタイル */
 .admin-actions {
     margin-left: 20px;
     padding-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .fixed-buttons-container {
     position: fixed;
@@ -81,23 +87,39 @@
     right: 20px;
     z-index: 1000;
 }
+/* ★★ 削除ボタンと投稿ボタンのスタイル ★★ */
 .admin-button {
     display: block;
     margin-bottom: 10px;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px; /* 丸っこい形 */
     cursor: pointer;
     font-weight: bold;
+    font-size: 1.05em;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1); /* 柔らかい影 */
+    transition: all 0.3s ease;
+}
+.admin-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 8px rgba(0,0,0,0.15);
 }
 .post-button {
-    background-color: #007bff;
-    color: white;
+    background-color: #81C784; /* パステルグリーン */
+    color: #FFFFFF;           /* 白文字 */
+    border: 1px solid #66BB6A; /* 少し濃い緑のボーダー */
+}
+.post-button:hover {
+    background-color: #66BB6A; /* ホバーで少し濃い緑に */
 }
 .delete-button {
-    background-color: #dc3545;
-    color: white;
+    background-color: #FFB74D; /* パステルオレンジ */
+    color: #FFFFFF;           /* 白文字 */
+    border: 1px solid #FFA726; /* 少し濃いオレンジのボーダー */
     margin-top: 5px;
+}
+.delete-button:hover {
+    background-color: #FFA726; /* ホバーで少し濃いオレンジに */
 }
 </style>
 
@@ -108,8 +130,8 @@
     <% } else { %>
         <% for (News news : list) { %>
 
-            <%-- ▼ ここを <a> タグで囲み、詳細画面へ遷移させる ▼ --%>
-            <a href="NewsDetail.action?news_id=<%= news.getNewsId() %>" class="news-link">
+            <%-- ▼ <a> タグで囲み、詳細画面へ遷移させる。パスは絶対パスを使用 ▼ --%>
+            <a href="${pageContext.request.contextPath}/NewsDetail.action?news_id=<%= news.getNewsId() %>" class="news-link">
                 <div class="news-item">
                     <div class="news-content">
                         <div class="news-header">
@@ -123,16 +145,13 @@
                     </div>
 
                     <%-- 管理者機能の表示 --%>
-                    <%-- 削除ボタンは <a> の外側に出すか、別要素として実装する方が望ましいですが、
-                         ここではシンプルに <a> の中から除外して、管理者時のみフォームを表示します。 --%>
                     <% if (isAdmin) { %>
                         <div class="admin-actions">
-                            <%-- 削除ボタン (リンクの中にあると動作がおかしくなるため、別処理にします) --%>
-                            <form action="NewsDelete.action" method="post" onsubmit="return confirm('このお知らせを削除してもよろしいですか？')">
+                            <%-- 削除ボタン --%>
+                            <form action="${pageContext.request.contextPath}/NewsDelete.action" method="post" onsubmit="return confirm('このお知らせを削除してもよろしいですか？')">
                                 <input type="hidden" name="newsId" value="<%= news.getNewsId() %>">
                                 <button type="submit" class="delete-button" onclick="event.stopPropagation()">削除</button>
-                                <%-- onclick="event.stopPropagation()" を追加することで、削除ボタンが押されたときに
-                                     親の <a> タグのクリックイベント（詳細画面への遷移）が発生するのを防ぎます。--%>
+                                <%-- onclick="event.stopPropagation()" でリンク遷移を防止 --%>
                             </form>
                         </div>
                     <% } %>
@@ -147,8 +166,8 @@
 <%-- 管理者用の固定ボタン --%>
 <% if (isAdmin) { %>
     <div class="fixed-buttons-container">
-        <%-- 新規投稿ボタン (アクションは仮です) --%>
-        <a href="NewsPostForm.action" class="admin-button post-button">お知らせを投稿する</a>
+        <%-- 新規投稿ボタン --%>
+        <a href="${pageContext.request.contextPath}/NewsPostForm.action" class="admin-button post-button">お知らせを投稿する</a>
     </div>
 <% } %>
 
