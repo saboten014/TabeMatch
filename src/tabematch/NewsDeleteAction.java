@@ -49,6 +49,6 @@ public class NewsDeleteAction extends Action {
 
         // 削除処理後、一覧画面にリダイレクト
         // リダイレクトすることで、削除後の再読み込みで再び削除処理が走るのを防ぎます
-        res.sendRedirect(req.getContextPath() + "/NewsAction.action");
+        res.sendRedirect(req.getContextPath() + "/tabematch/News.action");
     }
 }

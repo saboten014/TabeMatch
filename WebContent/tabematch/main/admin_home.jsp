@@ -143,13 +143,13 @@ function showMenu(type) {
 
 <!-- 店舗系 -->
 <div class="feature-box shop-box">
-  <a href="admin/AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
+  <a href="AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
   <a href="ShopManage.action" class="btn-link feature-btn shop-feature">店舗管理</a>
 </div>
 
 <!-- 管理者系 -->
 <div class="feature-box admin-box">
-  <a href="AddAdmin.action" class="btn-link feature-btn admin-feature">管理者アカウント追加</a>
+  <a href="admin/AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
   <a href="News.action" class="btn-link feature-btn admin-feature">お知らせ配信</a>
 </div>
 
