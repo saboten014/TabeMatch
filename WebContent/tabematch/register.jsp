@@ -3,6 +3,7 @@
 <%@page import="bean.Allergen" %>
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../header.html" %>
+<%@include file="/tabematch/main/user_menu.jsp" %>
 
 <h1>新規ユーザー登録</h1>
 
