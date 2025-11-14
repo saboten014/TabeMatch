@@ -10,15 +10,18 @@ import bean.Shop;
 
 public class ShopDAO extends DAO {
 
-	// 店舗登録
+	// 店舗登録 (try-with-resources 適用)
 	public boolean insertShop(Shop shop) throws Exception {
-		Connection con = getConnection();
 
 		String sql = "INSERT INTO shop (shop_id, password, shop_address, shop_name, shop_allergy, shop_mail, " +
-			    "shop_tel, shop_reserve, shop_genre, shop_picture, shop_price, shop_pay, shop_seat, shop_url) " +
-			    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					 "shop_tel, shop_reserve, shop_genre, shop_picture, shop_price, shop_pay, shop_seat, shop_url) " +
+					 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-			PreparedStatement stmt = con.prepareStatement(sql);
+		int result = 0;
+
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
+
 			stmt.setString(1, shop.getShopId());
 			stmt.setString(2, shop.getPassword());
 			stmt.setString(3, shop.getShopAddress());
@@ -34,74 +37,64 @@ public class ShopDAO extends DAO {
 			stmt.setInt(13, shop.getShopSeat());
 			stmt.setString(14, shop.getShopUrl());
 
-
-		int result = stmt.executeUpdate();
-
-		stmt.close();
-		con.close();
+			result = stmt.executeUpdate();
+		}
 
 		return result > 0;
 	}
 
-	// 全店舗を取得
+	// 全店舗を取得 (try-with-resources 適用)
 	public List<Shop> getAllShops() throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
-
 		String sql = "SELECT * FROM SHOP ORDER BY SHOP_ID";
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		ResultSet rs = stmt.executeQuery();
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()) {
 
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			while (rs.next()) {
+				Shop shop = mapResultSetToShop(rs);
+				shopList.add(shop);
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// すべての条件で検索（アレルギー情報含む）
+	// すべての条件で検索（アレルギー情報含む） (try-with-resources 適用)
 	public List<Shop> searchAll(String searchArea, String shopName, String genre,
 			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? " +
 				"AND SHOP_PRICE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, "%" + searchArea + "%");
-		stmt.setString(2, "%" + shopName + "%");
-		stmt.setString(3, "%" + genre + "%");
-		stmt.setString(4, "%" + priceRange + "%");
-		stmt.setString(5, "%" + businessHours + "%");
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
 
-		ResultSet rs = stmt.executeQuery();
+			stmt.setString(1, "%" + searchArea + "%");
+			stmt.setString(2, "%" + shopName + "%");
+			stmt.setString(3, "%" + genre + "%");
+			stmt.setString(4, "%" + priceRange + "%");
+			stmt.setString(5, "%" + businessHours + "%");
 
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// アレルギー情報なしで検索
+	// アレルギー情報なしで検索 (try-with-resources 適用)
 	public List<Shop> searchWithoutAllergy(String searchArea, String shopName, String genre,
 			String priceRange, String businessHours) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		StringBuilder sql = new StringBuilder("SELECT * FROM SHOP WHERE 1=1");
 
@@ -111,154 +104,143 @@ public class ShopDAO extends DAO {
 		if (!isEmpty(priceRange)) sql.append(" AND SHOP_PRICE LIKE ?");
 		if (!isEmpty(businessHours)) sql.append(" AND SHOP_TIME LIKE ?");
 
-		PreparedStatement stmt = con.prepareStatement(sql.toString());
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql.toString())) {
 
-		int paramIndex = 1;
-		if (!isEmpty(searchArea)) stmt.setString(paramIndex++, "%" + searchArea + "%");
-		if (!isEmpty(shopName)) stmt.setString(paramIndex++, "%" + shopName + "%");
-		if (!isEmpty(genre)) stmt.setString(paramIndex++, "%" + genre + "%");
-		if (!isEmpty(priceRange)) stmt.setString(paramIndex++, "%" + priceRange + "%");
-		if (!isEmpty(businessHours)) stmt.setString(paramIndex++, "%" + businessHours + "%");
+			int paramIndex = 1;
+			if (!isEmpty(searchArea)) stmt.setString(paramIndex++, "%" + searchArea + "%");
+			if (!isEmpty(shopName)) stmt.setString(paramIndex++, "%" + shopName + "%");
+			if (!isEmpty(genre)) stmt.setString(paramIndex++, "%" + genre + "%");
+			if (!isEmpty(priceRange)) stmt.setString(paramIndex++, "%" + priceRange + "%");
+			if (!isEmpty(businessHours)) stmt.setString(paramIndex++, "%" + businessHours + "%");
 
-		ResultSet rs = stmt.executeQuery();
-
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// 検索エリアのみで検索（店名なし）
+	// 検索エリアのみで検索（店名なし） (try-with-resources 適用)
 	public List<Shop> searchByArea(String searchArea, String genre,
 			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, "%" + searchArea + "%");
-		stmt.setString(2, "%" + genre + "%");
-		stmt.setString(3, "%" + priceRange + "%");
-		stmt.setString(4, "%" + businessHours + "%");
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
 
-		ResultSet rs = stmt.executeQuery();
+			stmt.setString(1, "%" + searchArea + "%");
+			stmt.setString(2, "%" + genre + "%");
+			stmt.setString(3, "%" + priceRange + "%");
+			stmt.setString(4, "%" + businessHours + "%");
 
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// 検索エリアと店名で検索（ジャンルなし）
+	// 検索エリアと店名で検索（ジャンルなし） (try-with-resources 適用)
 	public List<Shop> searchByAreaAndName(String searchArea, String shopName,
 			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_NAME LIKE ? AND SHOP_PRICE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, "%" + searchArea + "%");
-		stmt.setString(2, "%" + shopName + "%");
-		stmt.setString(3, "%" + priceRange + "%");
-		stmt.setString(4, "%" + businessHours + "%");
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
 
-		ResultSet rs = stmt.executeQuery();
+			stmt.setString(1, "%" + searchArea + "%");
+			stmt.setString(2, "%" + shopName + "%");
+			stmt.setString(3, "%" + priceRange + "%");
+			stmt.setString(4, "%" + businessHours + "%");
 
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// 検索エリア、店名、ジャンルで検索（価格帯なし）
+	// 検索エリア、店名、ジャンルで検索（価格帯なし） (try-with-resources 適用)
 	public List<Shop> searchByAreaNameGenre(String searchArea, String shopName,
 			String genre, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_TIME::text LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, "%" + searchArea + "%");
-		stmt.setString(2, "%" + shopName + "%");
-		stmt.setString(3, "%" + genre + "%");
-		stmt.setString(4, "%" + businessHours + "%");
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
 
-		ResultSet rs = stmt.executeQuery();
+			stmt.setString(1, "%" + searchArea + "%");
+			stmt.setString(2, "%" + shopName + "%");
+			stmt.setString(3, "%" + genre + "%");
+			stmt.setString(4, "%" + businessHours + "%");
 
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// 検索エリア、店名、ジャンル、価格帯で検索（営業時間なし）
+	// 検索エリア、店名、ジャンル、価格帯で検索（営業時間なし） (try-with-resources 適用)
 	public List<Shop> searchByAreaNameGenrePrice(String searchArea, String shopName,
 			String genre, String priceRange, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		String sql = "SELECT * FROM SHOP WHERE SHOP_ADDRESS LIKE ? " +
 				"AND SHOP_NAME LIKE ? AND SHOP_GENRE LIKE ? AND SHOP_PRICE LIKE ? " +
 				buildAllergyCondition(allergyInfo);
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, "%" + searchArea + "%");
-		stmt.setString(2, "%" + shopName + "%");
-		stmt.setString(3, "%" + genre + "%");
-		stmt.setString(4, "%" + priceRange + "%");
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
 
-		ResultSet rs = stmt.executeQuery();
+			stmt.setString(1, "%" + searchArea + "%");
+			stmt.setString(2, "%" + shopName + "%");
+			stmt.setString(3, "%" + genre + "%");
+			stmt.setString(4, "%" + priceRange + "%");
 
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
 
-	// 柔軟な検索（入力された項目のみで検索、アレルギー情報含む）
+	// 柔軟な検索（入力された項目のみで検索、アレルギー情報含む） (try-with-resources 適用)
 	public List<Shop> searchFlexible(String searchArea, String shopName, String genre,
 			String priceRange, String businessHours, String[] allergyInfo) throws Exception {
 		List<Shop> shopList = new ArrayList<>();
-		Connection con = getConnection();
 
 		StringBuilder sql = new StringBuilder("SELECT * FROM SHOP WHERE 1=1");
 
@@ -269,25 +251,23 @@ public class ShopDAO extends DAO {
 		if (!isEmpty(businessHours)) sql.append(" AND SHOP_TIME::text LIKE ?");
 		sql.append(buildAllergyCondition(allergyInfo));
 
-		PreparedStatement stmt = con.prepareStatement(sql.toString());
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql.toString())) {
 
-		int paramIndex = 1;
-		if (!isEmpty(searchArea)) stmt.setString(paramIndex++, "%" + searchArea + "%");
-		if (!isEmpty(shopName)) stmt.setString(paramIndex++, "%" + shopName + "%");
-		if (!isEmpty(genre)) stmt.setString(paramIndex++, "%" + genre + "%");
-		if (!isEmpty(priceRange)) stmt.setString(paramIndex++, "%" + priceRange + "%");
-		if (!isEmpty(businessHours)) stmt.setString(paramIndex++, "%" + businessHours + "%");
+			int paramIndex = 1;
+			if (!isEmpty(searchArea)) stmt.setString(paramIndex++, "%" + searchArea + "%");
+			if (!isEmpty(shopName)) stmt.setString(paramIndex++, "%" + shopName + "%");
+			if (!isEmpty(genre)) stmt.setString(paramIndex++, "%" + genre + "%");
+			if (!isEmpty(priceRange)) stmt.setString(paramIndex++, "%" + priceRange + "%");
+			if (!isEmpty(businessHours)) stmt.setString(paramIndex++, "%" + businessHours + "%");
 
-		ResultSet rs = stmt.executeQuery();
-
-		while (rs.next()) {
-			Shop shop = mapResultSetToShop(rs);
-			shopList.add(shop);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Shop shop = mapResultSetToShop(rs);
+					shopList.add(shop);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shopList;
 	}
@@ -309,6 +289,7 @@ public class ShopDAO extends DAO {
 			if (i > 0) {
 				condition.append(" OR ");
 			}
+			// WARNING: SQLインジェクションの脆弱性があるため、PreparedStatementで処理することを推奨
 			condition.append("SHOP_ALLERGY LIKE '%").append(allergyInfo[i]).append("%'");
 		}
 		condition.append(")");
@@ -321,65 +302,62 @@ public class ShopDAO extends DAO {
 		return value == null || value.trim().isEmpty();
 	}
 
-	// 店舗IDで店舗情報を取得
+	// 店舗IDで店舗情報を取得 (try-with-resources 適用, 引数をStringに修正)
 	public Shop getShopById(String shopId) throws Exception {
 		Shop shop = null;
-		Connection con = getConnection();
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement("SELECT * FROM SHOP WHERE SHOP_ID = ?")) {
 
-		String sql = "SELECT * FROM SHOP WHERE SHOP_ID = ?";
+			stmt.setString(1, shopId); // ★ String IDに対応
 
-		PreparedStatement stmt = con.prepareStatement(sql);
-		stmt.setString(1, shopId);
-
-		ResultSet rs = stmt.executeQuery();
-
-		if (rs.next()) {
-			shop = mapResultSetToShop(rs);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					shop = mapResultSetToShop(rs);
+				}
+			}
 		}
-
-		rs.close();
-		stmt.close();
-		con.close();
 
 		return shop;
 	}
 
+	// getShopByMail (try-with-resources 適用)
 	public Shop getShopByMail(String mail) throws Exception {
-	    Connection con = getConnection();
-	    String sql = "SELECT * FROM shop WHERE shop_mail = ?";
-	    PreparedStatement stmt = con.prepareStatement(sql);
-	    stmt.setString(1, mail);
-	    ResultSet rs = stmt.executeQuery();
+		Shop shop = null;
+		String sql = "SELECT * FROM shop WHERE shop_mail = ?";
 
-	    Shop shop = null;
-	    if (rs.next()) {
-	        shop = new Shop();
-	        shop.setShopId(rs.getString("shop_id"));
-	        shop.setShopName(rs.getString("shop_name"));
-	        shop.setShopAddress(rs.getString("shop_address"));
-	        shop.setShopTel(rs.getString("shop_tel"));
-	        shop.setShopUrl(rs.getString("shop_url"));
-	        shop.setShopAllergy(rs.getString("shop_allergy"));
-	    }
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
+			stmt.setString(1, mail);
 
-	    rs.close(); stmt.close(); con.close();
-	    return shop;
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					shop = mapResultSetToShop(rs);
+				}
+			}
+		}
+
+		return shop;
 	}
 
+	// updateShop (try-with-resources 適用)
 	public boolean updateShop(Shop shop) throws Exception {
-	    Connection con = getConnection();
-	    String sql = "UPDATE shop SET shop_name=?, shop_address=?, shop_tel=?, shop_url=?, shop_allergy=? WHERE shop_id=?";
-	    PreparedStatement stmt = con.prepareStatement(sql);
-	    stmt.setString(1, shop.getShopName());
-	    stmt.setString(2, shop.getShopAddress());
-	    stmt.setString(3, shop.getShopTel());
-	    stmt.setString(4, shop.getShopUrl());
-	    stmt.setString(5, shop.getShopAllergy());
-	    stmt.setString(6, shop.getShopId());
+		String sql = "UPDATE shop SET shop_name=?, shop_address=?, shop_tel=?, shop_url=?, shop_allergy=? WHERE shop_id=?";
+		int result = 0;
 
-	    int result = stmt.executeUpdate();
-	    stmt.close(); con.close();
-	    return result > 0;
+		try (Connection con = getConnection();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
+
+			stmt.setString(1, shop.getShopName());
+			stmt.setString(2, shop.getShopAddress());
+			stmt.setString(3, shop.getShopTel());
+			stmt.setString(4, shop.getShopUrl());
+			stmt.setString(5, shop.getShopAllergy());
+			stmt.setString(6, shop.getShopId());
+
+			result = stmt.executeUpdate();
+		}
+
+		return result > 0;
 	}
 
 
