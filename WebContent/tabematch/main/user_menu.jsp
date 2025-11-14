@@ -80,7 +80,7 @@
         <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
         <a href="<%= contextPath %>">お気に入り</a>
         <a href="<%= contextPath %>">プロフィール</a>
-        <a href="<%= contextPath %>">予約管理</a>
+        <a href="<%= contextPath %>/tabematch/main/ReservationList.action">予約管理</a>
         <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
       <%
         } else {
