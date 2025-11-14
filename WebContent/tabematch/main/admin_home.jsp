@@ -143,7 +143,7 @@ function showMenu(type) {
 
 <!-- 店舗系 -->
 <div class="feature-box shop-box">
-  <a href="" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
+  <a href="../admin/AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
   <a href="" class="btn-link feature-btn shop-feature">店舗管理</a>
 </div>
 
