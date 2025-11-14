@@ -112,7 +112,6 @@ public class UserDAO extends DAO {
 	    stmt.setString(1, user.getPassword());
 	    stmt.setString(2, user.getUserName());
 
-	    // ✅ 配列型としてセット
 	    if (user.getAllergenId() != null && !user.getAllergenId().isEmpty()) {
 	        String[] allergenArray = user.getAllergenId().split(",");
 	        java.sql.Array sqlArray = con.createArrayOf("varchar", allergenArray);
