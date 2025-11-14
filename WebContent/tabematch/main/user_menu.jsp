@@ -3,16 +3,8 @@
   String contextPath = request.getContextPath();
   Users loginUser = (Users) session.getAttribute("user");
 %>
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>ユーザーメニュー | たべまっち</title>
-
 <!-- 丸文字フォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-
 <style>
   body {
     margin: 0;
@@ -20,17 +12,22 @@
     background-color: #e8f8e8; /* 全体の淡い緑 */
     font-family: "Kosugi Maru", "Meiryo", sans-serif;
   }
-
   /* ヘッダー全体 */
   .header {
-    background-color: #d2f0d0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    border-bottom: 2px solid #b2d8b0;
+    background-color: #d2f0d0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 15px 40px !important;
+    border-bottom: 2px solid #b2d8b0 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    z-index: 100 !important;
   }
-
   /* 左側ロゴ */
   .logo {
     font-size: 36px;
@@ -40,32 +37,39 @@
        2px -2px 0 #ff9966,
       -2px  2px 0 #ff9966,
        2px  2px 0 #ff9966;
+    white-space: nowrap;
   }
-
-  /* 右側ナビゲーション */
+  /* 右側ナビゲーション - 横並び強制 */
+  .nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+  }
   .nav-links a {
-    margin-left: 25px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    font-size: 16px;
+    display: inline-block !important;
+    margin-left: 25px !important;
+    text-decoration: none !important;
+    color: #333 !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    white-space: nowrap !important;
   }
-
   .nav-links a:hover {
-    text-decoration: underline;
+    text-decoration: underline !important;
   }
-
   hr {
     border: none;
     border-top: 1px solid #b2d8b0;
     margin: 0;
   }
+  /* 全ページ共通：h1がヘッダーに隠れないように */
+  h1 {
+    margin-top: 120px !important;
+    padding-top: 20px !important;
+  }
 </style>
-</head>
-
-<body>
-
-  <div class="header">
+<div class="header">
     <div class="logo">たべまっち</div>
     <div class="nav-links">
       <%
@@ -90,8 +94,3 @@
       %>
     </div>
   </div>
-
-  <hr>
-
-</body>
-</html>

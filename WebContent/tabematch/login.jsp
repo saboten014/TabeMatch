@@ -10,24 +10,15 @@
     margin: 0;
     padding: 0;
   }
-  /* ===== メニューバーを横並びに強制 ===== */
-  .header {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-  }
+  /* ===== メニューバー用CSS（user_menu.jspに任せる） ===== */
+  /* ログイン画面専用：メニューを中央に */
   .nav-links {
     display: flex !important;
-    flex-direction: row !important;
     align-items: center !important;
-    flex-wrap: nowrap !important;
   }
   .nav-links a {
-    display: inline-block !important;
-    margin-left: 25px !important;
-    white-space: nowrap !important;
+    line-height: normal !important;
+    vertical-align: middle !important;
   }
   /* ===== フォーム部分 ===== */
   h1 {
@@ -72,17 +63,29 @@
   button:hover {
     background-color: #ccffcc;
   }
-  input[type="submit"] {
-    margin-top: 20px;
-    font-size: 18px;
-    padding: 12px 40px;
-    border: none;
-    border-radius: 8px;
-    background-color: #ffffff;
-    cursor: pointer;
+  /* ===== ログインボタンのスタイル ===== */
+  input[type="submit"],
+  input[type="submit"].login-button,
+  form input[type="submit"],
+  table input[type="submit"] {
+    margin-top: 20px !important;
+    font-size: 18px !important;
+    padding: 12px 40px !important;
+    border: 2px solid #4da6ff !important;
+    border-radius: 8px !important;
+    background-color: #cce5ff !important;
+    color: #333 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
   }
-  input[type="submit"]:hover {
-    background-color: #ffcccc;
+  input[type="submit"]:hover,
+  input[type="submit"].login-button:hover,
+  form input[type="submit"]:hover,
+  table input[type="submit"]:hover {
+    background-color: #99ccff !important;
+    border-color: #3399ff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
   }
   a {
     display: block;
@@ -208,11 +211,11 @@ function togglePassword(inputId, button) {
 
 // ログインボタンのスタイルを強制適用
 window.addEventListener('DOMContentLoaded', function() {
-    var loginBtn = document.querySelector('input[type="submit"].login-button');
+    var loginBtn = document.getElementById('loginSubmitBtn');
     if (loginBtn) {
-        loginBtn.style.backgroundColor = '#cce5ff';
-        loginBtn.style.border = '2px solid #4da6ff';
-        loginBtn.style.color = '#333';
+        loginBtn.style.setProperty('background-color', '#cce5ff', 'important');
+        loginBtn.style.setProperty('border', '2px solid #4da6ff', 'important');
+        loginBtn.style.setProperty('color', '#333', 'important');
     }
 });
 </script>
