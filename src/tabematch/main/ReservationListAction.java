@@ -24,7 +24,10 @@ public class ReservationListAction extends Action {
 
         ReserveDAO reserveDao = new ReserveDAO();
         List<Reserve> reservations = reserveDao.findByUser(loginUser.getUserId());
-        req.setAttribute("reservations", reservations);
+
+        // JSP 側と一致するように修正
+        req.setAttribute("reserveList", reservations);
+
         req.getRequestDispatcher("reservation-list.jsp").forward(req, res);
     }
 }

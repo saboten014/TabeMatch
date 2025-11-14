@@ -4,7 +4,8 @@ import java.sql.Date;
 import java.sql.Time;
 
 public class Reserve {
-    private int reserveId;
+    private int reserveId;           // int型のID（後方互換性のため残す）
+    private String reserveIdString;  // UUID用の文字列ID（新規追加）
     private String userId;
     private String shopId;
     private Date visitDate;
@@ -20,6 +21,16 @@ public class Reserve {
 
     public int getReserveId() { return reserveId; }
     public void setReserveId(int reserveId) { this.reserveId = reserveId; }
+
+    // UUID用のGetter/Setter（新規追加）
+    public String getReserveIdString() { return reserveIdString; }
+    public void setReserveIdString(String reserveIdString) {
+        this.reserveIdString = reserveIdString;
+        // int型のIDも設定（後方互換性のため）
+        if (reserveIdString != null) {
+            this.reserveId = reserveIdString.hashCode();
+        }
+    }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }

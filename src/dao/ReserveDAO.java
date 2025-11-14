@@ -49,7 +49,7 @@ public class ReserveDAO extends DAO {
                    + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
                    + "r.reserve_status, s.shop_name "
                    + "FROM reserve r JOIN shop s ON r.shop_id = s.shop_id "
-                   + "WHERE r.user_id = ? ORDER BY r.reserve_date, r.reserve_time";
+                   + "WHERE r.user_id = ? ORDER BY r.reserve_date DESC, r.reserve_time DESC";
 
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, userId);
@@ -66,23 +66,41 @@ public class ReserveDAO extends DAO {
         return list;
     }
 
-    // 店舗ごとの予約一覧取得
+    // 店舗ごとの予約一覧取得（最新順でソート）
     public List<Reserve> findByShop(String shopId) throws Exception {
         List<Reserve> list = new ArrayList<>();
         Connection con = getConnection();
 
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
                    + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
-                   + "r.reserve_status, s.shop_name "
-                   + "FROM reserve r JOIN shop s ON r.shop_id = s.shop_id "
-                   + "WHERE r.shop_id = ? ORDER BY r.reserve_date, r.reserve_time";
+                   + "r.reserve_status, s.shop_name, u.user_name "
+                   + "FROM reserve r "
+                   + "JOIN shop s ON r.shop_id = s.shop_id "
+                   + "LEFT JOIN users u ON r.user_id = u.user_id "
+                   + "WHERE r.shop_id = ? "
+                   + "ORDER BY r.reserve_date DESC, r.reserve_time DESC";
 
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, shopId);
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            list.add(mapReserve(rs));
+            Reserve reserve = mapReserve(rs);
+            // ユーザー名も設定（店舗側で確認しやすくするため）
+            try {
+                String userName = rs.getString("user_name");
+                if (userName != null) {
+                    String currentMessage = reserve.getMessage();
+                    if (currentMessage == null || currentMessage.isEmpty()) {
+                        reserve.setMessage("[予約者: " + userName + "]");
+                    } else {
+                        reserve.setMessage(currentMessage + " [予約者: " + userName + "]");
+                    }
+                }
+            } catch (Exception e) {
+                // user_nameが取得できない場合は無視
+            }
+            list.add(reserve);
         }
 
         rs.close();
@@ -92,13 +110,62 @@ public class ReserveDAO extends DAO {
         return list;
     }
 
+    // 予約IDで予約情報を取得
+    public Reserve findById(String reserveId) throws Exception {
+        Reserve reserve = null;
+        Connection con = getConnection();
+
+        String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_status, s.shop_name "
+                   + "FROM reserve r JOIN shop s ON r.shop_id = s.shop_id "
+                   + "WHERE r.reserve_id = ?";
+
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, reserveId);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            reserve = mapReserve(rs);
+        }
+
+        rs.close();
+        stmt.close();
+        con.close();
+
+        return reserve;
+    }
+
     // ステータス更新（店舗側から承認・拒否などを変更する用）
     public boolean updateReserveStatus(String reserveId, int status) throws Exception {
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+            con = getConnection();
+            String sql = "UPDATE reserve SET reserve_status = ? WHERE reserve_id = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, status);
+            stmt.setString(2, reserveId);
+
+            int result = stmt.executeUpdate();
+
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
+        }
+    }
+
+    // 予約の削除（キャンセル機能用）
+    public boolean deleteReservation(String reserveId) throws Exception {
         Connection con = getConnection();
-        String sql = "UPDATE reserve SET reserve_status = ? WHERE reserve_id = ?";
+        String sql = "DELETE FROM reserve WHERE reserve_id = ?";
         PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setInt(1, status);
-        stmt.setString(2, reserveId);
+        stmt.setString(1, reserveId);
 
         int result = stmt.executeUpdate();
 
@@ -112,7 +179,10 @@ public class ReserveDAO extends DAO {
     private Reserve mapReserve(ResultSet rs) throws Exception {
         Reserve reserve = new Reserve();
 
-        reserve.setReserveId(0);
+        // reserve_idはUUID（String型）として扱う
+        String reserveIdStr = rs.getString("reserve_id");
+        reserve.setReserveIdString(reserveIdStr); // 文字列IDを設定
+
         reserve.setUserId(rs.getString("user_id"));
         reserve.setShopId(rs.getString("shop_id"));
         reserve.setVisitDate(rs.getDate("reserve_date"));
@@ -120,7 +190,7 @@ public class ReserveDAO extends DAO {
         reserve.setNumOfPeople(rs.getInt("reserve_count"));
         reserve.setAllergyNotes(rs.getString("reserve_allergy"));
         reserve.setMessage(rs.getString("reserve_note"));
-        reserve.setStatus(String.valueOf(rs.getTimestamp("reserve_send"))); // 送信日時をstatusに保持
+        reserve.setStatus(String.valueOf(rs.getTimestamp("reserve_send")));
         reserve.setReserveStatus(rs.getInt("reserve_status"));
         reserve.setShopName(rs.getString("shop_name"));
 
