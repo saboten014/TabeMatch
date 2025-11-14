@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="bean.Users" %>
 <%@ include file="../../header.html" %>
 
 <html>
@@ -93,8 +94,27 @@
         </div>
     </div>
 
-    <!-- 戻るボタン -->
+    <!-- 予約ボタン -->
     <div class="text-center mt-4">
+        <%
+            Users loginUser = (Users) session.getAttribute("user");
+            String reserveFlag = shop.getShopReserve();
+            boolean reservable = reserveFlag != null && (reserveFlag.contains("可") || "1".equals(reserveFlag));
+            if (reservable) {
+        %>
+            <a href="ReserveForm.action?shopId=<%= shop.getShopId() %>" class="btn btn-success me-2">この店舗を予約する</a>
+        <%
+            } else {
+        %>
+            <div class="alert alert-info">この店舗ではオンライン予約を受け付けていません。</div>
+        <%
+            }
+            if (loginUser == null) {
+        %>
+            <p class="mt-3">予約にはログインが必要です。<a href="../login.jsp">ログインする</a></p>
+        <%
+            }
+        %>
         <a href="Search.action" class="btn btn-secondary">一覧に戻る</a>
     </div>
 
