@@ -3,6 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 // ユーザーIDはメールアドレス(String)、店舗IDは "SHOP..." の文字列(String)と仮定して修正します。
 public class FavoriteDAO extends DAO {
@@ -62,5 +64,25 @@ public class FavoriteDAO extends DAO {
 
         }
         return result > 0;
+    }
+
+    //4.登録済みお気に入り店舗一覧取得
+    public List<String> getFavoriteShopIdsByUserId(String userId) throws Exception {
+        List<String> shopIdList = new ArrayList<>();
+        // fav_shop_id は favorite テーブルの店舗IDカラム
+        String sql = "SELECT fav_shop_id FROM favorite WHERE fav_user_id = ?";
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    shopIdList.add(rs.getString("fav_shop_id"));
+                }
+            }
+        }
+        return shopIdList;
     }
 }
