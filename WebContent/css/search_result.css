@@ -1,0 +1,27 @@
+
+body {
+    margin: 0;
+    padding: 0;
+}
+.result{
+    margin-top: 100px !important;
+    padding-top: 0 !important;
+    text-align: center;
+}
+
+th {
+	background-color: #fff4ea;
+}
+td {
+	background-color: white;
+}
+
+table {
+   max-width: calc(100% - 40px);
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+p{
+	margin-left: 20px;
+}

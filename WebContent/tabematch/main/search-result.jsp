@@ -3,8 +3,10 @@
 <%@page import="bean.Shop" %>
 <%@include file="../../header.html" %>
 <%@include file="user_menu.jsp" %>
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/search_result.css">
 
-<h1>検索結果</h1>
+<h1 class="result">検索結果</h1>
 
 <p><a href="search.jsp">← 検索画面に戻る</a></p>
 

@@ -2,59 +2,9 @@
 <%
   String contextPath = request.getContextPath();
 %>
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_menu.css">
 
-<style>
-  /* ヘッダー全体 */
-  .header {
-    background-color: #d2f0d0; /* 少し濃い緑 */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    border-bottom: 2px solid #b2d8b0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 100;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif;
-  }
-
-  /* ロゴ */
-  .logo {
-    font-size: 36px;
-    color: white;
-    text-shadow:
-      -2px -2px 0 #ff9966,
-       2px -2px 0 #ff9966,
-      -2px  2px 0 #ff9966,
-       2px  2px 0 #ff9966;
-    white-space: nowrap;
-  }
-
-  /* ナビゲーションリンク */
-  .nav-links a {
-    margin-left: 25px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    font-size: 16px;
-    white-space: nowrap;
-  }
-
-  .nav-links a:hover {
-    text-decoration: underline;
-  }
-
-  /* ヘッダー下の線 */
-  hr.header-line {
-    border: none;
-    border-top: 1px solid #b2d8b0;
-    margin: 0;
-  }
-</style>
 
 <div class="header">
   <div class="logo">たべまっち　管理者ホーム</div>
