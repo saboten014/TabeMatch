@@ -1,5 +1,4 @@
 /* メニューのcssだよ */
-
 body {
     margin: 0;
     padding: 0;
@@ -22,6 +21,12 @@ body {
     box-sizing: border-box !important;
     z-index: 100 !important;
   }
+  /* 左側（ロゴ＋ユーザー名） */
+  .header-left {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+  }
   /* 左側ロゴ */
   .logo {
     font-size: 36px;
@@ -32,6 +37,18 @@ body {
       -2px  2px 0 #ff9966,
        2px  2px 0 #ff9966;
     white-space: nowrap;
+    display: inline-block !important;
+  }
+  /* ユーザー名表示 */
+  .user-name {
+    font-size: 20px !important;
+    color: #444 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    margin-left: 40px !important;
+    font-family: "Kosugi Maru", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif !important;
+    letter-spacing: 1px !important;
+    display: inline-block !important;
   }
   /* 右側ナビゲーション - 横並び強制 */
   .nav-links {
