@@ -71,7 +71,9 @@ public class NewsDAO extends DAO{
 	// お知らせをIDで取得するメソッド
 	public News findById(int newsId) throws Exception {
 	    News news = null;
-	    String sql = "SELECT news_id, news_title, news_text, delivery_date FROM notices WHERE news_id = ?";
+
+	    // ★修正: edit_date と role カラムを追加★
+	    String sql = "SELECT news_id, news_title, news_text, delivery_date, edit_date, role FROM notices WHERE news_id = ?";
 
 	    try (Connection con = getConnection();
 	         PreparedStatement st = con.prepareStatement(sql)) {
@@ -88,6 +90,10 @@ public class NewsDAO extends DAO{
 	                news.setNewsText(rs.getString("news_text"));
 	                // Timestamp 型で取得
 	                news.setDeliveryDate(rs.getTimestamp("delivery_date"));
+
+	                // ★修正: edit_date と role の取得とセットを追加★
+	                news.setEditDate(rs.getTimestamp("edit_date"));
+	                news.setRole(rs.getString("role"));
 	            }
 	        }
 	    }
@@ -116,6 +122,29 @@ public class NewsDAO extends DAO{
 
 	    // 削除された行数が1であれば成功
 	    return result == 1;
+	}
+
+	// お知らせを更新するメソッド
+	public boolean update(News news) throws Exception {
+	    int result = 0;
+
+	    // UPDATE文：タイトル、本文、編集日、ロールを更新
+	    String sql = "UPDATE NOTICES SET news_title = ?, news_text = ?, edit_date = ?, role = ? "
+	               + "WHERE news_id = ?";
+
+	    try (Connection con = getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, news.getNewsTitle());
+	        ps.setString(2, news.getNewsText());
+	        ps.setTimestamp(3, news.getEditDate()); // 編集日
+	        ps.setString(4, news.getRole());
+	        ps.setInt(5, news.getNewsId()); // 更新対象のID
+
+	        result = ps.executeUpdate();
+	    }
+
+	    return result > 0;
 	}
 
 }
