@@ -25,7 +25,7 @@
         } else {
           // 非ログイン時
       %>
-        <a href="<%= contextPath %>">お知らせ</a>
+        <a href="<%= contextPath %>/tabematch/News.action">お知らせ</a>
         <a href="<%= contextPath %>/tabematch/main/search.jsp">検索</a>
         <a href="<%= contextPath %>/tabematch/login.jsp">ログイン</a>
       <%
