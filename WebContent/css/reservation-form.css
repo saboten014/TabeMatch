@@ -1,0 +1,133 @@
+.zenbu {
+	/* Flexboxを使って親要素（body）内で垂直・水平中央に配置 */
+    /* ただし、ここではブロック要素として扱い、幅を指定して中央寄せする */
+    width: 100%; /* フォームの最大幅を設定 */
+    max-width: 800px; /* 広い画面でも広がりすぎないように制限 */
+
+    /* 水平方向の中央寄せ */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px; /* 上部に少し余白 */
+    margin-bottom: 100px;
+
+    /* フォーム全体に影をつけて立体感を出す */
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+	text-align: center;
+}
+
+table {
+	border: 2px solid #868686; /* 外側の枠線 */
+    margin-bottom: 25px; /* フォームとの間に余白を空ける */
+    margin-left: 80px;
+}
+
+th,
+td {
+    border: 2px solid #868686; /* セル間の区切り線 */
+    padding: 12px; /* セルの内側余白 */
+    text-align: left;
+}
+
+th {
+	background-color: #effff7;
+}
+
+form > div {
+    /* フォーム内の各フィールド間に余白を持たせる */
+    margin-bottom: 20px;
+}
+
+
+label {
+    /* labelを独立した行にする */
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+    margin-left: 80px;
+}
+
+
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea
+ {
+    /* 親要素の幅いっぱいに広げる */
+    width: 80%;
+    padding: 10px;
+    /* 落ち着いた灰色の枠線 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* paddingやborderを幅に含めることで、width: 100%が崩れないようにする */
+    box-sizing: border-box;
+    font-size: 16px;
+    margin-left: 80px;
+}
+
+.btn {
+	display: flex;
+    /* 修正箇所: 要素を両端に広げ、間にスペースを最大限取る */
+    justify-content: space-between;
+    /* gapは不要になるため削除（または、そのまま残しても影響は少ない） */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.modoru {
+    text-decoration: none; /* 下線を消す */
+    padding: 10px 20px;
+
+    /* 控えめな色合いで設定 */
+    border: 2px solid #c6c6ff;
+    border-radius: 4px;
+    color: #333;
+    background-color: #e5f2ff;
+
+    /* ホバー効果 */
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.modoru:hover {
+    background-color: #c6e2ff;
+}
+
+
+.sousin {
+    padding: 10px 20px;
+    border: 2px solid #ffc184;
+    border-radius: 4px;
+    justify-content: flex-end;
+
+    /* メインカラー */
+    background-color: #ffe2c6;
+
+    /* ホバー効果 */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.sousin:hover {
+    background-color: #ffd6ad;
+}
+
+span {
+	color: red;
+}
+
+
+
+
+
+
