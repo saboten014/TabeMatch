@@ -1,185 +1,15 @@
 <%@page contentType="text/html; charset=UTF-8" %>
+<%@page import="java.util.List" %>
+<%@page import="bean.Allergen" %>
+<%@page import="bean.Users" %>
+<%@page import="dao.AllergenDAO" %>
 <%@include file="../header.html" %>
 <%@include file="/tabematch/main/user_menu.jsp" %>
 <!-- Googleフォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-<style>
-  body {
-    background-color: #e8f8e8 !important;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
-    margin: 0;
-    padding: 0;
-  }
-  /* ===== メニューバーを横並びに強制 ===== */
-  .header {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-  }
-  .nav-links {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-  }
-  .nav-links a {
-    display: inline-block !important;
-    margin-left: 25px !important;
-    white-space: nowrap !important;
-  }
-  /* ===== タイトル ===== */
-  h1 {
-    margin-top: 120px;
-    font-size: 32px;
-    text-align: center;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  /* ===== 説明文 ===== */
-  .description {
-    text-align: center;
-    color: #666;
-    font-size: 16px;
-    margin-bottom: 30px;
-  }
-  /* ===== フォーム部分 ===== */
-  .form-container {
-    text-align: center;
-    margin-top: 30px;
-  }
-  form {
-    display: inline-block;
-    text-align: left;
-  }
-  table {
-    border-collapse: collapse;
-    margin: 0 auto;
-  }
-  td {
-    padding: 15px 10px;
-    font-size: 16px;
-    vertical-align: middle;
-  }
-  td:first-child {
-    text-align: right;
-    padding-right: 20px;
-    font-weight: 500;
-    width: 180px;
-  }
-  input[type="text"],
-  input[type="email"],
-  select,
-  textarea {
-    font-size: 16px;
-    padding: 10px 12px;
-    width: 400px;
-    border: 1px solid #aaa;
-    border-radius: 6px;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif;
-    box-sizing: border-box;
-    line-height: normal;
-  }
-  select {
-    height: auto;
-    min-height: 42px;
-    appearance: auto;
-  }
-  textarea {
-    resize: vertical;
-    min-height: 80px;
-  }
-  small {
-    color: #888;
-    font-size: 13px;
-    display: block;
-    margin-top: 5px;
-  }
-  .required {
-    color: #ff6b6b;
-    font-weight: bold;
-    margin-left: 3px;
-  }
-  input[type="radio"] {
-    margin-right: 5px;
-    margin-left: 15px;
-  }
-  input[type="radio"]:first-of-type {
-    margin-left: 0;
-  }
-  label {
-    margin-right: 10px;
-    font-size: 16px;
-  }
-  input[type="submit"],
-  input[type="reset"] {
-    margin-top: 30px;
-    font-size: 18px;
-    padding: 14px 50px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif;
-    transition: all 0.3s ease;
-  }
-  input[type="submit"] {
-    background-color: #ffcccc;
-    color: #333;
-    margin-right: 15px;
-    border: 2px solid #ff9999;
-  }
-  input[type="submit"]:hover {
-    background-color: #ff9999;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  input[type="reset"] {
-    background-color: #cce5ff;
-    color: #333;
-    border: 2px solid #99ccff;
-  }
-  input[type="reset"]:hover {
-    background-color: #99ccff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  /* ===== エラーメッセージ ===== */
-  .error-message {
-    text-align: center;
-    margin-top: 15px;
-  }
-  .error-message p {
-    color: #d14;
-    background-color: #ffe6e6;
-    padding: 12px 20px;
-    border-radius: 6px;
-    display: inline-block;
-    border: 1px solid #ffcccc;
-  }
-  /* ===== 戻るリンク ===== */
-  .back-link {
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 50px;
-  }
-  .back-link a {
-    display: inline-block;
-    padding: 12px 30px;
-    background-color: #ffcccc;
-    border: 2px solid #ff9999;
-    border-radius: 8px;
-    color: #333;
-    text-decoration: none;
-    font-size: 16px;
-    transition: all 0.3s ease;
-  }
-  .back-link a:hover {
-    background-color: #ff9999;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-</style>
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/shop_request.css">
+
 
 <h1>店舗掲載リクエスト</h1>
 
@@ -210,9 +40,31 @@
         <tr>
             <td>アレルギー対応<span class="required">*</span></td>
             <td>
-                <textarea name="allergySupport" rows="3" maxlength="255" required></textarea>
-                <small>対応しているアレルゲンを記入してください</small>
-            </td>
+
+<%
+    // DB からアレルゲン一覧を取得
+    AllergenDAO allergenDao = new AllergenDAO();
+    List<Allergen> allergenList = allergenDao.getAllAllergens();
+%>
+
+<div class="checkbox-grid">
+<%
+    for (Allergen allergen : allergenList) {
+%>
+    <div class="checkbox-item">
+        <input type="checkbox"
+               name="allergyInfo"
+               value="<%= allergen.getAllergenName() %>"
+               id="allergy_<%= allergen.getAllergenId() %>">
+        <label for="allergy_<%= allergen.getAllergenId() %>">
+            <%= allergen.getAllergenName() %>
+        </label>
+    </div>
+<%
+    }
+%>
+</div>
+                <small>対応しているアレルゲンを選択してください</small>      </td>
         </tr>
         <tr>
             <td>予約の可否<span class="required">*</span></td>
