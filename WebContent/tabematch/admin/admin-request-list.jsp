@@ -1,7 +1,12 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@page import="java.util.List" %>
 <%@page import="bean.Request" %>
+<%@include file="../main/admin_menu.jsp" %>
 <%@include file="../../header.html" %>
+<!-- 丸文字フォント -->
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin-request-list.css">
 
 <h1>掲載リクエスト承認画面</h1>
 

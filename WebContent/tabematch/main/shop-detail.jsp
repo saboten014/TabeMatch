@@ -7,23 +7,16 @@
 <html>
 <head>
     <title>店舗詳細</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* お気に入りボタンのホバーアニメーション */
-        .favorite-btn {
-            transition: all 0.2s ease-in-out;
-            border-radius: 0.375rem;
-        }
-        .favorite-btn:hover {
-            transform: scale(1.05);
-        }
-    </style>
+    <!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/shop-detail.css">
+
 </head>
 <body>
 <div class="container mt-4">
 
-    <h2 class="mb-4 text-center">店舗詳細情報</h2>
+    <h2>店舗詳細情報</h2>
+
+<a href="Search.action" class="backlist">← 一覧に戻る</a>
 
     <%-- リクエストスコープのエラーメッセージを表示 --%>
     <%
@@ -37,11 +30,11 @@
 
     <%-- セッションスコープの成功・エラーメッセージを表示し、削除する (FavoriteInsertActionの結果) --%>
     <c:if test="${not empty sessionScope.successMessage}">
-        <div class="alert alert-success" role="alert">${sessionScope.successMessage}</div>
+        <div class="sakusesu" role="alert">${sessionScope.successMessage}</div>
         <% session.removeAttribute("successMessage"); %>
     </c:if>
     <c:if test="${not empty sessionScope.errorMessage}">
-        <div class="alert alert-danger" role="alert">${sessionScope.errorMessage}</div>
+        <div class="dame" role="alert">${sessionScope.errorMessage}</div>
         <% session.removeAttribute("errorMessage"); %>
     </c:if>
 
@@ -56,12 +49,12 @@
 
         if (shop != null) {
     %>
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><%= shop.getShopName() %></h4>
+    <div>
+        <div>
+            <h2 class="shopname"><%= shop.getShopName() %></h2>
         </div>
-        <div class="card-body">
-            <table class="table table-bordered">
+        <div>
+            <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
                 <tr>
                     <th style="width: 25%;">住所</th>
                     <td><%= shop.getShopAddress() %></td>
@@ -137,41 +130,43 @@
             if (loginUserDetail != null) { // ★修正: loginUserDetailを使用
                 // お気に入りボタン（POSTフォーム）
         %>
-            <form action="FavoriteInsert.action" method="post" class="d-inline-block me-2">
+        <div class="btn">
+            <form action="FavoriteInsert.action" method="post">
                 <input type="hidden" name="shopId" value="<%= shop.getShopId() %>">
                 <% if (isFavorite) { %>
                     <%-- 登録済みの場合: 解除ボタン --%>
-                    <button type="submit" class="btn favorite-btn btn-warning">
-                        <i class="fas fa-heart"></i> ★ お気に入り解除
+                    <button type="submit" class="kaijo">
+                        <i ></i> ★ お気に入り解除
                     </button>
                 <% } else { %>
                     <%-- 未登録の場合: 登録ボタン --%>
-                    <button type="submit" class="btn favorite-btn btn-outline-warning">
-                        <i class="far fa-heart"></i> ☆ お気に入り登録
+                    <button type="submit" class="love">
+                        <i></i> ☆ お気に入り登録
                     </button>
                 <% } %>
             </form>
+
         <%
             }
 
             if (reservable) {
         %>
-            <a href="ReserveForm.action?shopId=<%= shop.getShopId() %>" class="btn btn-success me-2">この店舗を予約する</a>
+            <a href="ReserveForm.action?shopId=<%= shop.getShopId() %>" class="yoyaku">この店舗を予約する</a>
         <%
             } else {
         %>
-            <div class="alert alert-info d-inline-block p-2">この店舗ではオンライン予約を受け付けていません。</div>
+            <div class="alert">この店舗ではオンライン予約を受け付けていません。</div>
         <%
             }
 
             if (loginUserDetail == null) { // ★修正: loginUserDetailを使用
         %>
-            <p class="mt-3">予約やお気に入り機能にはログインが必要です。<a href="../Login.action">ログインする</a></p>
+            <p>予約やお気に入り機能にはログインが必要です。<a href="../Login.action" class="loginB">ログインする</a></p>
         <%
             }
         %>
-        <a href="Search.action" class="btn btn-secondary">一覧に戻る</a>
-    </div>
+
+
 
     <%
         } else {
@@ -182,30 +177,29 @@
     <%
         }
     %>
-</div>
+
 
 <!-- ★★★★★ 追加部分（ここから） ★★★★★ -->
 <%
     bean.Users loginUserDetail = (bean.Users) session.getAttribute("user");
 %>
 
-<div class="text-center mt-4">
+
     <% if (loginUserDetail != null) { %>
-       <a href="../main/ReviewPostForm.action?shopId=<%= shop.getShopId() %>">
-           class="btn btn-primary me-2">
+       <a href="../main/ReviewPostForm.action?shopId=<%= shop.getShopId() %>" class="kutikomisuru">
             口コミを投稿する
         </a>
 
-        <a href="../main/ReviewList.action?shopId=<%= shop.getShopId() %>">
-           class="btn btn-outline-primary">
-            口コミを見る
+        <a href="../main/ReviewList.action?shopId=<%= shop.getShopId() %>" class="kutikomiru">
+		口コミを見る
         </a>
     <% } else { %>
         <p class="mt-3">
             口コミ機能を利用するにはログインが必要です。
-            <a href="../Login.action">ログインする</a>
+            <a href="../Login.action" class="loginB">ログインする</a>
         </p>
     <% } %>
+
 </div>
 
 <!-- ★★★★★ 追加部分（ここまで） ★★★★★ -->
