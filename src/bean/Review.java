@@ -1,56 +1,37 @@
 package bean;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Review {
-    private int reviewId;
-    private int userId;
-    private int restaurantId;
+
+    private String reviewId;
+    private String userId;
+    private String shopId;
+    private String title;
+    private String body;
     private int rating;
-    private String comment;
-    private LocalDate date;
+    private LocalDateTime createdAt;
 
-	public int getReviewId() {
-		return reviewId;
-	}
-	public void setReviewId(int reviewId) {
-		this.reviewId = reviewId;
-	}
+    // ---- getter/setter ----
 
-	public int getUserId() {
-		return userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+    public String getReviewIdString() { return reviewId; }
+    public void setReviewIdString(String reviewId) { this.reviewId = reviewId; }
 
-	public int getRestaurantId() {
-		return restaurantId;
-	}
-	public void setRestaurantId(int restaurantId) {
-		this.restaurantId = restaurantId;
-	}
+    public String getUserIdString() { return userId; }
+    public void setUserIdString(String userId) { this.userId = userId; }
 
-	public int getRating() {
-		return rating;
-	}
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
+    public String getShopIdString() { return shopId; }
+    public void setShopIdString(String shopId) { this.shopId = shopId; }
 
-	public String getComment() {
-		return comment;
-	}
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-	public LocalDate getDate() {
-		return date;
-	}
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
+    public String getBody() { return body; }
+    public void setBody(String body) { this.body = body; }
 
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
 
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

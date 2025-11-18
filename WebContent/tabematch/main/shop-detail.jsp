@@ -184,5 +184,32 @@
     %>
 </div>
 
+<!-- ★★★★★ 追加部分（ここから） ★★★★★ -->
+<%
+    bean.Users loginUserDetail = (bean.Users) session.getAttribute("user");
+%>
+
+<div class="text-center mt-4">
+    <% if (loginUserDetail != null) { %>
+       <a href="../main/ReviewPostForm.action?shopId=<%= shop.getShopId() %>">
+           class="btn btn-primary me-2">
+            口コミを投稿する
+        </a>
+
+        <a href="../main/ReviewList.action?shopId=<%= shop.getShopId() %>">
+           class="btn btn-outline-primary">
+            口コミを見る
+        </a>
+    <% } else { %>
+        <p class="mt-3">
+            口コミ機能を利用するにはログインが必要です。
+            <a href="../Login.action">ログインする</a>
+        </p>
+    <% } %>
+</div>
+
+<!-- ★★★★★ 追加部分（ここまで） ★★★★★ -->
+
+
 </body>
 </html>
