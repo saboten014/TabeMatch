@@ -33,7 +33,7 @@
 	    String formattedTime = (shop.getShopTime() != null) ? shop.getShopTime().toString() : "情報なし";
 
 	    // 予約可否の表示変換
-	    String reserveStatus = "1".equals(shop.getShopReserve()) ? "予約受付中" : "予約不可";
+	    String reserveStatus = "1".equals(shop.getShopReserve()) ? "予約不可" : "予約受付中";
 	%>
 
 	<style>
