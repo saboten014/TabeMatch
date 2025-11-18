@@ -382,4 +382,49 @@ public class ShopDAO extends DAO {
 		shop.setReviewId(rs.getString("REVIEW_ID"));
 		return shop;
 	}
+
+	// 店舗IDで情報を取得するメソッド（プロフィール表示用）
+    public Shop findById(String shopId) throws Exception {
+        Shop shop = null;
+        // SHOP_DATE, SHOP_TIME の取得漏れがないようにSELECT * を使用するか、全てのカラムを指定します
+        String sql = "SELECT * FROM shop WHERE shop_id = ?";
+
+        try (Connection con = getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setString(1, shopId);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    shop = new Shop();
+                    // ResultSetからShop Beanへのデータマッピング
+                    shop.setShopId(rs.getString("shop_id"));
+                    shop.setPassword(rs.getString("password"));
+                    shop.setShopName(rs.getString("shop_name"));
+                    shop.setShopAddress(rs.getString("shop_address"));
+                    shop.setShopAllergy(rs.getString("shop_allergy"));
+                    shop.setShopMail(rs.getString("shop_mail"));
+                    shop.setShopTel(rs.getString("shop_tel"));
+                    shop.setShopDate(rs.getTimestamp("shop_date")); // Timestampのまま
+
+                    // ★修正点1: java.sql.Timeで取得し、セットする
+                    shop.setShopTime(rs.getTime("shop_time"));
+
+                    shop.setShopReserve(rs.getString("shop_reserve"));
+                    shop.setShopGenre(rs.getString("shop_genre"));
+                    shop.setShopPicture(rs.getString("shop_picture"));
+                    shop.setShopPrice(rs.getString("shop_price"));
+                    shop.setShopPay(rs.getString("shop_pay"));
+
+                    // ★修正点2: intではなく、get*Object()またはgetInt()を使いIntegerとして扱う
+                    // getInt()はプリミティブのintを返すため、Integerとして扱うにはgetResult()を使うのがより正確ですが、ここではgetInt()を使います。
+                    shop.setShopSeat(rs.getInt("shop_seat"));
+
+                    shop.setShopUrl(rs.getString("shop_url"));
+                    shop.setReviewId(rs.getString("review_id"));
+                }
+            }
+        }
+        return shop;
+    }
 }
