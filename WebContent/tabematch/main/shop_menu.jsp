@@ -1,9 +1,5 @@
 <%@page pageEncoding="UTF-8" %>
 
-<%
-  String contextPath = request.getContextPath();
-%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,10 +64,10 @@
   <div class="header">
     <div class="logo">たべまっち</div>
     <div class="nav-links">
-      <a href="News.action">お知らせ</a>
-      <a href="">予約管理</a>
+      <a href="${pageContext.request.contextPath}/tabematch/News.action">お知らせ</a>
+      <a href="${pageContext.request.contextPath}/tabematch.shop/">予約管理</a>
       <a href="${pageContext.request.contextPath}/tabematch.shop/ShopProfile.action">店舗プロフィール</a>
-      <a href="Logout.action">ログアウト</a>
+      <a href="${pageContext.request.contextPath}/tabematch.main/Logout.action">ログアウト</a>
     </div>
   </div>
 

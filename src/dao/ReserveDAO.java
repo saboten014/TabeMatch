@@ -196,4 +196,62 @@ public class ReserveDAO extends DAO {
 
         return reserve;
     }
+
+ // 店舗ごとの今日の予約一覧取得 (予約日時順でソート)
+    public List<Reserve> getTodayReservations(String shopId) throws Exception {
+        List<Reserve> list = new ArrayList<>();
+
+        // 🚨 注意: リソースリーク防止のため、try-with-resourcesの使用を推奨します。
+        // （既存のメソッドは使用していないため、今回はスタイルを合わせます）
+        Connection con = getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        // SQL: 該当店舗の予約で、日付が今日のもののみを取得し、時間順にソートする
+        String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_status, s.shop_name, u.user_name "
+                   + "FROM reserve r "
+                   + "JOIN shop s ON r.shop_id = s.shop_id "
+                   + "LEFT JOIN users u ON r.user_id = u.user_id "
+                   // ★★★ ここで日付を今日に絞り込む ★★★
+                   + "WHERE r.shop_id = ? AND r.reserve_date = CURRENT_DATE "
+                   + "ORDER BY r.reserve_time ASC"; // 時間順でソート
+
+        try {
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, shopId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Reserve reserve = mapReserve(rs);
+
+                // 予約者名の追加 (findByShopと同様のロジックを再利用)
+                try {
+                    String userName = rs.getString("user_name");
+                    if (userName != null) {
+                        String currentMessage = reserve.getMessage();
+                        if (currentMessage == null || currentMessage.isEmpty()) {
+                            reserve.setMessage("[予約者: " + userName + "]");
+                        } else {
+                            reserve.setMessage(currentMessage + " [予約者: " + userName + "]");
+                        }
+                    }
+                } catch (Exception e) {
+                    // user_nameが取得できない場合は無視
+                }
+                list.add(reserve);
+            }
+            return list;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            // リソースのクローズ処理
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
+        }
+    }
 }
