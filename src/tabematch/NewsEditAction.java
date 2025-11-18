@@ -44,6 +44,6 @@ public class NewsEditAction extends Action {
 
         // 4. データをフォームに渡す
         req.setAttribute("news", news);
-        req.getRequestDispatcher("/main/news-edit.jsp").forward(req, res);
+        req.getRequestDispatcher("main/news-edit.jsp").forward(req, res);
     }
 }
