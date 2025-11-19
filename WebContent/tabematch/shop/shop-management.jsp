@@ -65,6 +65,10 @@
 
 
 <style>
+.zenbu{
+	margin-top: 100px;
+}
+
 /* -------------------- 全体スタイル -------------------- */
 body {
     font-family: "Kosugi Maru", "Meiryo", sans-serif;
@@ -178,7 +182,7 @@ body {
     font-weight: 500;
 }
 </style>
-
+<div class="zenbu">
 <div class="container">
 
     <div class="sidebar">
@@ -284,5 +288,5 @@ body {
     </div>
 
 </div>
-
+</div>
 <%@include file="../../footer.html" %>
