@@ -23,7 +23,7 @@ public class LogoutAction extends Action {
         }
 
         // ログアウト完了画面へ
-        url = "/logout.jsp";
+        url = "logout.jsp";
         req.getRequestDispatcher(url).forward(req, res);
     }
 }
