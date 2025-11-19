@@ -10,12 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: #e8f8e8; /* 全体の淡い緑 */
-    font-family: "Kosugi Maru", "Meiryo", sans-serif;
-  }
+
 
   /* ヘッダー全体 */
   .header {
@@ -25,6 +20,14 @@
     align-items: center;
     padding: 15px 40px;
     border-bottom: 2px solid #b2d8b0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 100;
+    font-family: "Kosugi Maru", "Meiryo", sans-serif;
   }
 
   /* 左側ロゴ */
@@ -36,6 +39,7 @@
       2px -2px 0 #ff9966,
       -2px 2px 0 #ff9966,
       2px 2px 0 #ff9966;
+
   }
 
   /* 右側ナビゲーション */
@@ -53,7 +57,7 @@
 
   hr {
     border: none;
-    border-top: 1px solid #b2d8b0;
+
     margin: 0;
   }
 </style>
