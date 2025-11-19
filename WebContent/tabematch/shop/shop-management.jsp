@@ -1,6 +1,7 @@
 <%@page pageEncoding="UTF-8" %>
 <%@page import="java.util.List"%>
 <%@page import="bean.Reserve"%>
+<%@page import="java.util.Map"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
@@ -8,13 +9,20 @@
     // ===============================================
     // ★★★ 変数定義の追加 (contextPath, actionPath) ★★★
     // ===============================================
-    // contextPathを最初に定義
     String contextPath = request.getContextPath();
-    // Actionのパスを定義 (217行目で必要)
+    // Actionのパスを定義
     String actionPath = contextPath + "/ShopManagementAction";
 
-    // Actionから渡された予約リストを取得
+    // Actionから渡された予約リストを取得 (左サイドバー用)
     List<Reserve> todayReservations = (List<Reserve>) request.getAttribute("todayReservations");
+
+    // Actionから渡されたカレンダーの日付ごとの予約件数マップを取得
+    // Map<日付(int), 予約件数(int)>
+    Map<Integer, Integer> reservationCounts = (Map<Integer, Integer>) request.getAttribute("reservationCounts");
+    if (reservationCounts == null) {
+        reservationCounts = new java.util.HashMap<>();
+    }
+
 
     // 日時フォーマット用のオブジェクト
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -25,6 +33,13 @@
     String currentMonthYear = (String) request.getAttribute("currentMonthYear");
     int currentYear = (request.getAttribute("currentYear") != null) ? (Integer) request.getAttribute("currentYear") : Calendar.getInstance().get(Calendar.YEAR);
     int currentMonth = (request.getAttribute("currentMonth") != null) ? (Integer) request.getAttribute("currentMonth") : Calendar.getInstance().get(Calendar.MONTH) + 1;
+
+    // 現在表示している日付 (サイドバー表示用。Actionから設定された日付)
+    // カレンダーセルクリック時に「todayReservations」の対象日が変わることを想定
+    String selectedDateString = (String) request.getAttribute("selectedDateString");
+    if (selectedDateString == null) {
+        selectedDateString = "今日"; // 初期表示
+    }
 
     if (currentMonthYear == null) {
         currentMonthYear = currentYear + "年 " + currentMonth + "月";
@@ -65,10 +80,10 @@
 
 
 <style>
-.zenbu{
+
+.zenbu {
 	margin-top: 100px;
 }
-
 /* -------------------- 全体スタイル -------------------- */
 body {
     font-family: "Kosugi Maru", "Meiryo", sans-serif;
@@ -154,6 +169,7 @@ body {
     border-radius: 4px;
     color: #333;
 }
+/* aタグにスタイルを適用 */
 .day-cell {
     padding: 10px 5px;
     background-color: #f9f9f9;
@@ -164,7 +180,14 @@ body {
     font-size: 1.1em;
     cursor: pointer;
     transition: background-color 0.2s;
+
+    /* aタグとしてスタイルをリセット */
+    text-decoration: none;
+    color: inherit;
+    display: block; /* aタグをdivと同じブロック要素にする */
+    box-sizing: border-box;
 }
+
 .day-cell:hover {
     background-color: #e6e6e6;
 }
@@ -186,7 +209,8 @@ body {
 <div class="container">
 
     <div class="sidebar">
-        <h2>📅 本日の予約一覧</h2>
+        <%-- サイドバーのタイトルに選択日を表示 --%>
+        <h2>📅 <%= selectedDateString %>の予約一覧</h2>
 
         <div class="reservation-list">
 
@@ -215,7 +239,7 @@ body {
                     </div>
                 <% } %>
             <% } else { %>
-                <p style="color: #999; margin-top: 10px; text-align: center;">今日の予約はありません。</p>
+                <p style="color: #999; margin-top: 10px; text-align: center;">予約はありません。</p>
             <% } %>
 
         </div>
@@ -251,36 +275,43 @@ body {
 
             <%-- ★★★ 日付セルの動的生成 ★★★ --%>
             <%
-            // 月初めのセルの位置計算 (1=日, 7=土)
+            // 月初めのセルの位置計算 (1=日, 2=月, ..., 7=土)
             int startColumn = firstDayOfWeek;
+            %>
+
+            <%-- 月の初日までの空セルを挿入 --%>
+            <%
+            for (int j = 1; j < startColumn; j++) {
+            %>
+                <div class="day-cell" style="background-color: #f0f0f0; cursor: default;"></div>
+            <%
+            }
             %>
 
             <% for (int i = 1; i <= daysInMonth; i++) {
                 String cellClass = "day-cell";
-                String styleAttr = "";
-
-                // 初日のみ grid-column-start を指定
-                if (i == 1 && startColumn > 1) {
-                    styleAttr = " style=\"grid-column: " + startColumn + ";\"";
-                }
 
                 // todayクラスの判定
                 if (i == today) {
                     cellClass += " today";
                 }
 
-                // ダミーの予約件数表示
-                String reserveCount = "";
-                if (i == 7 || i == 15) {
-                    reserveCount = "予約 1件";
+                // マップから予約件数を取得
+                int count = reservationCounts.getOrDefault(i, 0);
+                String reserveCountText = "";
+                if (count > 0) {
+                    reserveCountText = "予約 " + count + "件";
                 }
+
+                // クリック可能なaタグに変更
+                String clickUrl = actionPath + "?year=" + currentYear + "&month=" + currentMonth + "&day=" + i;
             %>
-                <div class="<%= cellClass %>"<%= styleAttr %>>
+                <a class="<%= cellClass %>" href="<%= clickUrl %>">
                     <%= i %>
-                    <% if (!reserveCount.isEmpty()) { %>
-                        <span class="reserve-count"><%= reserveCount %></span>
+                    <% if (!reserveCountText.isEmpty()) { %>
+                        <span class="reserve-count"><%= reserveCountText %></span>
                     <% } %>
-                </div>
+                </a>
             <% } %>
             <%-- ★★★ 日付セルの動的生成 終了 ★★★ --%>
 
@@ -289,4 +320,5 @@ body {
 
 </div>
 </div>
+
 <%@include file="../../footer.html" %>
