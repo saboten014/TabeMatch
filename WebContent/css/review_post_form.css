@@ -17,32 +17,10 @@
     border-radius: 8px;
 }
 
+
 h2 {
 	text-align: center;
 }
-
-table {
-	border: 2px solid #868686; /* 外側の枠線 */
-    margin-bottom: 25px; /* フォームとの間に余白を空ける */
-    margin-left: 80px;
-}
-
-th,
-td {
-    border: 2px solid #868686; /* セル間の区切り線 */
-    padding: 12px; /* セルの内側余白 */
-    text-align: left;
-}
-
-th {
-	background-color: #effff7;
-}
-
-form > div {
-    /* フォーム内の各フィールド間に余白を持たせる */
-    margin-bottom: 20px;
-}
-
 
 label {
     /* labelを独立した行にする */
@@ -53,10 +31,13 @@ label {
     margin-left: 80px;
 }
 
+form > div {
+    /* フォーム内の各フィールド間に余白を持たせる */
+    margin-bottom: 20px;
+}
 
-input[type="date"],
-input[type="time"],
-input[type="number"],
+
+input[type="text"],
 textarea
  {
     /* 親要素の幅いっぱいに広げる */
@@ -71,14 +52,64 @@ textarea
     margin-left: 80px;
 }
 
+.form-select {
+    width: 25%;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    padding: 10px 30px 10px 10px;
+    font-size: 16px;
+	margin-left: 80px;
+    /* フォーカス時のアニメーション */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 3. フォーカス時のスタイル (選択時) */
+.form-select:focus {
+    /* デフォルトのアウトラインを無効化 */
+    outline: none;
+    /* 枠線をメインカラー（例: 青）に変更 */
+    border-color: #007bff;
+    /* 影を追加して、選択中の項目を強調する */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+
 .btn {
 	display: flex;
+    /* 修正箇所: 要素を両端に広げ、間にスペースを最大限取る */
     justify-content: space-between;
+    /* gapは不要になるため削除（または、そのまま残しても影響は少ない） */
     gap: 15px;
     margin-top: 30px;
 }
+.sousin {
+
+/* 	margin-left: 650px; */
+	padding: 10px 20px;
+    border: 2px solid #ffc184;
+    border-radius: 4px;
+
+    /* メインカラー */
+    background-color: #ffe2c6;
+
+    /* ホバー効果 */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.sousin:hover {
+    background-color: #ffc993;
+}
+
+textarea {
+	height: 150px;ss
+}
+
 
 .modoru {
+
     text-decoration: none; /* 下線を消す */
     padding: 10px 20px;
 
@@ -98,34 +129,3 @@ textarea
 .modoru:hover {
     background-color: #c6e2ff;
 }
-
-
-.sousin {
-    padding: 10px 20px;
-    border: 2px solid #ffc184;
-    border-radius: 4px;
-    justify-content: flex-end;
-
-    /* メインカラー */
-    background-color: #ffe2c6;
-
-    /* ホバー効果 */
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
-}
-
-.sousin:hover {
-    background-color: #ffd6ad;
-}
-
-span {
-	color: red;
-}
-
-
-
-
-
-

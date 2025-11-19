@@ -1,0 +1,67 @@
+.zenbu {
+	text-align: center;
+}
+
+
+h2 {
+	margin-top:100px;
+	margin-bottom:50px;
+	text-align: center;
+}
+
+
+
+.toko {
+    text-decoration: none; /* 下線を消す */
+    padding: 10px 20px;
+
+    /* 控えめな色合いで設定 */
+    border: 2px solid #ffbf7f;
+    border-radius: 4px;
+    color: #333;
+    background-color: #ffffc1;
+
+    /* ホバー効果 */
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.toko:hover {
+    background-color: #ffff7f;
+}
+
+.nai {
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+	background-color: white;
+	width: 230px;
+	padding: 10px 20px;
+ 	font-size: 16px;
+}
+
+
+.modoru {
+
+    text-decoration: none; /* 下線を消す */
+    padding: 10px 20px;
+
+    /* 控えめな色合いで設定 */
+    border: 2px solid #c6c6ff;
+    border-radius: 4px;
+    color: #333;
+    background-color: #e5f2ff;
+
+    /* ホバー効果 */
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.modoru:hover {
+    background-color: #c6e2ff;
+}

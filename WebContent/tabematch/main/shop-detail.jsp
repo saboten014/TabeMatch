@@ -186,11 +186,11 @@
 
 
     <% if (loginUserDetail != null) { %>
-       <a href="../main/ReviewPostForm.action?shopId=<%= shop.getShopId() %>" class="kutikomisuru">
+       <a href="<%= request.getContextPath() %>/tabematch/main/ReviewPostForm.action?shopId=<%= shop.getShopId() %>" class="kutikomisuru">
             口コミを投稿する
         </a>
 
-        <a href="../main/ReviewList.action?shopId=<%= shop.getShopId() %>" class="kutikomiru">
+        <a href="<%= request.getContextPath() %>/tabematch/main/ReviewList.action?shopId=<%= shop.getShopId() %>" class="kutikomiru">
 		口コミを見る
         </a>
     <% } else { %>

@@ -1,10 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@include file="../../header.html" %>
+<%@include file="user_menu.jsp" %>
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/review_post_form.css">
 
+
+<div class="zenbu">
 <h2>口コミ投稿</h2>
 
-<form action="ReviewPostExecute.action" method="post">
 
-    <input type="hidden" name="shopId" value="${shopId}">
+<form action="ReviewPostExecute.action" method="post">
 
     <div class="mb-3">
         <label>タイトル</label>
@@ -27,5 +32,9 @@
         </select>
     </div>
 
-    <button type="submit" class="btn btn-success">投稿する</button>
+	<div class="btn">
+		<a href="Search.action" class="modoru">お店一覧に戻る</a>
+		<button type="submit" class="sousin">投稿する</button>
+	</div>
 </form>
+</div>

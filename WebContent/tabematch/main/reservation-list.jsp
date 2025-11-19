@@ -1,22 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="../../header.html" %>
+<%@include file="user_menu.jsp" %>
 <html>
 <head>
 <title>予約一覧</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Googleフォント -->
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/reservation-list.css">
+
 </head>
 <body>
-<div class="container mt-4">
-  <h2 class="text-center mb-4">あなたの予約一覧</h2>
+<div>
+  <h2>あなたの予約一覧</h2>
 
   <c:if test="${empty reserveList}">
-    <div class="alert alert-info">現在、予約はありません。</div>
+    <div class="no-yoyaku">現在、予約はありません。</div>
   </c:if>
 
   <c:if test="${not empty reserveList}">
-    <table class="table table-bordered table-striped align-middle">
-      <thead class="table-light">
+    <table>
+      <thead>
         <tr>
           <th>店舗名</th>
           <th>来店日</th>
@@ -39,16 +44,16 @@
             <td>
               <c:choose>
                 <c:when test="${r.reserveStatus == 1}">
-                  <span class="badge bg-warning text-dark">承認待ち</span>
+                  <span>承認待ち</span>
                 </c:when>
                 <c:when test="${r.reserveStatus == 2}">
-                  <span class="badge bg-success">承認済み</span>
+                  <span>承認済み</span>
                 </c:when>
                 <c:when test="${r.reserveStatus == 3}">
-                  <span class="badge bg-danger">拒否</span>
+                  <span>拒否</span>
                 </c:when>
                 <c:otherwise>
-                  <span class="badge bg-secondary">不明</span>
+                  <span>不明</span>
                 </c:otherwise>
               </c:choose>
             </td>
