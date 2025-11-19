@@ -40,7 +40,7 @@ function showMenu(type) {
 <!-- 管理者系 -->
 <div class="feature-box admin-box">
   <a href="" class="btn-link feature-btn admin-feature">管理者アカウント追加</a>
-  <a href="News.action" class="btn-link feature-btn admin-feature">お知らせ配信</a>
+  <a href="<%= request.getContextPath() %>/tabematch/News.action" class="btn-link feature-btn admin-feature">お知らせ配信</a>
 </div>
 
 <!-- フッター -->
