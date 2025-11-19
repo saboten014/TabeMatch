@@ -130,6 +130,36 @@ public class UserDAO extends DAO {
 	    return result > 0;
 	}
 
+	//パスワードの変更用
+	public int updatePassword(String userId, String newHashedPassword) throws Exception {
+        Connection con = null;
+        PreparedStatement st = null;
+        int line = 0;
+
+        try {
+            con = getConnection();
+
+            // パスワードを更新するSQL文
+            // ★実際には、newHashedPasswordは安全なハッシュ関数で生成された文字列であることを前提とします
+            String sql = "UPDATE users SET password = ? WHERE user_id = ?";
+
+            st = con.prepareStatement(sql);
+            st.setString(1, newHashedPassword);
+            st.setString(2, userId);
+
+            line = st.executeUpdate();
+
+        } catch (Exception e) {
+            // エラー処理（ログ出力など）
+            throw e;
+        } finally {
+            // リソースのクローズ処理
+            if (st != null) st.close();
+            if (con != null) con.close();
+        }
+        return line;
+    }
+
 
 
 }

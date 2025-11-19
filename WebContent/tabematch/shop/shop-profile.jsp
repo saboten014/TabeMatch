@@ -184,7 +184,7 @@
 	        </a>
 
 	        <%-- 2. パスワード変更機能（ShopPasswordChange.actionは今後作成） --%>
-	        <a href="${pageContext.request.contextPath}/ShopPasswordChange.action" class="action-btn btn-password">
+	        <a href="${pageContext.request.contextPath}/tabematch/UserPassUpdate.action" class="action-btn btn-password">
 	            パスワード変更
 	        </a>
 

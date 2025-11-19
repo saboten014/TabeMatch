@@ -31,7 +31,7 @@ public class ShopProfileAction extends Action {
         if (user == null || !"2".equals(user.getUsersTypeId())) {
             req.setAttribute("errorMessage", "店舗管理者としてログインしてください。");
             // ログイン画面へリダイレクト（絶対パス推奨）
-            req.getRequestDispatcher("/login.jsp").forward(req, res);
+            req.getRequestDispatcher("/tabematch/login.jsp").forward(req, res);
             return;
         }
 
