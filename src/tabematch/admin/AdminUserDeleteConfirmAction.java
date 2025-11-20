@@ -14,6 +14,6 @@ public class AdminUserDeleteConfirmAction extends Action {
 
         req.setAttribute("userId", userId);
 
-        req.getRequestDispatcher("admin-user-delete-confirm.jsp").forward(req, res);
+        req.getRequestDispatcher("/tabematch/admin/admin-user-delete-confirm.jsp").forward(req, res);
     }
 }

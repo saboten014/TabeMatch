@@ -22,6 +22,6 @@ public class AdminUserDeleteAction extends Action {
             req.setAttribute("errorMessage", "削除に失敗しました。");
         }
 
-        req.getRequestDispatcher("admin-user-delete-complete.jsp").forward(req, res);
+        req.getRequestDispatcher("/tabematch/admin/admin-user-delete-complete.jsp").forward(req, res);
     }
 }
