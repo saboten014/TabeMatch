@@ -28,7 +28,7 @@ function showMenu(type) {
 <!-- ===== 機能ボタン枠 ===== -->
 <!-- ユーザー系 -->
 <div class="feature-box user-box">
-  <a href="" class="btn-link feature-btn user-feature">ユーザー管理</a>
+  <a href="../admin/AdminUserList.action" class="btn-link feature-btn user-feature">ユーザー管理</a>
 </div>
 
 <!-- 店舗系 -->

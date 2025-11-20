@@ -19,6 +19,6 @@ public class AdminUserListAction extends Action {
 
         req.setAttribute("userList", list);
 
-        req.getRequestDispatcher("admin-user-list.jsp").forward(req, res);
+        req.getRequestDispatcher("/tabematch/admin/admin-user-list.jsp").forward(req, res);
     }
 }
