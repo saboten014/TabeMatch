@@ -3,6 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import bean.Users;
 
@@ -29,6 +31,8 @@ public class UserDAO extends DAO {
 			user.setUserName(rs.getString("user_name"));
 			user.setAllergenId(rs.getString("allergen_id"));
 			user.setUsersTypeId(rs.getString("users_type_id"));
+			// ★追加：登録日(created_at)
+			user.setCreatedAt(rs.getTimestamp("created_at"));
 		}
 
 		rs.close();
@@ -58,6 +62,8 @@ public class UserDAO extends DAO {
 			user.setUserName(rs.getString("user_name"));
 			user.setAllergenId(rs.getString("allergen_id"));
 			user.setUsersTypeId(rs.getString("users_type_id"));
+			// ★追加：登録日(created_at)
+			user.setCreatedAt(rs.getTimestamp("created_at"));
 		}
 
 		rs.close();
@@ -160,6 +166,89 @@ public class UserDAO extends DAO {
         }
         return line;
     }
+
+	// ============================================================
+	// ★追加：一般ユーザ一覧（管理者用）
+	// ============================================================
+	public List<Users> getGeneralUserList() throws Exception {
+
+		List<Users> list = new ArrayList<>();
+		Connection con = getConnection();
+
+		String sql = "SELECT user_id, user_name, created_at FROM users WHERE users_type_id = '1' ORDER BY created_at DESC";
+
+		PreparedStatement stmt = con.prepareStatement(sql);
+
+		ResultSet rs = stmt.executeQuery();
+
+		while (rs.next()) {
+			Users user = new Users();
+			user.setUserId(rs.getString("user_id"));
+			user.setUserName(rs.getString("user_name"));
+
+			// ★追加
+			user.setCreatedAt(rs.getTimestamp("created_at"));
+
+			list.add(user);
+		}
+
+		rs.close();
+		stmt.close();
+		con.close();
+
+		return list;
+	}
+
+		// ============================================================
+		// ★追加：一般ユーザ詳細取得
+		// ============================================================
+		public Users getGeneralUserDetail(String userId) throws Exception {
+
+			Users user = null;
+			Connection con = getConnection();
+
+			String sql = "SELECT user_id, user_name, created_at FROM users WHERE user_id = ? AND users_type_id = '1'";
+
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, userId);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				user = new Users();
+				user.setUserId(rs.getString("user_id"));
+				user.setUserName(rs.getString("user_name"));
+
+				// ★追加
+				user.setCreatedAt(rs.getTimestamp("created_at"));
+			}
+
+			rs.close();
+			stmt.close();
+			con.close();
+
+			return user;
+		}
+
+		// ============================================================
+		// ★追加：一般ユーザ削除（物理削除）
+		// ============================================================
+		public boolean deleteUser(String userId) throws Exception {
+
+			Connection con = getConnection();
+
+			String sql = "DELETE FROM users WHERE user_id = ? AND users_type_id = '1'";
+
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, userId);
+
+			int result = stmt.executeUpdate();
+
+			stmt.close();
+			con.close();
+
+			return result > 0;
+		}
 
 
 

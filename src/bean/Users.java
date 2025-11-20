@@ -1,11 +1,16 @@
 package bean;
 
+import java.sql.Timestamp;  // ★追加：created_at 取得用
+
 public class Users {
 	private String userId;
 	private String password;
 	private String userName;
 	private String allergenId;
 	private String usersTypeId;
+
+	// ★追加：登録日（created_at）
+	private Timestamp createdAt;
 
 	// コンストラクタ
 	public Users() {
@@ -50,5 +55,14 @@ public class Users {
 
 	public void setUsersTypeId(String usersTypeId) {
 		this.usersTypeId = usersTypeId;
+	}
+
+	// ★追加：created_at Getter/Setter
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
 	}
 }
