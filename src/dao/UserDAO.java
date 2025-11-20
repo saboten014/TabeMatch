@@ -15,8 +15,8 @@ public class UserDAO extends DAO {
 		Users user = null;
 		Connection con = getConnection();
 
-		String sql = "SELECT user_id, password, user_name, allergen_id, users_type_id " +
-				"FROM users WHERE user_id = ? AND password = ?";
+		String sql = "SELECT user_id, password, user_name, allergen_id, users_type_id, created_at "
+				+ "FROM users WHERE user_id = ? AND password = ?";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, userId);
@@ -47,8 +47,8 @@ public class UserDAO extends DAO {
 		Users user = null;
 		Connection con = getConnection();
 
-		String sql = "SELECT user_id, password, user_name, allergen_id, users_type_id " +
-				"FROM users WHERE user_id = ?";
+		String sql = "SELECT user_id, password, user_name, allergen_id, users_type_id, created_at "
+				+ "FROM users WHERE user_id = ?";
 
 		PreparedStatement stmt = con.prepareStatement(sql);
 		stmt.setString(1, userId);
