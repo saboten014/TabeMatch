@@ -1,9 +1,13 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../../header.html" %>
+<%@include file="../main/user_menu.jsp" %>
+<!-- Googleフォント -->
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin-insert.css">
 
+<div class=zenbu>
 <h1>管理者アカウント登録</h1>
-
-<div class="form-container">
 
 <form action="AdminInsertExecute.action" method="post">
 
@@ -38,6 +42,6 @@
     </table>
 </form>
 
-</div>
 
+</div>
 <%@include file="../../footer.html" %>
