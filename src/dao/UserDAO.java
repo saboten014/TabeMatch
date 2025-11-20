@@ -90,8 +90,9 @@ public class UserDAO extends DAO {
 	        java.sql.Array sqlArray = con.createArrayOf("varchar", allergenArray);
 	        stmt.setArray(4, sqlArray);
 	    } else {
-	        // 空ならNULLをセット
-	        stmt.setNull(4, java.sql.Types.ARRAY);
+	    	// ★修正ポイント：NULL ではなく空配列 {} を入れる
+	        java.sql.Array emptyArray = con.createArrayOf("varchar", new String[]{});
+	        stmt.setArray(4, emptyArray);
 	    }
 
 	    stmt.setString(5, user.getUsersTypeId());
