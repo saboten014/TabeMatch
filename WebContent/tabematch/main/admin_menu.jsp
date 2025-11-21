@@ -9,6 +9,7 @@
 <div class="header">
   <div class="logo">たべまっち　管理者ホーム</div>
   <div class="nav-links">
+  　<a href="<%= contextPath %>/tabematch/main/admin_home.jsp">ホーム</a>
     <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
   </div>
 </div>
