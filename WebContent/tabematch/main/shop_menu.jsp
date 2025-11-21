@@ -69,7 +69,7 @@
     <div class="logo">たべまっち</div>
     <div class="nav-links">
       <a href="${pageContext.request.contextPath}/tabematch/News.action">お知らせ</a>
-      <a href="${pageContext.request.contextPath}/tabematch.shop/">予約管理</a>
+      <a href="${pageContext.request.contextPath}/tabematch/shop/ShopReservationList.action">予約管理</a>
       <a href="${pageContext.request.contextPath}/tabematch.shop/ShopProfile.action">店舗プロフィール</a>
       <a href="${pageContext.request.contextPath}/tabematch/main/Logout.action">ログアウト</a>
     </div>

@@ -20,7 +20,7 @@ public class ShopManagementAction extends Action {
             throws Exception {
 
         HttpSession session = req.getSession();
-        String url = "/jsp/shop/shop-management.jsp";
+        String url = "/tabematch/shop/shop-management.jsp";
 
         // 1. ログインチェックと権限チェック (省略なし)
         Users user = (Users) session.getAttribute("user");
