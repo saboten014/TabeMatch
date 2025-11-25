@@ -1,16 +1,20 @@
 package tabematch.shop;
 
-import java.text.SimpleDateFormat; // ★追加
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bean.Reserve;
+import bean.Shop;
 import bean.Users;
 import dao.ReserveDAO;
+import dao.ReserveDAO.ReservationDayStatus;
+import dao.ShopDAO;
 import tool.Action;
 
 public class ShopManagementAction extends Action {
@@ -22,61 +26,105 @@ public class ShopManagementAction extends Action {
         HttpSession session = req.getSession();
         String url = "/tabematch/shop/shop-management.jsp";
 
-        // 1. ログインチェックと権限チェック (省略なし)
+        // 1. ログインチェックと権限チェック
         Users user = (Users) session.getAttribute("user");
         if (user == null || !"2".equals(user.getUsersTypeId())) {
             req.setAttribute("errorMessage", "店舗管理者としてログインしてください。");
             req.getRequestDispatcher("/login.jsp").forward(req, res);
             return;
         }
-        String shopId = user.getUserId();
 
+        // ★修正：メールアドレスから実際の店舗IDを取得
+        ShopDAO shopDao = new ShopDAO();
+        Shop shop = shopDao.getShopByMail(user.getUserId());
 
-        // ★★★ 2. カレンダー表示対象の年/月の決定ロジック ★★★
+        if (shop == null) {
+            req.setAttribute("errorMessage", "店舗情報が取得できませんでした。");
+            req.getRequestDispatcher("/error.jsp").forward(req, res);
+            return;
+        }
+
+        String shopId = shop.getShopId(); // ★これが実際の店舗ID（SHOP...形式）
+
+        // ★デバッグ：店舗IDを確認
+        System.out.println("=== ShopManagementAction デバッグ開始 ===");
+        System.out.println("ログインメールアドレス: " + user.getUserId());
+        System.out.println("実際の店舗ID: " + shopId);
+
+        // 2. カレンダー表示対象の年/月の決定ロジック
         Calendar currentCal = Calendar.getInstance();
 
-        // パラメータから年と月を取得
         String yearParam = req.getParameter("year");
         String monthParam = req.getParameter("month");
 
         if (yearParam != null && monthParam != null) {
             try {
                 int year = Integer.parseInt(yearParam);
-                // 月は 0 (1月) から始まるため、ユーザー入力 (1-12) から 1 を引く
                 int month = Integer.parseInt(monthParam) - 1;
-
-                // カレンダーインスタンスに設定
                 currentCal.set(Calendar.YEAR, year);
                 currentCal.set(Calendar.MONTH, month);
-                currentCal.set(Calendar.DAY_OF_MONTH, 1); // 日付を1日にリセット
+                currentCal.set(Calendar.DAY_OF_MONTH, 1);
             } catch (NumberFormatException e) {
-                // パラメータが不正な場合は無視し、現在の日付を使用する
+                // パラメータが不正な場合は無視
             }
         }
 
-        // カレンダーヘッダー用の表示文字列を作成
         SimpleDateFormat headerFormat = new SimpleDateFormat("yyyy年 M月");
         String currentMonthYear = headerFormat.format(currentCal.getTime());
 
-        // 決定した年/月の値をJSPに渡す
+        int displayYear = currentCal.get(Calendar.YEAR);
+        int displayMonth = currentCal.get(Calendar.MONTH) + 1;
+
+        // ★デバッグ：表示対象の年月を確認
+        System.out.println("表示対象: " + displayYear + "年 " + displayMonth + "月");
+
         req.setAttribute("currentMonthYear", currentMonthYear);
-        req.setAttribute("currentYear", currentCal.get(Calendar.YEAR));
-        req.setAttribute("currentMonth", currentCal.get(Calendar.MONTH) + 1); // 1-12月の値に戻して渡す
+        req.setAttribute("currentYear", displayYear);
+        req.setAttribute("currentMonth", displayMonth);
 
-
-        // 3. DAOを使い、今日の予約一覧を取得 (ロジックは変更なし)
+        // 3. DAOを使い、今日の予約一覧とステータス情報を取得
         ReserveDAO reserveDAO = new ReserveDAO();
-        List<Reserve> todayReservations;
 
         try {
-            todayReservations = reserveDAO.getTodayReservations(shopId);
+            // 今日の予約一覧
+            List<Reserve> todayReservations = reserveDAO.getTodayReservations(shopId);
             req.setAttribute("todayReservations", todayReservations);
 
+            // ★デバッグ：今日の予約件数
+            System.out.println("今日の予約件数: " + (todayReservations != null ? todayReservations.size() : 0));
+
+            // カレンダー用：指定月の日付ごとの予約ステータス
+            Map<Integer, ReservationDayStatus> reservationStatusMap = reserveDAO.getReservationStatusByMonth(
+                shopId,
+                displayYear,
+                displayMonth
+            );
+
+            // ★デバッグ：取得したマップの内容を出力
+            System.out.println("予約ステータスマップ: " + reservationStatusMap);
+            if (reservationStatusMap != null && !reservationStatusMap.isEmpty()) {
+                for (Map.Entry<Integer, ReservationDayStatus> entry : reservationStatusMap.entrySet()) {
+                    System.out.println("  日付: " + entry.getKey() +
+                                     ", 総数: " + entry.getValue().getTotalCount() +
+                                     ", 承認待ち: " + entry.getValue().getPendingCount() +
+                                     ", 承認済み: " + entry.getValue().getApprovedCount());
+                }
+            } else {
+                System.out.println("  ※マップが空、またはnull");
+            }
+
+            req.setAttribute("reservationStatusMap", reservationStatusMap);
+
         } catch (Exception e) {
-            req.setAttribute("errorMessage", "予約情報の取得中にエラーが発生しました：" + e.getMessage());
+            // ★デバッグ：エラー詳細を出力
+            System.err.println("エラー発生: " + e.getMessage());
             e.printStackTrace();
+
+            req.setAttribute("errorMessage", "予約情報の取得中にエラーが発生しました：" + e.getMessage());
             url = "/error.jsp";
         }
+
+        System.out.println("=== ShopManagementAction デバッグ終了 ===");
 
         // 5. JSPへフォワード
         req.getRequestDispatcher(url).forward(req, res);

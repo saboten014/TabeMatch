@@ -46,7 +46,7 @@ public class LoginExecuteAction extends Action {
 					url = "main/search.jsp";
 				} else if ("2".equals(usersTypeId)) {
 					// 店舗ユーザー → 店舗情報管理画面
-					url = "shop/shop-management.jsp";
+					url = "shop/ShopManagement.action";
 				} else if ("3".equals(usersTypeId)) {
 					// 管理ユーザー → 管理画面トップページ
 					url = "main/admin_home.jsp";

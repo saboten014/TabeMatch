@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import bean.Reserve;
@@ -197,6 +199,8 @@ public class ReserveDAO extends DAO {
         return reserve;
     }
 
+
+
  // 店舗ごとの今日の予約一覧取得 (予約日時順でソート)
     public List<Reserve> getTodayReservations(String shopId) throws Exception {
         List<Reserve> list = new ArrayList<>();
@@ -253,5 +257,67 @@ public class ReserveDAO extends DAO {
             if (stmt != null) stmt.close();
             if (con != null) con.close();
         }
+    }
+ // 指定された年月の日付ごとの予約ステータス情報を取得
+    public Map<Integer, ReservationDayStatus> getReservationStatusByMonth(String shopId, int year, int month) throws Exception {
+        Map<Integer, ReservationDayStatus> statusMap = new HashMap<>();
+
+        String sql = "SELECT EXTRACT(DAY FROM r.reserve_date) AS day, " +
+                     "       COUNT(*) AS total_count, " +
+                     "       SUM(CASE WHEN r.reserve_status = 1 THEN 1 ELSE 0 END) AS pending_count, " +
+                     "       SUM(CASE WHEN r.reserve_status = 2 THEN 1 ELSE 0 END) AS approved_count " +
+                     "FROM reserve r " +
+                     "WHERE r.shop_id = ? " +
+                     "AND EXTRACT(YEAR FROM r.reserve_date) = ? " +
+                     "AND EXTRACT(MONTH FROM r.reserve_date) = ? " +
+                     "GROUP BY EXTRACT(DAY FROM r.reserve_date)";
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, shopId);
+            stmt.setInt(2, year);
+            stmt.setInt(3, month);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int day = rs.getInt("day");
+                    int totalCount = rs.getInt("total_count");
+                    int pendingCount = rs.getInt("pending_count");
+                    int approvedCount = rs.getInt("approved_count");
+
+                    ReservationDayStatus status = new ReservationDayStatus();
+                    status.setTotalCount(totalCount);
+                    status.setPendingCount(pendingCount);
+                    status.setApprovedCount(approvedCount);
+
+                    statusMap.put(day, status);
+                }
+            }
+        }
+
+        return statusMap;
+    }
+
+    // 内部クラス：予約ステータス情報を保持
+    public static class ReservationDayStatus {
+        private int totalCount;      // 総予約数
+        private int pendingCount;    // 承認待ち数
+        private int approvedCount;   // 承認済み数
+
+        public int getTotalCount() { return totalCount; }
+        public void setTotalCount(int totalCount) { this.totalCount = totalCount; }
+
+        public int getPendingCount() { return pendingCount; }
+        public void setPendingCount(int pendingCount) { this.pendingCount = pendingCount; }
+
+        public int getApprovedCount() { return approvedCount; }
+        public void setApprovedCount(int approvedCount) { this.approvedCount = approvedCount; }
+
+        // 承認待ちがあるかどうか
+        public boolean hasPending() { return pendingCount > 0; }
+
+        // すべて承認済みかどうか
+        public boolean isAllApproved() { return totalCount > 0 && pendingCount == 0; }
     }
 }

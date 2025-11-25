@@ -5,6 +5,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
+<%@page import="dao.ReserveDAO.ReservationDayStatus"%>
 <%
     String contextPath = request.getContextPath();
     String actionPath = contextPath + "/tabematch/shop/ShopManagement.action";
@@ -12,10 +13,11 @@
     // Actionから渡された予約リストを取得 (左サイドバー用)
     List<Reserve> todayReservations = (List<Reserve>) request.getAttribute("todayReservations");
 
-    // Actionから渡されたカレンダーの日付ごとの予約件数マップを取得
-    Map<Integer, Integer> reservationCounts = (Map<Integer, Integer>) request.getAttribute("reservationCounts");
-    if (reservationCounts == null) {
-        reservationCounts = new java.util.HashMap<>();
+    // ★修正：reservationStatusMapを取得
+    Map<Integer, ReservationDayStatus> reservationStatusMap =
+        (Map<Integer, ReservationDayStatus>) request.getAttribute("reservationStatusMap");
+    if (reservationStatusMap == null) {
+        reservationStatusMap = new java.util.HashMap<>();
     }
 
     // 日時フォーマット用のオブジェクト
@@ -151,6 +153,7 @@ body {
     color: inherit;
     display: block;
     box-sizing: border-box;
+    position: relative;
 }
 .day-cell:hover {
     background-color: #e6e6e6;
@@ -166,6 +169,21 @@ body {
     font-size: 0.8em;
     color: #00796B;
     font-weight: 500;
+}
+/* ★追加：ステータスアイコン用のスタイル */
+.status-icon {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 1.2em;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.icon-pending {
+    color: #FF9800; /* オレンジ：承認待ち */
+}
+.icon-approved {
+    color: #4CAF50; /* 緑：すべて承認済み */
 }
 </style>
 
@@ -242,16 +260,30 @@ body {
                     cellClass += " today";
                 }
 
-                int count = reservationCounts.getOrDefault(i, 0);
+                // ★修正：ステータス情報を取得
+                ReservationDayStatus status = reservationStatusMap.get(i);
                 String reserveCountText = "";
-                if (count > 0) {
-                    reserveCountText = "予約 " + count + "件";
+                String statusIcon = "";
+
+                if (status != null) {
+                    int totalCount = status.getTotalCount();
+                    reserveCountText = "予約 " + totalCount + "件";
+
+                    // ステータスに応じてアイコンを設定
+                    if (status.hasPending()) {
+                        // 承認待ちがある場合
+                        statusIcon = "<span class='status-icon icon-pending'>！</span>";
+                    } else if (status.isAllApproved()) {
+                        // すべて承認済みの場合
+                        statusIcon = "<span class='status-icon icon-approved'>☆</span>";
+                    }
                 }
 
                 String clickUrl = actionPath + "?year=" + currentYear + "&month=" + currentMonth + "&day=" + i;
             %>
                 <a class="<%= cellClass %>" href="<%= clickUrl %>">
                     <%= i %>
+                    <%= statusIcon %> <%-- ★アイコン表示 --%>
                     <% if (!reserveCountText.isEmpty()) { %>
                         <span class="reserve-count"><%= reserveCountText %></span>
                     <% } %>
