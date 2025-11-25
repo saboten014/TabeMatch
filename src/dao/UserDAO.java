@@ -250,6 +250,103 @@ public class UserDAO extends DAO {
 			return result > 0;
 		}
 
+		// ============================================================
+		// ★追加：フィルタ + ページネーション対応 一般ユーザ一覧
+		// ============================================================
+		public List<Users> getGeneralUserList(String initial, int offset, int limit) throws Exception {
+
+		    List<Users> list = new ArrayList<>();
+		    Connection con = getConnection();
+
+		    // ★ポイント
+		    // initial が null ⇒ フィルタなし
+		    // A-Z ⇒ user_name ILIKE 'A%'
+		    // ア/カ/サ… ⇒ user_name LIKE 'ア%' （日本語は ILIKE 不要）
+		    // 文字コードの違いにも対応できる安全設計
+
+		    StringBuilder sql = new StringBuilder();
+		    sql.append("SELECT user_id, user_name, created_at ");
+		    sql.append("FROM users WHERE users_type_id = '1' ");
+
+		    // ★フィルタあり
+		    if (initial != null && !initial.isEmpty()) {
+		        // A～Z（アルファベット）
+		        if (initial.matches("[A-Z]")) {
+		            sql.append("AND user_name ILIKE ? ");
+		        }
+		        // 五十音
+		        else {
+		            sql.append("AND user_name LIKE ? ");
+		        }
+		    }
+
+		    sql.append("ORDER BY created_at DESC ");
+		    sql.append("LIMIT ? OFFSET ? ");
+
+		    PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+		    int idx = 1;
+
+		    if (initial != null && !initial.isEmpty()) {
+		        stmt.setString(idx++, initial + "%");  // 頭文字一致
+		    }
+
+		    stmt.setInt(idx++, limit);
+		    stmt.setInt(idx++, offset);
+
+		    ResultSet rs = stmt.executeQuery();
+
+		    while (rs.next()) {
+		        Users user = new Users();
+		        user.setUserId(rs.getString("user_id"));
+		        user.setUserName(rs.getString("user_name"));
+		        user.setCreatedAt(rs.getTimestamp("created_at"));
+		        list.add(user);
+		    }
+
+		    rs.close();
+		    stmt.close();
+		    con.close();
+
+		    return list;
+		}
+
+
+		// ============================================================
+		// ★追加：件数カウント（ページネーション用）
+		// ============================================================
+		public int getGeneralUserCount(String initial) throws Exception {
+
+		    Connection con = getConnection();
+
+		    StringBuilder sql = new StringBuilder();
+		    sql.append("SELECT COUNT(*) FROM users WHERE users_type_id = '1' ");
+
+		    if (initial != null && !initial.isEmpty()) {
+		        // 英字 or 日本語
+		        if (initial.matches("[A-Z]")) {
+		            sql.append("AND user_name ILIKE ? ");
+		        } else {
+		            sql.append("AND user_name LIKE ? ");
+		        }
+		    }
+
+		    PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+		    if (initial != null && !initial.isEmpty()) {
+		        stmt.setString(1, initial + "%");
+		    }
+
+		    ResultSet rs = stmt.executeQuery();
+		    rs.next();
+		    int count = rs.getInt(1);
+
+		    rs.close();
+		    stmt.close();
+		    con.close();
+
+		    return count;
+		}
 
 
 }

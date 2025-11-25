@@ -49,6 +49,59 @@ if (list != null && !list.isEmpty()) {
 %>
 </div>
 
+<!-- ▼ フィルタボタン -->
+<div class="filter-container">
+
+    <!-- 五十音 -->
+    <div class="filter-group">
+        <span>五十音：</span>
+        <a href="AdminUserList.action?kana=ア">ア</a>
+        <a href="AdminUserList.action?kana=カ">カ</a>
+        <a href="AdminUserList.action?kana=サ">サ</a>
+        <a href="AdminUserList.action?kana=タ">タ</a>
+        <a href="AdminUserList.action?kana=ナ">ナ</a>
+        <a href="AdminUserList.action?kana=ハ">ハ</a>
+        <a href="AdminUserList.action?kana=マ">マ</a>
+        <a href="AdminUserList.action?kana=ヤ">ヤ</a>
+        <a href="AdminUserList.action?kana=ラ">ラ</a>
+        <a href="AdminUserList.action?kana=ワ">ワ</a>
+    </div>
+
+    <!-- A〜Z -->
+    <div class="filter-group">
+        <span>A〜Z：</span>
+        <% for(char c='A'; c<='Z'; c++){ %>
+            <a href="AdminUserList.action?kana=<%=c%>"><%=c%></a>
+        <% } %>
+    </div>
+
+    <!-- クリア -->
+    <div class="filter-group">
+        <a href="AdminUserList.action?kana=ALL" class="clear-btn">すべて表示</a>
+    </div>
+
+</div>
+
+<%
+/* ▼ 修正済み：変数名 page → pageNum に変更（重複ローカル変数エラー対策） */
+int pageNum = (int)request.getAttribute("page");
+int maxPage = (int)request.getAttribute("maxPage");
+String kana = (String)request.getAttribute("kana");
+if (kana == null) kana = "ALL";
+%>
+
+<div class="pagination">
+    <% if (pageNum > 1) { %>
+        <a href="AdminUserList.action?page=<%=pageNum-1%>&kana=<%=kana%>">← 前へ</a>
+    <% } %>
+
+    <span><%=pageNum%> / <%=maxPage%></span>
+
+    <% if (pageNum < maxPage) { %>
+        <a href="AdminUserList.action?page=<%=pageNum+1%>&kana=<%=kana%>">次へ →</a>
+    <% } %>
+</div>
+
 <div class="back-link">
     <a href="<%= request.getContextPath() %>/tabematch/main/admin_home.jsp">← 管理者ホームに戻る</a>
 </div>
