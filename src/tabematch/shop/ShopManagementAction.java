@@ -34,7 +34,7 @@ public class ShopManagementAction extends Action {
             return;
         }
 
-        // ★修正：メールアドレスから実際の店舗IDを取得
+        // メールアドレスから実際の店舗IDを取得
         ShopDAO shopDao = new ShopDAO();
         Shop shop = shopDao.getShopByMail(user.getUserId());
 
@@ -44,11 +44,9 @@ public class ShopManagementAction extends Action {
             return;
         }
 
-        String shopId = shop.getShopId(); // ★これが実際の店舗ID（SHOP...形式）
+        String shopId = shop.getShopId();
 
-        // ★デバッグ：店舗IDを確認
         System.out.println("=== ShopManagementAction デバッグ開始 ===");
-        System.out.println("ログインメールアドレス: " + user.getUserId());
         System.out.println("実際の店舗ID: " + shopId);
 
         // 2. カレンダー表示対象の年/月の決定ロジック
@@ -56,6 +54,7 @@ public class ShopManagementAction extends Action {
 
         String yearParam = req.getParameter("year");
         String monthParam = req.getParameter("month");
+        String dayParam = req.getParameter("day"); // ★追加：日付パラメータ
 
         if (yearParam != null && monthParam != null) {
             try {
@@ -75,23 +74,43 @@ public class ShopManagementAction extends Action {
         int displayYear = currentCal.get(Calendar.YEAR);
         int displayMonth = currentCal.get(Calendar.MONTH) + 1;
 
-        // ★デバッグ：表示対象の年月を確認
         System.out.println("表示対象: " + displayYear + "年 " + displayMonth + "月");
 
         req.setAttribute("currentMonthYear", currentMonthYear);
         req.setAttribute("currentYear", displayYear);
         req.setAttribute("currentMonth", displayMonth);
 
-        // 3. DAOを使い、今日の予約一覧とステータス情報を取得
+        // 3. DAOを使い、予約情報を取得
         ReserveDAO reserveDAO = new ReserveDAO();
 
         try {
-            // 今日の予約一覧
-            List<Reserve> todayReservations = reserveDAO.getTodayReservations(shopId);
-            req.setAttribute("todayReservations", todayReservations);
+            List<Reserve> displayReservations; // 表示する予約リスト
+            String selectedDateString; // サイドバーのタイトル
 
-            // ★デバッグ：今日の予約件数
-            System.out.println("今日の予約件数: " + (todayReservations != null ? todayReservations.size() : 0));
+            // ★追加：日付パラメータがあれば、その日の予約を取得
+            if (dayParam != null && !dayParam.isEmpty()) {
+                try {
+                    int selectedDay = Integer.parseInt(dayParam);
+                    displayReservations = reserveDAO.getReservationsByDate(
+                        shopId, displayYear, displayMonth, selectedDay
+                    );
+                    selectedDateString = displayYear + "年" + displayMonth + "月" + selectedDay + "日";
+                    System.out.println("選択日の予約件数: " + displayReservations.size());
+                } catch (NumberFormatException e) {
+                    // 日付が不正な場合は今日の予約を表示
+                    displayReservations = reserveDAO.getTodayReservations(shopId);
+                    selectedDateString = "今日";
+                }
+            } else {
+                // 日付パラメータがない場合は今日の予約を表示
+                displayReservations = reserveDAO.getTodayReservations(shopId);
+                selectedDateString = "今日";
+            }
+
+            req.setAttribute("todayReservations", displayReservations);
+            req.setAttribute("selectedDateString", selectedDateString);
+
+            System.out.println("表示予約件数: " + displayReservations.size());
 
             // カレンダー用：指定月の日付ごとの予約ステータス
             Map<Integer, ReservationDayStatus> reservationStatusMap = reserveDAO.getReservationStatusByMonth(
@@ -100,7 +119,6 @@ public class ShopManagementAction extends Action {
                 displayMonth
             );
 
-            // ★デバッグ：取得したマップの内容を出力
             System.out.println("予約ステータスマップ: " + reservationStatusMap);
             if (reservationStatusMap != null && !reservationStatusMap.isEmpty()) {
                 for (Map.Entry<Integer, ReservationDayStatus> entry : reservationStatusMap.entrySet()) {
@@ -116,7 +134,6 @@ public class ShopManagementAction extends Action {
             req.setAttribute("reservationStatusMap", reservationStatusMap);
 
         } catch (Exception e) {
-            // ★デバッグ：エラー詳細を出力
             System.err.println("エラー発生: " + e.getMessage());
             e.printStackTrace();
 

@@ -191,33 +191,53 @@ body {
 <div class="container">
 
     <div class="sidebar">
-        <h2>📅 <%= selectedDateString %>の予約一覧</h2>
+    <h2>📅 <%= selectedDateString %>の予約一覧</h2>
 
-        <div class="reservation-list">
-            <% if (todayReservations != null && !todayReservations.isEmpty()) { %>
-                <% for (Reserve reserve : todayReservations) { %>
-                    <div class="reservation-list-item">
-                        <div class="reservation-time">
-                            <%= timeFormat.format(reserve.getVisitTime()) %> (<%= reserve.getNumOfPeople() %>名)
-                        </div>
-                        <div class="reservation-detail">
-                            予約ID: <%= reserve.getReserveIdString() %>
-                            <span style="color: #FF9800; font-weight: bold;">
-                                [ステータス: <%= reserve.getReserveStatus() == 1 ? "承認待ち" : "その他" %>]
-                            </span>
-                        </div>
-                        <% if (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) { %>
-                            <div style="color: #D32F2F; font-size: 0.85em;">
-                                ⚠️ アレルギー: <%= reserve.getAllergyNotes() %>
-                            </div>
-                        <% } %>
+    <div class="reservation-list">
+        <% if (todayReservations != null && !todayReservations.isEmpty()) { %>
+            <% for (Reserve reserve : todayReservations) { %>
+                <div class="reservation-list-item">
+                    <div class="reservation-time">
+                        <%= timeFormat.format(reserve.getVisitTime()) %> (<%= reserve.getNumOfPeople() %>名)
                     </div>
-                <% } %>
-            <% } else { %>
-                <p style="color: #999; margin-top: 10px; text-align: center;">予約はありません。</p>
+                    <div class="reservation-detail">
+                        予約ID: <%= reserve.getReserveIdString() %>
+                        <%-- ★修正：ステータスを正しく表示 --%>
+                        <%
+                            String statusText = "";
+                            String statusColor = "";
+                            int status = reserve.getReserveStatus();
+
+                            if (status == 1) {
+                                statusText = "承認待ち";
+                                statusColor = "#FF9800"; // オレンジ
+                            } else if (status == 2) {
+                                statusText = "承認済み";
+                                statusColor = "#4CAF50"; // 緑
+                            } else if (status == 3) {
+                                statusText = "拒否";
+                                statusColor = "#F44336"; // 赤
+                            } else {
+                                statusText = "不明";
+                                statusColor = "#999999"; // グレー
+                            }
+                        %>
+                        <span style="color: <%= statusColor %>; font-weight: bold;">
+                            [ステータス: <%= statusText %>]
+                        </span>
+                    </div>
+                    <% if (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) { %>
+                        <div style="color: #D32F2F; font-size: 0.85em;">
+                            ⚠️ アレルギー: <%= reserve.getAllergyNotes() %>
+                        </div>
+                    <% } %>
+                </div>
             <% } %>
-        </div>
+        <% } else { %>
+            <p style="color: #999; margin-top: 10px; text-align: center;">予約はありません。</p>
+        <% } %>
     </div>
+</div>
 
     <div class="main-content">
         <div class="calendar-header">

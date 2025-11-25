@@ -320,4 +320,53 @@ public class ReserveDAO extends DAO {
         // すべて承認済みかどうか
         public boolean isAllApproved() { return totalCount > 0 && pendingCount == 0; }
     }
+ // 店舗ごとの特定日の予約一覧取得
+    public List<Reserve> getReservationsByDate(String shopId, int year, int month, int day) throws Exception {
+        List<Reserve> list = new ArrayList<>();
+
+        String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_status, s.shop_name, u.user_name "
+                   + "FROM reserve r "
+                   + "JOIN shop s ON r.shop_id = s.shop_id "
+                   + "LEFT JOIN users u ON r.user_id = u.user_id "
+                   + "WHERE r.shop_id = ? "
+                   + "AND EXTRACT(YEAR FROM r.reserve_date) = ? "
+                   + "AND EXTRACT(MONTH FROM r.reserve_date) = ? "
+                   + "AND EXTRACT(DAY FROM r.reserve_date) = ? "
+                   + "ORDER BY r.reserve_time ASC";
+
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, shopId);
+            stmt.setInt(2, year);
+            stmt.setInt(3, month);
+            stmt.setInt(4, day);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Reserve reserve = mapReserve(rs);
+
+                    // 予約者名の追加
+                    try {
+                        String userName = rs.getString("user_name");
+                        if (userName != null) {
+                            String currentMessage = reserve.getMessage();
+                            if (currentMessage == null || currentMessage.isEmpty()) {
+                                reserve.setMessage("[予約者: " + userName + "]");
+                            } else {
+                                reserve.setMessage(currentMessage + " [予約者: " + userName + "]");
+                            }
+                        }
+                    } catch (Exception e) {
+                        // user_nameが取得できない場合は無視
+                    }
+                    list.add(reserve);
+                }
+            }
+        }
+
+        return list;
+    }
 }
