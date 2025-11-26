@@ -10,6 +10,9 @@
 <title>お気に入り店舗一覧</title>
 
 <style>
+	h1 {
+	margin-top: 100px;
+	}
     /* 既存のスタイル */
     table {
         width: 80%;

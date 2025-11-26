@@ -136,7 +136,7 @@
     </div>
 
     <%-- NewsActionへのリンクにコンテキストパスを追加 --%>
-    <a href="${pageContext.request.contextPath}/News.action" class="back-link">← お知らせ一覧へ戻る</a>
+    <a href="<%= contextPath %>/tabematch/News.action" class="back-link">← お知らせ一覧へ戻る</a>
 </div>
 
 <%@include file="../../footer.html" %>

@@ -36,7 +36,7 @@ public class AdminInsertExecuteAction extends Action {
         }
 
         // 完了画面へ遷移
-        req.getRequestDispatcher("../tabematch/admin/admin-insert-complete.jsp")
+        req.getRequestDispatcher("admin-insert-complete.jsp")
            .forward(req, res);
     }
 }

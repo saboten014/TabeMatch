@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../../header.html" %>
-<%@include file="/tabematch/main/admin_menu.jsp" %>
+<%@include file="/tabematch/main/user_menu.jsp" %>
 <!-- Googleフォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <!-- CSS読み込み -->

@@ -1,7 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@page import="java.util.List" %>
 <%@page import="bean.Request" %>
-<%@include file="../main/admin_menu.jsp" %>
+<%@include file="../main/user_menu.jsp" %>
 <%@include file="../../header.html" %>
 <!-- 丸文字フォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">

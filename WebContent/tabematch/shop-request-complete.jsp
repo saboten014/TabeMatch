@@ -1,7 +1,12 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../header.html" %>
+<!-- Googleフォント -->
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- css読み込み -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/shop_request.css">
 
-<h1>リクエスト送信完了</h1>
+
+<h1 class="comp">リクエスト送信完了</h1>
 
 <%
     String requestId = (String)request.getAttribute("requestId");

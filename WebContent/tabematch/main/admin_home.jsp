@@ -3,7 +3,7 @@
 <!-- ヘッダー読込 -->
 <%@include file="../../header.html" %>
 <!-- 管理者メニューバー -->
-<%@include file="admin_menu.jsp" %>
+<%@include file="user_menu.jsp" %>
 
 <!-- 丸文字フォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
