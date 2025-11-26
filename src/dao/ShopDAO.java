@@ -427,4 +427,171 @@ public class ShopDAO extends DAO {
         }
         return shop;
     }
+
+ // ============================================================
+    // ★ 店舗詳細取得（管理者用）
+    // ============================================================
+    public Shop getShopDetail(String shopId) throws Exception {
+
+        Connection con = getConnection();
+
+        String sql = "SELECT shop_id, shop_name, shop_address, shop_mail, "
+                   + "shop_date, is_public "
+                   + "FROM shop WHERE shop_id = ?";
+
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, shopId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        Shop shop = null;
+
+        if (rs.next()) {
+            shop = new Shop();
+            shop.setShopId(rs.getString("shop_id"));
+            shop.setShopName(rs.getString("shop_name"));
+            shop.setShopAddress(rs.getString("shop_address"));
+            shop.setShopMail(rs.getString("shop_mail"));
+            shop.setShopDate(rs.getTimestamp("shop_date"));
+            // ★追加：公開フラグ
+            shop.setIsPublic(rs.getBoolean("is_public"));
+        }
+
+        rs.close();
+        stmt.close();
+        con.close();
+
+        return shop;
+    }
+
+    // ============================================================
+    // ★ 店舗一覧（フィルタ + ページネーション）
+    // ============================================================
+    public List<Shop> getShopList(String initial, int offset, int limit) throws Exception {
+
+        Connection con = getConnection();
+        List<Shop> list = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT shop_id, shop_name, shop_address, shop_mail, shop_date, is_public ");
+        sql.append("FROM shop ");
+
+        // ★初期フィルタ（ア〜ワ / A〜Z）
+        if (initial != null && !initial.isEmpty() && !initial.equals("ALL")) {
+
+            if (initial.matches("[A-Z]")) {
+                sql.append("WHERE shop_name ILIKE ? ");
+            } else {
+                sql.append("WHERE shop_name LIKE ? ");
+            }
+        }
+
+        sql.append("ORDER BY shop_date DESC ");
+        sql.append("LIMIT ? OFFSET ? ");
+
+        PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+        int idx = 1;
+        if (initial != null && !initial.isEmpty() && !initial.equals("ALL")) {
+            stmt.setString(idx++, initial + "%");
+        }
+
+        stmt.setInt(idx++, limit);
+        stmt.setInt(idx++, offset);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Shop shop = new Shop();
+            shop.setShopId(rs.getString("shop_id"));
+            shop.setShopName(rs.getString("shop_name"));
+            shop.setShopAddress(rs.getString("shop_address"));
+            shop.setShopMail(rs.getString("shop_mail"));
+            shop.setShopDate(rs.getTimestamp("shop_date"));
+            shop.setIsPublic(rs.getBoolean("is_public"));
+            list.add(shop);
+        }
+
+        rs.close();
+        stmt.close();
+        con.close();
+
+        return list;
+    }
+
+    // ============================================================
+    // ★ ページネーション用件数取得
+    // ============================================================
+    public int getShopCount(String initial) throws Exception {
+
+        Connection con = getConnection();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT COUNT(*) FROM shop ");
+
+        if (initial != null && !initial.isEmpty() && !initial.equals("ALL")) {
+            if (initial.matches("[A-Z]")) {
+                sql.append("WHERE shop_name ILIKE ? ");
+            } else {
+                sql.append("WHERE shop_name LIKE ? ");
+            }
+        }
+
+        PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+        if (initial != null && !initial.isEmpty() && !initial.equals("ALL")) {
+            stmt.setString(1, initial + "%");
+        }
+
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        stmt.close();
+        con.close();
+
+        return count;
+    }
+
+    // ============================================================
+    // ★ 公開状態の更新（TRUE=公開 / FALSE=非公開）
+    // ============================================================
+    public boolean updateShopPublic(String shopId, boolean isPublic) throws Exception {
+
+        Connection con = getConnection();
+
+        String sql = "UPDATE shop SET is_public = ? WHERE shop_id = ?";
+
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setBoolean(1, isPublic);
+        stmt.setString(2, shopId);
+
+        int result = stmt.executeUpdate();
+
+        stmt.close();
+        con.close();
+
+        return result > 0;
+    }
+
+    // ============================================================
+    // ★ 店舗削除（物理削除）
+    // ============================================================
+    public boolean deleteShop(String shopId) throws Exception {
+
+        Connection con = getConnection();
+
+        String sql = "DELETE FROM shop WHERE shop_id = ?";
+
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, shopId);
+
+        int result = stmt.executeUpdate();
+
+        stmt.close();
+        con.close();
+
+        return result > 0;
+    }
 }

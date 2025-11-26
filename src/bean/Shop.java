@@ -21,6 +21,7 @@ public class Shop {
 	private Integer shopSeat;
 	private String shopUrl;
 	private String reviewId;
+	private boolean isPublic; //←追加
 
 	// コンストラクタ
 	public Shop() {
@@ -163,4 +164,13 @@ public class Shop {
 	public void setReviewId(String reviewId) {
 		this.reviewId = reviewId;
 	}
+
+	public boolean getIsPublic() {
+	    return isPublic;
+	}
+
+	public void setIsPublic(boolean isPublic) {
+	    this.isPublic = isPublic;
+	}
+
 }
