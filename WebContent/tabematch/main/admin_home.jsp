@@ -10,7 +10,6 @@
 <!-- css読み込み -->
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_home.css">
 
-
 <script>
 function showMenu(type) {
   document.querySelectorAll('.feature-box').forEach(box => box.style.display = 'none');
@@ -28,18 +27,21 @@ function showMenu(type) {
 <!-- ===== 機能ボタン枠 ===== -->
 <!-- ユーザー系 -->
 <div class="feature-box user-box">
-  <a href="../admin/AdminUserList.action" class="btn-link feature-btn user-feature">ユーザー管理</a>
+  <!-- ★修正: 絶対パスに変更 -->
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminUserList.action" class="btn-link feature-btn user-feature">ユーザー管理</a>
 </div>
 
 <!-- 店舗系 -->
 <div class="feature-box shop-box">
-  <a href="../admin/AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
-  <a href="../admin/AdminShopList.action" class="btn-link feature-btn shop-feature">店舗管理</a>
+  <!-- ★修正: 絶対パスに変更 -->
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminShopList.action" class="btn-link feature-btn shop-feature">店舗管理</a>
 </div>
 
 <!-- 管理者系 -->
 <div class="feature-box admin-box">
-  <a href="../admin/AdminInsertForm.action" class="btn-link feature-btn admin-feature">管理者アカウント追加</a>
+  <!-- ★修正: 絶対パスに変更 -->
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminInsertForm.action" class="btn-link feature-btn admin-feature">管理者アカウント追加</a>
   <a href="<%= request.getContextPath() %>/tabematch/News.action" class="btn-link feature-btn admin-feature">お知らせ配信</a>
 </div>
 
