@@ -78,7 +78,7 @@
       %>
         <a href="<%= contextPath %>/tabematch/News.action">お知らせ</a>
         <a href="<%= contextPath %>/tabematch/main/search.jsp">店舗検索</a>
-        <a href="<%= contextPath %>/tabematch/main/favorite-list.jsp">お気に入り</a>
+        <a href="<%= contextPath %>/tabematch/main/FavoriteList.action">お気に入り</a>
         <a href="<%= contextPath %>/tabematch/main/ReservationList.action">予約管理</a>
         <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
       <%

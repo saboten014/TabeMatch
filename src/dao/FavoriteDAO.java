@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.Shop;
+
 // ユーザーIDはメールアドレス(String)、店舗IDは "SHOP..." の文字列(String)と仮定して修正します。
 public class FavoriteDAO extends DAO {
 
@@ -67,22 +69,36 @@ public class FavoriteDAO extends DAO {
     }
 
     //4.登録済みお気に入り店舗一覧取得
-    public List<String> getFavoriteShopIdsByUserId(String userId) throws Exception {
-        List<String> shopIdList = new ArrayList<>();
-        // fav_shop_id は favorite テーブルの店舗IDカラム
-        String sql = "SELECT fav_shop_id FROM favorite WHERE fav_user_id = ?";
+        public List<Shop> getFavoriteShops(String userId) throws Exception {
+            List<Shop> favoriteShops = new ArrayList<>();
+            Connection con = getConnection();
 
-        try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+            // ★★★ SQL文を修正: テーブル名 'favorite', カラム名 'fav_user_id', 'fav_shop_id' に合わせる ★★★
+            String sql = "SELECT s.* FROM shop s "
+                       + "INNER JOIN favorite f ON s.shop_id = f.fav_shop_id " // fav_shop_idを使用
+                       + "WHERE f.fav_user_id = ?"; // fav_user_idを使用
 
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, userId);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    shopIdList.add(rs.getString("fav_shop_id"));
-                }
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Shop shop = new Shop();
+                // Shop Beanのプロパティに合わせて値をセット
+                // (shopsテーブルのカラム名が以前の想定通りであることを前提としています)
+                shop.setShopId(rs.getString("shop_id"));
+                shop.setShopName(rs.getString("shop_name"));
+                shop.setShopAddress(rs.getString("shop_address"));
+                shop.setShopAllergy("shop_allergy");
+
+                favoriteShops.add(shop);
             }
+
+            rs.close();
+            stmt.close();
+            con.close();
+
+            return favoriteShops;
         }
-        return shopIdList;
-    }
 }

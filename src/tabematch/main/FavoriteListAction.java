@@ -1,6 +1,5 @@
 package tabematch.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import bean.Shop;
 import bean.Users;
 import dao.FavoriteDAO;
-import dao.ShopDAO;
 import tool.Action;
 
 public class FavoriteListAction extends Action {
@@ -38,33 +36,27 @@ public class FavoriteListAction extends Action {
 
 		// 3. DAOの準備
 		FavoriteDAO favDao = new FavoriteDAO();
-		ShopDAO shopDao = new ShopDAO();
 
-		List<Shop> favoriteShopList = new ArrayList<>();
+		List<Shop> favoriteShopList = null; // リストをnullで初期化
 
 		try {
-			// 4. お気に入り店舗IDのリストを取得
-			List<String> favShopIds = favDao.getFavoriteShopIdsByUserId(userId);
 
-			// 5. 各店舗IDを使って詳細情報を取得
-			for (String shopId : favShopIds) {
-				Shop shop = shopDao.getShopById(shopId);
-				if (shop != null) {
-					favoriteShopList.add(shop);
-				}
-			}
+			favoriteShopList = favDao.getFavoriteShops(userId);
 
-			// 6. 結果をリクエストスコープにセット
+			// 5. 結果をリクエストスコープにセット
 			req.setAttribute("favoriteShopList", favoriteShopList);
 
-			// 7. JSPへフォワード
+			System.out.println("★情報取ってこれてるか確認用★");
+			System.out.println(favoriteShopList);
+
+			// 6. JSPへフォワード
 			req.getRequestDispatcher("favorite-list.jsp").forward(req, res);
 
 		} catch (Exception e) {
 			// DBエラーやその他の例外処理
 			errorMessage = "お気に入り一覧の取得中にエラーが発生しました：" + e.getMessage();
 			req.setAttribute("errorMessage", errorMessage);
-			req.getRequestDispatcher("error.jsp").forward(req, res);
+			req.getRequestDispatcher("/error.jsp").forward(req, res);
 		}
 	}
 }

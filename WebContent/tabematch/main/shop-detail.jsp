@@ -16,7 +16,19 @@
 
     <h2>店舗詳細情報</h2>
 
-<a href="Search.action" class="backlist">← 一覧に戻る</a>
+<button onclick="goBack()">前のページに戻る</button>
+
+<script>
+
+function goBack() {
+
+    // ブラウザの履歴を1つ戻る
+
+    window.history.back();
+
+}
+</script>
+
 
     <%-- リクエストスコープのエラーメッセージを表示 --%>
     <%
