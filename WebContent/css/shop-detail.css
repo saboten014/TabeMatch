@@ -53,7 +53,8 @@ table {
 .love,
 .kutikomisuru,
 .kutikomiru,
-.kaijo {
+.kaijo,
+.goback {
     /* マージン */
 	margin-top: 10px;
 	margin-left: 10px;
@@ -135,4 +136,13 @@ table {
 	padding: 10px 20px;
  	border-radius: 5px;
  	font-size: 16px;
+}
+
+.goback {
+	background-color: #eaf4ff;
+ 	border: 2px solid #a0a0a0;
+}
+
+.goback:hover {
+ 	background-color: #c6e2ff;
 }

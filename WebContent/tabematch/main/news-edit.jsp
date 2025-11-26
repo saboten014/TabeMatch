@@ -130,7 +130,7 @@ textarea {
         <button type="submit" class="btn-update">更新する</button>
 
         <%-- 編集をキャンセルして一覧に戻るボタン --%>
-        <a href="${pageContext.request.contextPath}/News.action" class="btn-back">キャンセルして一覧に戻る</a>
+        <a href="<%= contextPath %>/tabematch/News.action" class="btn-back">キャンセルして一覧に戻る</a>
     </form>
 </div>
 

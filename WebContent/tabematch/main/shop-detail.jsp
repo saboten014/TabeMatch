@@ -16,7 +16,7 @@
 
     <h2>店舗詳細情報</h2>
 
-<button onclick="goBack()">前のページに戻る</button>
+<button onclick="goBack()" class="goback">前のページに戻る</button>
 
 <script>
 
