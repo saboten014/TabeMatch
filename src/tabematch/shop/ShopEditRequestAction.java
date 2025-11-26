@@ -87,23 +87,44 @@ public class ShopEditRequestAction extends Action {
                 }
             }
 
-            // ★ここで編集リクエストをDBに保存する処理を実装
-            // 今回は簡易的にセッションに保存し、管理者が確認する想定
-            session.setAttribute("editRequestShopId", shop.getShopId());
-            session.setAttribute("editRequestData", "店舗名: " + shopName +
-                "\n住所: " + shopAddress +
-                "\n電話: " + shopTel +
-                "\nURL: " + shopUrl +
-                "\nアレルギー対応: " + shopAllergy +
-                "\nジャンル: " + shopGenre +
-                "\n価格帯: " + shopPrice +
-                "\n決済方法: " + shopPay +
-                "\n座席数: " + shopSeat +
-                "\n予約可否: " + shopReserve +
-                "\n備考: " + requestNote);
+            // DBに編集リクエストを保存
+            dao.DAO daoObj = new dao.DAO();
+            java.sql.Connection con = daoObj.getConnection();
 
-            session.setAttribute("successMessage", "編集リクエストを送信しました。管理者による承認をお待ちください。");
-            url = "/tabematch/shop/shop-edit-request-complete.jsp";
+            String requestId = "EDITREQ" + System.currentTimeMillis();
+            String sql = "INSERT INTO shop_edit_requests " +
+                         "(request_id, shop_id, shop_name, shop_address, shop_tel, shop_url, " +
+                         "shop_allergy, shop_genre, shop_price, shop_pay, shop_seat, shop_reserve, " +
+                         "request_note, status, created_at) " +
+                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)";
+
+            java.sql.PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, requestId);
+            stmt.setString(2, shop.getShopId());
+            stmt.setString(3, shopName);
+            stmt.setString(4, shopAddress);
+            stmt.setString(5, shopTel);
+            stmt.setString(6, shopUrl);
+            stmt.setString(7, shopAllergy);
+            stmt.setString(8, shopGenre);
+            stmt.setString(9, shopPrice);
+            stmt.setString(10, shopPay);
+            stmt.setInt(11, shopSeat != null ? shopSeat : 0);
+            stmt.setString(12, shopReserve);
+            stmt.setString(13, requestNote);
+
+            int result = stmt.executeUpdate();
+            stmt.close();
+            con.close();
+
+            if (result > 0) {
+                session.setAttribute("successMessage", "編集リクエストを送信しました。管理者による承認をお待ちください。");
+                url = "/tabematch/shop/shop-edit-request-complete.jsp";
+            } else {
+                req.setAttribute("errorMessage", "リクエストの送信に失敗しました。");
+                req.setAttribute("shop", shop);
+                url = "/tabematch/shop/shop-edit-request-form.jsp";
+            }
         }
 
         req.getRequestDispatcher(url).forward(req, res);

@@ -36,6 +36,8 @@ function showMenu(type) {
   <!-- ★修正: 絶対パスに変更 -->
   <a href="<%= request.getContextPath() %>/tabematch/admin/AdminRequestList.action" class="btn-link feature-btn shop-feature">掲載リクエスト承認</a>
   <a href="<%= request.getContextPath() %>/tabematch/admin/AdminShopList.action" class="btn-link feature-btn shop-feature">店舗管理</a>
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminShopEditRequestList.action" class="btn-link feature-btn shop-feature">店舗編集リクエスト</a>
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminShopDeleteRequestList.action" class="btn-link feature-btn shop-feature">店舗削除リクエスト</a>
 </div>
 
 <!-- 管理者系 -->

@@ -60,14 +60,32 @@ public class ShopDeleteRequestAction extends Action {
                 return;
             }
 
-            // ★ここで削除リクエストをDBに保存する処理を実装
-            // 今回は簡易的にセッションに保存し、管理者が確認する想定
-            session.setAttribute("deleteRequestShopId", shop.getShopId());
-            session.setAttribute("deleteRequestShopName", shop.getShopName());
-            session.setAttribute("deleteRequestReason", deleteReason);
+            // DBに削除リクエストを保存
+            dao.DAO daoObj = new dao.DAO();
+            java.sql.Connection con = daoObj.getConnection();
 
-            session.setAttribute("successMessage", "削除リクエストを送信しました。管理者による確認後、アカウントが削除されます。");
-            url = "/tabematch/shop/shop-delete-request-complete.jsp";
+            String requestId = "DELREQ" + System.currentTimeMillis();
+            String sql = "INSERT INTO shop_delete_requests " +
+                         "(request_id, shop_id, delete_reason, status, created_at) " +
+                         "VALUES (?, ?, ?, 1, CURRENT_TIMESTAMP)";
+
+            java.sql.PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, requestId);
+            stmt.setString(2, shop.getShopId());
+            stmt.setString(3, deleteReason);
+
+            int result = stmt.executeUpdate();
+            stmt.close();
+            con.close();
+
+            if (result > 0) {
+                session.setAttribute("successMessage", "削除リクエストを送信しました。管理者による確認後、アカウントが削除されます。");
+                url = "/tabematch/shop/shop-delete-request-complete.jsp";
+            } else {
+                req.setAttribute("errorMessage", "リクエストの送信に失敗しました。");
+                req.setAttribute("shop", shop);
+                url = "/tabematch/shop/shop-delete-request-confirm.jsp";
+            }
         }
 
         req.getRequestDispatcher(url).forward(req, res);
