@@ -1,0 +1,134 @@
+/* ユーザー詳細のCSS */
+body {
+  background-color: #e8f8e8 !important;
+  font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== タイトル ===== */
+h2 {
+  margin-top: 120px;
+  padding-top: 20px;
+  font-size: 32px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* ===== テーブル全体 ===== */
+.detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+/* ===== テーブルヘッダー（左列） ===== */
+th {
+  background-color: #d2f0d0;
+  color: #333;
+  padding: 15px 20px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 600;
+  width: 200px;
+  border-right: 2px solid #b2d8b0;
+}
+
+/* ===== テーブルセル ===== */
+td {
+  padding: 15px 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+tr:last-child {
+  border-bottom: none;
+}
+
+/* ===== ボタンコンテナ ===== */
+.button-container {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* ===== ボタン共通スタイル ===== */
+.btn {
+  display: inline-block;
+  padding: 12px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2px solid;
+  cursor: pointer;
+}
+
+/* ===== 削除ボタン（赤） ===== */
+.btn-danger {
+  background-color: #ffcccc;
+  border-color: #ff9999;
+  color: #333;
+}
+
+.btn-danger:hover {
+  background-color: #ff9999;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== 戻るボタン（青） ===== */
+.btn-back {
+  background-color: #cce5ff;
+  border-color: #99ccff;
+  color: #333;
+}
+
+.btn-back:hover {
+  background-color: #99ccff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== レスポンシブ対応 ===== */
+@media screen and (max-width: 768px) {
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

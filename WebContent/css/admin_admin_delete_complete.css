@@ -1,0 +1,146 @@
+/* ユーザー削除結果のCSS */
+body {
+  background-color: #e8f8e8 !important;
+  font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== タイトル ===== */
+h2 {
+  margin-top: 120px;
+  padding-top: 20px;
+  font-size: 32px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* ===== コンテナ ===== */
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* ===== 成功メッセージ ===== */
+.success-message {
+  background-color: #d4edda;
+  border: 2px solid #c3e6cb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.success-message p {
+  color: #155724;
+  font-size: 20px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.success-message::before {
+  content: "✓";
+  display: block;
+  font-size: 50px;
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+/* ===== エラーメッセージ ===== */
+.error-message {
+  background-color: #f8d7da;
+  border: 2px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.error-message p {
+  color: #721c24;
+  font-size: 20px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.error-message::before {
+  content: "✕";
+  display: block;
+  font-size: 50px;
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+/* ===== ボタングループ ===== */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* ===== ボタン共通スタイル ===== */
+.btn {
+  display: inline-block;
+  padding: 14px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2px solid;
+  color: #333;
+  font-family: "Kosugi Maru", "Meiryo", sans-serif;
+}
+
+/* ===== ユーザー一覧に戻るボタン（青） ===== */
+.btn:first-child {
+  background-color: #cce5ff;
+  border-color: #99ccff;
+}
+
+.btn:first-child:hover {
+  background-color: #99ccff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== 管理者ホームに戻るボタン（赤） ===== */
+.btn:last-child {
+  background-color: #ffcccc;
+  border-color: #ff9999;
+}
+
+.btn:last-child:hover {
+  background-color: #ff9999;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== レスポンシブ対応 ===== */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 30px 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .success-message p,
+  .error-message p {
+    font-size: 18px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}

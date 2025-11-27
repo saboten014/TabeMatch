@@ -6,7 +6,7 @@
 <!-- Googleフォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <!-- CSS読み込み（キャッシュ回避付き） -->
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_admin_list.css?v=<%= System.currentTimeMillis() %>">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_admin_list.css">
 
 <h2>管理者一覧</h2>
 

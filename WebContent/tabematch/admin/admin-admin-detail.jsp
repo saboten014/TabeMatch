@@ -2,8 +2,10 @@
 <%@page import="bean.Users" %>
 <%@include file="../../header.html" %>
 <%@include file="../main/admin_menu.jsp" %>
-
+<!-- Googleフォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- CSS読み込み（キャッシュ回避付き） -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_admin_detail.css?v=<%= System.currentTimeMillis() %>">
 
 <h2>管理者詳細</h2>
 
@@ -27,12 +29,12 @@
         </tr>
     </table>
 
-    <div class="button-container" style="margin-top: 16px;">
+    <div class="button-container">
         <%-- 自分自身は削除ボタンを表示しない --%>
         <% if (loginUserId != null && !loginUserId.equals(admin.getUserId())) { %>
             <a href="AdminAdminDeleteConfirm.action?userId=<%= admin.getUserId() %>" class="btn btn-danger">削除する</a>
         <% } else { %>
-            <span style="color: #666;">※ 自分自身の管理者は削除できません</span>
+            <span>※ 自分自身の管理者は削除できません</span>
         <% } %>
         <a href="AdminAdminList.action" class="btn btn-back">← 一覧に戻る</a>
     </div>
