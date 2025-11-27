@@ -45,7 +45,7 @@ function showMenu(type) {
   <!-- ★修正: 絶対パスに変更 -->
   <a href="<%= request.getContextPath() %>/tabematch/admin/AdminInsertForm.action" class="btn-link feature-btn admin-feature">管理者アカウント追加</a>
   <a href="<%= request.getContextPath() %>/tabematch/News.action" class="btn-link feature-btn admin-feature">お知らせ配信</a>
-  <a href="<%= request.getContextPath() %>/tabematch/AdminAdminList.action" class="btn-link feature-btn admin-feature">管理者管理</a>
+  <a href="<%= request.getContextPath() %>/tabematch/admin/AdminAdminList.action" class="btn-link feature-btn admin-feature">管理者管理</a>
 </div>
 
 <!-- フッター -->
