@@ -35,11 +35,16 @@ public class AdminAdminListAction extends Action {
         int limit = 20;
         int offset = (pageNum - 1) * limit;
 
+        // ★フィルタ付き件数カウント
         int total = dao.getAdminCount(kana);
+
+        // 最大ページ数
         int maxPage = (int) Math.ceil((double) total / limit);
 
+        // ★フィルタ + ページネーション付き管理者リスト
         List<Users> list = dao.getAdminList(kana, offset, limit);
 
+        // JSPに渡す値
         req.setAttribute("adminList", list);
         req.setAttribute("pageNum", pageNum);
         req.setAttribute("maxPage", maxPage);
