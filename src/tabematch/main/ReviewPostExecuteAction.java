@@ -19,17 +19,47 @@ public class ReviewPostExecuteAction extends Action {
         HttpSession session = req.getSession();
         Users loginUser = (Users) session.getAttribute("user");
 
+        // ログインチェック
         if (loginUser == null) {
             req.setAttribute("errorMessage", "ログインが必要です。");
             req.getRequestDispatcher("../../error.jsp").forward(req, res);
             return;
         }
 
+        // パラメータ取得
         String shopId = req.getParameter("shopId");
         String title = req.getParameter("title");
         String body = req.getParameter("body");
-        int rating = Integer.parseInt(req.getParameter("rating"));
+        String ratingParam = req.getParameter("rating");
 
+        // バリデーション
+        if (shopId == null || shopId.trim().isEmpty()) {
+            session.setAttribute("errorMessage", "店舗IDが取得できませんでした。");
+            res.sendRedirect("Search.action");
+            return;
+        }
+
+        if (title == null || title.trim().isEmpty() ||
+            body == null || body.trim().isEmpty() ||
+            ratingParam == null || ratingParam.trim().isEmpty()) {
+            session.setAttribute("errorMessage", "すべての項目を入力してください。");
+            res.sendRedirect("ReviewPostForm.action?shopId=" + shopId);
+            return;
+        }
+
+        int rating;
+        try {
+            rating = Integer.parseInt(ratingParam);
+            if (rating < 1 || rating > 5) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "評価は1〜5の範囲で選択してください。");
+            res.sendRedirect("ReviewPostForm.action?shopId=" + shopId);
+            return;
+        }
+
+        // Reviewオブジェクト作成
         Review review = new Review();
         review.setReviewIdString("REV" + System.currentTimeMillis());
         review.setUserIdString(loginUser.getUserId());
@@ -39,15 +69,17 @@ public class ReviewPostExecuteAction extends Action {
         review.setRating(rating);
         review.setCreatedAt(LocalDateTime.now());
 
+        // DB登録
         ReviewDAO dao = new ReviewDAO();
         boolean result = dao.insertReview(review);
 
         if (result) {
-            req.setAttribute("successMessage", "口コミを投稿しました。");
+            session.setAttribute("successMessage", "口コミを投稿しました。");
+            // ★修正: 投稿後は口コミ一覧にリダイレクト
+            res.sendRedirect("ReviewList.action?shopId=" + shopId);
         } else {
-            req.setAttribute("errorMessage", "投稿に失敗しました。");
+            session.setAttribute("errorMessage", "投稿に失敗しました。もう一度お試しください。");
+            res.sendRedirect("ReviewPostForm.action?shopId=" + shopId);
         }
-
-        req.getRequestDispatcher("review_post_complete.jsp").forward(req, res);
     }
 }

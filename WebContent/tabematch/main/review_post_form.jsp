@@ -4,12 +4,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/review_post_form.css">
 
-
 <div class="zenbu">
 <h2>口コミ投稿</h2>
 
+<%
+    // ★重要: shopIdを取得して確認
+    String shopId = request.getParameter("shopId");
+    if (shopId == null || shopId.trim().isEmpty()) {
+        // shopIdがない場合はエラー表示
+        out.println("<p style='color:red;'>エラー: 店舗IDが取得できませんでした。</p>");
+        out.println("<a href='Search.action'>店舗一覧に戻る</a>");
+    } else {
+%>
 
 <form action="ReviewPostExecute.action" method="post">
+    <!-- ★hiddenフィールドでshopIdを確実に送信 -->
+    <input type="hidden" name="shopId" value="<%= shopId %>">
 
     <div class="mb-3">
         <label>タイトル</label>
@@ -33,8 +43,14 @@
     </div>
 
 	<div class="btn">
-		<a href="Search.action" class="modoru">お店一覧に戻る</a>
+		<a href="ShopDetail.action?shopId=<%= shopId %>" class="modoru">店舗詳細に戻る</a>
 		<button type="submit" class="sousin">投稿する</button>
 	</div>
 </form>
+
+<%
+    } // shopIdのチェック終了
+%>
 </div>
+
+<%@include file="../../footer.html" %>
