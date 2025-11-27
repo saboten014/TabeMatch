@@ -594,4 +594,34 @@ public class ShopDAO extends DAO {
 
         return result > 0;
     }
+
+	 // ============================================================
+	 // ★ 管理者による店舗登録（承認なしでshopへ直登録）
+	 // ============================================================
+	 public boolean insertShopForAdmin(Shop shop) throws Exception {
+
+	     Connection con = getConnection();
+
+	     String sql = "INSERT INTO shop (shop_id, password, shop_name, shop_address, shop_mail, shop_tel, shop_genre, shop_reserve, is_public, shop_date) "
+	                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE, now())";
+
+	     PreparedStatement stmt = con.prepareStatement(sql);
+
+	     stmt.setString(1, shop.getShopId());
+	     stmt.setString(2, shop.getPassword());
+	     stmt.setString(3, shop.getShopName());
+	     stmt.setString(4, shop.getShopAddress());
+	     stmt.setString(5, shop.getShopMail());
+	     stmt.setString(6, shop.getShopTel());
+	     stmt.setString(7, shop.getShopGenre());
+	     stmt.setString(8, shop.getShopReserve());
+
+	     int result = stmt.executeUpdate();
+
+	     stmt.close();
+	     con.close();
+
+	     return result > 0;
+	 }
+
 }
