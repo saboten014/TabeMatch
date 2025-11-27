@@ -348,5 +348,124 @@ public class UserDAO extends DAO {
 		    return count;
 		}
 
+		 // ---------- ここから管理者用の追加メソッド ----------
+
+	    // 管理者一覧（フィルタ + ページネーション対応）
+	    // initial: 先頭文字フィルタ（例: "ア" / "カ" / "A" / null）
+	    public List<Users> getAdminList(String initial, int offset, int limit) throws Exception {
+
+	        List<Users> list = new ArrayList<>();
+	        Connection con = getConnection();
+
+	        StringBuilder sql = new StringBuilder();
+	        sql.append("SELECT user_id, user_name, created_at FROM users WHERE users_type_id = '3' ");
+
+	        if (initial != null && !initial.isEmpty()) {
+	            if (initial.matches("[A-Z]")) {
+	                sql.append("AND user_name ILIKE ? ");
+	            } else {
+	                sql.append("AND user_name LIKE ? ");
+	            }
+	        }
+
+	        sql.append("ORDER BY user_name COLLATE \"C\" ASC "); // 名前の昇順（日本語は環境によるので後で調整可）
+	        sql.append("LIMIT ? OFFSET ? ");
+
+	        PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+	        int idx = 1;
+	        if (initial != null && !initial.isEmpty()) {
+	            stmt.setString(idx++, initial + "%");
+	        }
+	        stmt.setInt(idx++, limit);
+	        stmt.setInt(idx++, offset);
+
+	        ResultSet rs = stmt.executeQuery();
+	        while (rs.next()) {
+	            Users user = new Users();
+	            user.setUserId(rs.getString("user_id"));
+	            user.setUserName(rs.getString("user_name"));
+	            user.setCreatedAt(rs.getTimestamp("created_at"));
+	            list.add(user);
+	        }
+
+	        rs.close();
+	        stmt.close();
+	        con.close();
+
+	        return list;
+	    }
+
+	    // 管理者総数（フィルタ適用可能）
+	    public int getAdminCount(String initial) throws Exception {
+	        Connection con = getConnection();
+
+	        StringBuilder sql = new StringBuilder();
+	        sql.append("SELECT COUNT(*) FROM users WHERE users_type_id = '3' ");
+
+	        if (initial != null && !initial.isEmpty()) {
+	            if (initial.matches("[A-Z]")) {
+	                sql.append("AND user_name ILIKE ? ");
+	            } else {
+	                sql.append("AND user_name LIKE ? ");
+	            }
+	        }
+
+	        PreparedStatement stmt = con.prepareStatement(sql.toString());
+	        if (initial != null && !initial.isEmpty()) {
+	            stmt.setString(1, initial + "%");
+	        }
+
+	        ResultSet rs = stmt.executeQuery();
+	        rs.next();
+	        int cnt = rs.getInt(1);
+
+	        rs.close();
+	        stmt.close();
+	        con.close();
+
+	        return cnt;
+	    }
+
+	    // 管理者詳細取得
+	    public Users getAdminDetail(String userId) throws Exception {
+	        Users user = null;
+	        Connection con = getConnection();
+
+	        String sql = "SELECT user_id, user_name, created_at FROM users WHERE user_id = ? AND users_type_id = '3'";
+	        PreparedStatement stmt = con.prepareStatement(sql);
+	        stmt.setString(1, userId);
+
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            user = new Users();
+	            user.setUserId(rs.getString("user_id"));
+	            user.setUserName(rs.getString("user_name"));
+	            user.setCreatedAt(rs.getTimestamp("created_at"));
+	        }
+
+	        rs.close();
+	        stmt.close();
+	        con.close();
+
+	        return user;
+	    }
+
+	    // 管理者削除（物理削除） — ※ 実行前に呼び出し側で自己削除/最終管理者チェックを行うこと
+	    public boolean deleteAdmin(String userId) throws Exception {
+	        Connection con = getConnection();
+	        String sql = "DELETE FROM users WHERE user_id = ? AND users_type_id = '3'";
+	        PreparedStatement stmt = con.prepareStatement(sql);
+	        stmt.setString(1, userId);
+
+	        int result = stmt.executeUpdate();
+
+	        stmt.close();
+	        con.close();
+
+	        return result > 0;
+	    }
+
+	    // -----------------------------------------------------------
 
 }
