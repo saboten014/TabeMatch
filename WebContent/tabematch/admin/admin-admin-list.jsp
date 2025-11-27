@@ -3,11 +3,40 @@
 <%@page import="bean.Users" %>
 <%@include file="../../header.html" %>
 <%@include file="../main/admin_menu.jsp" %>
-
+<!-- Googleフォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- CSS読み込み（キャッシュ回避付き） -->
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_admin_list.css?v=<%= System.currentTimeMillis() %>">
 
 <h2>管理者一覧</h2>
 
+<!-- ▼ 絞り込みフィルタ -->
+<div class="filter-container">
+    <!-- 五十音 -->
+    <div class="filter-group">
+        <span>五十音：</span>
+        <a href="AdminAdminList.action?kana=ア">ア</a>
+        <a href="AdminAdminList.action?kana=カ">カ</a>
+        <a href="AdminAdminList.action?kana=サ">サ</a>
+        <a href="AdminAdminList.action?kana=タ">タ</a>
+        <a href="AdminAdminList.action?kana=ナ">ナ</a>
+        <a href="AdminAdminList.action?kana=ハ">ハ</a>
+        <a href="AdminAdminList.action?kana=マ">マ</a>
+        <a href="AdminAdminList.action?kana=ヤ">ヤ</a>
+        <a href="AdminAdminList.action?kana=ラ">ラ</a>
+        <a href="AdminAdminList.action?kana=ワ">ワ</a>
+    </div>
+    <!-- A〜Z + すべて表示 -->
+    <div class="filter-group">
+        <span>A〜Z：</span>
+        <% for(char c='A'; c<='Z'; c++){ %>
+            <a href="AdminAdminList.action?kana=<%=c%>"><%=c%></a>
+        <% } %>
+        <a href="AdminAdminList.action?kana=ALL" class="clear-btn">すべて表示</a>
+    </div>
+</div>
+
+<!-- ▼ テーブル -->
 <div class="table-container">
 <%
     List<Users> list = (List<Users>) request.getAttribute("adminList");
@@ -46,34 +75,6 @@
 %>
 </div>
 
-<!-- フィルタ -->
-<div class="filter-container">
-    <div class="filter-group">
-        <span>五十音：</span>
-        <a href="AdminAdminList.action?kana=ア">ア</a>
-        <a href="AdminAdminList.action?kana=カ">カ</a>
-        <a href="AdminAdminList.action?kana=サ">サ</a>
-        <a href="AdminAdminList.action?kana=タ">タ</a>
-        <a href="AdminAdminList.action?kana=ナ">ナ</a>
-        <a href="AdminAdminList.action?kana=ハ">ハ</a>
-        <a href="AdminAdminList.action?kana=マ">マ</a>
-        <a href="AdminAdminList.action?kana=ヤ">ヤ</a>
-        <a href="AdminAdminList.action?kana=ラ">ラ</a>
-        <a href="AdminAdminList.action?kana=ワ">ワ</a>
-    </div>
-
-    <div class="filter-group">
-        <span>A〜Z：</span>
-        <% for(char c='A'; c<='Z'; c++){ %>
-            <a href="AdminAdminList.action?kana=<%=c%>"><%=c%></a>
-        <% } %>
-    </div>
-
-    <div class="filter-group">
-        <a href="AdminAdminList.action?kana=ALL" class="clear-btn">すべて表示</a>
-    </div>
-</div>
-
 <%
     Integer pageNumObj = (Integer) request.getAttribute("pageNum");
     Integer maxPageObj = (Integer) request.getAttribute("maxPage");
@@ -83,18 +84,18 @@
     if (kana == null) kana = "ALL";
 %>
 
+<!-- ▼ ページネーション -->
 <div class="pagination">
     <% if (pageNum > 1) { %>
         <a href="AdminAdminList.action?page=<%=pageNum-1%>&kana=<%=kana%>">← 前へ</a>
     <% } %>
-
     <span><%=pageNum%> / <%=maxPage%></span>
-
     <% if (pageNum < maxPage) { %>
         <a href="AdminAdminList.action?page=<%=pageNum+1%>&kana=<%=kana%>">次へ →</a>
     <% } %>
 </div>
 
+<!-- ▼ 戻るボタン -->
 <div class="back-link">
     <a href="<%= request.getContextPath() %>/tabematch/main/admin_home.jsp">← 管理者ホームに戻る</a>
 </div>
