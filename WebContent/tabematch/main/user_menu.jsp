@@ -66,10 +66,11 @@
           // ★★★ 店舗管理者向けメニュー (usersTypeId = "2") ★★★
           // ===============================================
       %>
-        <a href="<%= contextPath %>/tabematch/News.action">お知らせ</a>
-        <a href="<%= contextPath %>/tabematch/shop/ReserveManagement.action">予約管理</a>
-        <a href="<%= contextPath %>/tabematch/shop/ShopProfile.action">店舗プロフィール</a>
-        <a href="<%= contextPath %>/tabematch/main/Logout.action">ログアウト</a>
+      <a href="${pageContext.request.contextPath}/tabematch/News.action">お知らせ</a>
+      <a href="${pageContext.request.contextPath}/tabematch/shop/ShopReservationList.action">予約管理</a>
+      <a href="${pageContext.request.contextPath}/tabematch.shop/ShopProfile.action">店舗プロフィール</a>
+      <a href="${pageContext.request.contextPath}/tabematch/main/Logout.action">ログアウト</a>
+    </div>
       <%
         } else if ("1".equals(userType)) {
           // ===============================================

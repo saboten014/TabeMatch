@@ -8,7 +8,7 @@
 <!-- ヘッダー読込 -->
 <%@include file="../../header.html" %>
 <!-- 店舗メニューバー -->
-<%@include file="../main/shop_menu.jsp" %>
+<%@include file="../main/user_menu.jsp" %>
 
 <!-- 丸文字フォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
