@@ -4,8 +4,18 @@
 <%@ include file="../../header.html" %>
 <%@ include file="user_menu.jsp" %>
 <%
-    Reserve reserve = (Reserve) request.getAttribute("reserve");
-    Shop shop = (Shop) request.getAttribute("shop");
+    Reserve reserve = (Reserve) session.getAttribute("completedReserve");
+    Shop shop = (Shop) session.getAttribute("completedShop");
+
+    // 表示後は即座に削除（リロード対策）
+    session.removeAttribute("completedReserve");
+    session.removeAttribute("completedShop");
+
+    // セッションにデータがない場合は検索画面にリダイレクト
+    if (reserve == null || shop == null) {
+        response.sendRedirect(request.getContextPath() + "/tabematch/main/search.jsp");
+        return;
+    }
 %>
 <!DOCTYPE html>
 <html>
