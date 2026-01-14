@@ -79,9 +79,11 @@ public class ReserveExecuteAction extends Action {
         ShopDAO shopDao = new ShopDAO();
         Shop shop = shopDao.getShopById(shopId);
         reserve.setShopName(shop != null ? shop.getShopName() : "");
-        req.setAttribute("reserve", reserve);
-        req.setAttribute("shop", shop);
-        req.getRequestDispatcher("reservation-complete.jsp").forward(req, res);
+
+
+        session.setAttribute("completedReserve", reserve);
+        session.setAttribute("completedShop", shop);
+        res.sendRedirect(req.getContextPath() + "/tabematch/main/reservation-complete.jsp");
     }
 
     private void setErrorAndReturn(HttpServletRequest req, HttpServletResponse res, String shopId, String message) throws Exception {
