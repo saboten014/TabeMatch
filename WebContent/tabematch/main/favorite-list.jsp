@@ -78,7 +78,7 @@
 
     <%-- 戻るボタンは検索ページへ遷移させるのが適切 --%>
     <div class="button-container">
-        <a href="SearchAction">店舗検索ページに戻る</a>
+        <a href="search.jsp">店舗検索ページに戻る</a>
     </div>
 </div>
 

@@ -18,7 +18,7 @@
   <c:if test="${empty reserveList}">
     <div class="no-yoyaku">現在、予約はありません。</div>
   </c:if>
-
+<div class="zenbu">
   <c:if test="${not empty reserveList}">
     <table>
       <thead>
@@ -62,6 +62,14 @@
       </tbody>
     </table>
   </c:if>
+
+  <div class="button-container">
+       <a href="search.jsp">店舗検索ページに戻る</a>
+    </div>
+
+
+  </div>
+
 </div>
 </body>
 </html>
