@@ -4,7 +4,6 @@
 <%@include file="../../header.html" %>
 <%@include file="../main/shop_menu.jsp" %>
 
-<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
 <%
     Shop shop = (Shop) request.getAttribute("shop");
@@ -120,6 +119,13 @@
     padding: 10px;
     margin-bottom: 20px;
 }
+.edit-request-container {
+	margin-top: 100px;
+}
+body{
+	background-color: #e8f8e8;
+}
+
 </style>
 
 <div class="edit-request-container">
