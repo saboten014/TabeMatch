@@ -142,9 +142,10 @@ body {
         </div>
     </div>
 
-    <div class="detail-text">
-        <%= news.getNewsText() %>
-    </div>
+
+    	<p class="detail-text"><%= news.getNewsText() %></p>
+
+
 
     <a href="<%= contextPath %>/tabematch/News.action" class="back-link">← お知らせ一覧へ戻る</a>
 </div>
