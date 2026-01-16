@@ -8,7 +8,7 @@
 <!-- ヘッダー読込 -->
 <%@include file="../../header.html" %>
 <!-- 店舗メニューバー -->
-<%@include file="../main/user_menu.jsp" %>
+<%@include file="../main/shop_menu.jsp" %>
 
 
 <%
