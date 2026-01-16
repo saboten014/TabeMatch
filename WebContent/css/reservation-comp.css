@@ -1,0 +1,98 @@
+
+.btn {
+	display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+
+
+.modoru {
+    text-decoration: none; /* 下線を消す */
+    padding: 10px 20px;
+
+    /* 控えめな色合いで設定 */
+    border: 2px solid #c6c6ff;
+    border-radius: 4px;
+    color: #333;
+    background-color: #e5f2ff;
+
+    /* ホバー効果 */
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.modoru:hover {
+    background-color: #c6e2ff;
+}
+
+
+.yoyaku_itiran {
+	text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid #ffc184;
+    border-radius: 4px;
+    justify-content: flex-end;
+
+    /* メインカラー */
+    background-color: #ffe2c6;
+    color: #333;
+
+    /* ホバー効果 */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.yoyaku_itiran:hover {
+    background-color: #ffd6ad;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+
+    /* 水平方向の中央寄せ */
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px; /* 上部に少し余白 */
+    margin-bottom: 100px;
+
+    /* フォーム全体に影をつけて立体感を出す */
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+
+table {
+	border: 2px solid #868686; /* 外側の枠線 */
+    margin-bottom: 25px; /* フォームとの間に余白を空ける */
+    margin-left: 80px;
+}
+
+th,
+td {
+    border: 2px solid #868686; /* セル間の区切り線 */
+    padding: 12px; /* セルの内側余白 */
+    text-align: left;
+}
+
+th {
+	background-color: #effff7;
+}
+
+
+.success, .card-header{
+	text-align: center;
+}
+
+.card-header {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

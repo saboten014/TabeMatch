@@ -5,7 +5,6 @@
 <%@include file="../../header.html" %>
 <%@include file="user_menu.jsp" %>
 
-<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
 <%-- NewsActionからセッション属性を取得 --%>
 <%
@@ -120,6 +119,10 @@
 }
 .delete-button:hover {
     background-color: #FFA726; /* ホバーで少し濃いオレンジに */
+}
+
+h2 {
+   margin-top: 100px;
 }
 </style>
 

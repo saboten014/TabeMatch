@@ -1,14 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ include file="../../header.html" %>
-
+<%@include file="user_menu.jsp" %>
 <html>
 <head>
 <title>プロフィール確認</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_prof_v.css">
 </head>
 <body>
-<div class="container mt-4">
-    <h2 class="text-center mb-4">プロフィール確認</h2>
+<div class="container">
+    <h2 class="text-center">プロフィール確認</h2>
 
     <% String msg = (String) request.getAttribute("errorMessage"); %>
     <% if (msg != null) { %>
@@ -20,9 +20,9 @@
         if (user != null) {
     %>
 
-    <div class="card shadow-sm">
+    <div class="card">
         <div class="card-body">
-            <table class="table table-bordered">
+            <table>
                 <tr>
                     <th style="width:30%;">ユーザー名</th>
                     <td><%= user.getUserName() %></td>
@@ -57,9 +57,9 @@
                 </tr>
             </table>
 
-            <div class="text-center mt-3">
-                <a href="UserProfile.action" class="btn btn-primary">プロフィールを編集</a>
-                <a href="Search.action" class="btn btn-secondary ms-2">戻る</a>
+            <div class="btn">
+                <a href="UserProfile.action" class="btn-hensyu">プロフィールを編集</a>
+                <a href="search.jsp" class="btn-modoru">戻る</a>
             </div>
         </div>
     </div>

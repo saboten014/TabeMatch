@@ -44,7 +44,7 @@
 .detail-container {
     width: 70%;
     max-width: 900px;
-    margin: 40px auto;
+    margin: 100px auto 40px;
     padding: 30px;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -131,8 +131,7 @@
         </div>
     </div>
 
-    <div class="detail-text">
-        <%= news.getNewsText() %>
+    <div class="detail-text"><p><%= news.getNewsText() %></p>
     </div>
 
     <%-- NewsActionへのリンクにコンテキストパスを追加 --%>
