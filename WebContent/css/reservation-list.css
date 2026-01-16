@@ -1,62 +1,141 @@
+/* フォントと全体のベース */
+body {
+    font-family: 'Kosugi Maru', sans-serif;
+    background-color:  #e8f8e8;
+    color: #333;
+    margin: 0;
+}
 
+h2 {
+    margin-top: 120px;
+    text-align: center;
+    color: #4CAF50;
+    font-size: 1.8em;
+    position: relative;
+    padding-bottom: 10px;
+}
 
+h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #4CAF50;
+    border-radius: 3px;
+}
+
+/* コンテナ設定 */
+.zenbu {
+    width: 95%;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+    min-height: 500px;
+}
+
+/* テーブルデザインの刷新 */
 table {
     width: 100%;
     margin: 20px 0;
-    border-collapse: collapse;
-    table-layout: fixed;
+    border-collapse: separate; /* 角を丸くするためにseparateに変更 */
+    border-spacing: 0;
     background-color: #FFFFFF;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-}
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #fff4ff;
-        color: #004D40;
-        font-weight: bold;
-    }
-
-h2 {
-    margin-top: 100px;
-    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
 }
 
+th {
+    background-color: #f4fbf4; /* 優しい緑系 */
+    color: #2e7d32;
+    font-weight: bold;
+    padding: 15px 10px;
+    border-bottom: 2px solid #e8f5e9;
+    font-size: 0.95em;
+}
+
+td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background-color: #fafafa; /* 行ホバーで色を変える */
+}
+
+/* 予約状態のステータスバッジ（ここが一番分かりやすくなります） */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: white;
+}
+
+/* 承認待ち：オレンジ */
+.status-waiting {
+    background-color: #ff9800;
+}
+
+/* 承認済み：緑 */
+.status-success {
+    background-color: #4caf50;
+}
+
+/* 拒否：赤 */
+.status-error {
+    background-color: #f44336;
+}
+
+/* 不明：グレー */
+.status-unknown {
+    background-color: #9e9e9e;
+}
+
+/* 予約がない時のメッセージ */
 .no-yoyaku {
-    margin-top: 50px;
+    max-width: 400px;
+    margin: 80px auto;
     text-align: center;
-    background-color: #c6e2ff;
-    padding: 10px 20px;
-    color: #007fff;
-    border-radius: 6px;
+    background-color: #e3f2fd;
+    padding: 20px;
+    color: #1976d2;
+    border-radius: 10px;
+    border-left: 5px solid #2196f3;
 }
-.zenbu {
-        width: 90%;
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 20px;
-        min-height: 500px;
-    }
 
+/* 戻るボタンのエリア */
+.button-container {
+    margin-top: 40px;
+    text-align: center; /* 中央寄せに変更 */
+}
 
-    .button-container {
-        margin-top: 30px;
-        text-align: right;
-    }
-    .button-container a {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .button-container a:hover {
-        background-color: #45a049;
-    }
+.button-container a {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button-container a:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}

@@ -43,19 +43,19 @@
             <td>${r.message}</td>
             <td>
               <c:choose>
-                <c:when test="${r.reserveStatus == 1}">
-                  <span>承認待ち</span>
-                </c:when>
-                <c:when test="${r.reserveStatus == 2}">
-                  <span>承認済み</span>
-                </c:when>
-                <c:when test="${r.reserveStatus == 3}">
-                  <span>拒否</span>
-                </c:when>
-                <c:otherwise>
-                  <span>不明</span>
-                </c:otherwise>
-              </c:choose>
+				  <c:when test="${r.reserveStatus == 1}">
+				    <span class="status-badge status-waiting">承認待ち</span>
+				  </c:when>
+				  <c:when test="${r.reserveStatus == 2}">
+				    <span class="status-badge status-success">予約確定</span>
+				  </c:when>
+				  <c:when test="${r.reserveStatus == 3}">
+				    <span class="status-badge status-error">拒否</span>
+				  </c:when>
+				  <c:otherwise>
+				    <span class="status-badge status-unknown">不明</span>
+				  </c:otherwise>
+			</c:choose>
             </td>
           </tr>
         </c:forEach>
