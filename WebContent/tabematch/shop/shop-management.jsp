@@ -59,7 +59,7 @@
 %>
 
 <%@include file="../../header.html" %>
-<%@include file="../../tabematch/main/shop_menu.jsp" %>
+<jsp:include page="../../tabematch/main/shop_menu.jsp" />
 
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 

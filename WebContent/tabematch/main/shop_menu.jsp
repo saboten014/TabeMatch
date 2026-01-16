@@ -1,4 +1,28 @@
-<%@page pageEncoding="UTF-8" %>
+<%@ page session="true" pageEncoding="UTF-8" import="bean.Users" %>
+<%
+  // contextPathの取得
+  String contextPath = request.getContextPath();
+  Users loginUser = (Users) session.getAttribute("user");
+
+  // ユーザー種別 (usersTypeId) を取得するための変数
+  String userType = null;
+
+  if (loginUser != null) {
+      // ★★★  usersTypeIdを文字列として取得 ★★★
+      userType = loginUser.getUsersTypeId();
+  }
+  // else (loginUser == null) の場合、userTypeは初期値の null のまま
+
+  // CSS切り替えのために、userTypeを整数値に変換（ここでは簡略化）
+  int authorityForCss = 0;
+  if (userType != null) {
+    try {
+        authorityForCss = Integer.parseInt(userType.trim());
+    } catch (NumberFormatException e) {
+        authorityForCss = 0;
+    }
+  }
+%>
 
 <!DOCTYPE html>
 <html>
@@ -67,7 +91,12 @@
 
   <div class="header">
     <div class="logo">たべまっち</div>
+    <% // ログイン時のみユーザー名を表示（userTypeがnullでない場合）
+          if (userType != null) { %>
+            <span class="user-name" style="display: inline-block; margin-left: 40px; font-size: 20px; color: #444; font-weight: 600; font-family: 'Kosugi Maru', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; letter-spacing: 1px;"><%= loginUser.getUserName() %>さん</span>
+          <% } %>
     <div class="nav-links">
+	  <a href="${pageContext.request.contextPath}/tabematch.shop/ShopManagement.action">ホーム</a>
       <a href="${pageContext.request.contextPath}/tabematch/News.action">お知らせ</a>
       <a href="${pageContext.request.contextPath}/tabematch/shop/ShopReservationList.action">予約管理</a>
       <a href="${pageContext.request.contextPath}/tabematch.shop/ShopProfile.action">店舗プロフィール</a>
