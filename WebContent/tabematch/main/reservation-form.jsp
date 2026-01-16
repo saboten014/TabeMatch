@@ -30,25 +30,25 @@
 
 
        <div>
-        <table style="width: 80%; border-collapse: collapse;">
-            <tr>
-                <th style="width: 30%;">店舗名</th>
-                <td><%= shop.getShopName() %></td>
-            </tr>
-            <tr>
-                <th>住所</th>
-                <td><%= shop.getShopAddress() %></td>
-            </tr>
-            <tr>
-                <th>電話番号</th>
-                <td><%= shop.getShopTel() %></td>
-            </tr>
-            <tr>
-                <th>予約可否</th>
-                <td><%= shop.getShopReserve() != null ? shop.getShopReserve() : "未登録" %></td>
-            </tr>
-        </table>
-    </div>
+        <table style="width: 80%; border-collapse: collapse;">
+            <tr>
+                <th style="width: 30%;">店舗名</th>
+                <td><%= shop.getShopName() %></td>
+            </tr>
+            <tr>
+                <th>住所</th>
+                <td><%= shop.getShopAddress() %></td>
+            </tr>
+            <tr>
+                <th>電話番号</th>
+                <td><%= shop.getShopTel() %></td>
+            </tr>
+            <tr>
+                <th>予約可否</th>
+                <td><%= shop.getShopReserve() != null ? shop.getShopReserve() : "未登録" %></td>
+            </tr>
+        </table>
+    </div>
 
 
     <%
@@ -64,7 +64,7 @@
         <input type="hidden" name="shopId" value="<%= shop.getShopId() %>">
         <div>
             <label class="day">来店日<span>*</span></label>
-            <input type="date" name="visitDate"  required>
+            <input type="date" id="visitDate" name="visitDate" required>
         </div>
         <div>
             <label class="time">来店時間<span>*</span></label>
@@ -88,5 +88,22 @@
         </div>
     </form>
 </div>
+
+<script>
+    // 来店日の入力範囲を設定（今日から2年後まで）
+    (function() {
+        const dateInput = document.getElementById('visitDate');
+        const today = new Date();
+
+        // 今日の日付をmin値に設定
+        const minDate = today.toISOString().split('T')[0];
+        dateInput.setAttribute('min', minDate);
+
+        // 2年後の日付をmax値に設定（1年後にしたい場合は getFullYear() + 1 に変更）
+        const maxDate = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate());
+        dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
+    })();
+</script>
+
 </body>
 </html>
