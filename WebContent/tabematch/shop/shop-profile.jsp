@@ -10,8 +10,6 @@
 <!-- 店舗メニューバー -->
 <%@include file="../main/user_menu.jsp" %>
 
-<!-- 丸文字フォント -->
-<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
 <%
     // ShopProfileActionから渡されたShopオブジェクトを取得
@@ -109,6 +107,9 @@
 .btn-delete {
     background-color: #F44336; /* 赤色 */
     color: white;
+}
+.profile-container{
+	margin-top: 100px;
 }
 </style>
 
