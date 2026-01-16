@@ -51,6 +51,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
 <style>
+body {
+	background-color:  #e8f8e8;
+}
 .detail-container {
     width: 70%;
     max-width: 900px;

@@ -130,6 +130,9 @@
 h2 {
    margin-top: 100px;
 }
+body {
+	background-color:  #e8f8e8;
+}
 </style>
 
 <div class="news-container">

@@ -33,6 +33,9 @@
 %>
 
 <style>
+body {
+	background-color:  #e8f8e8;
+}
 .profile-container {
     width: 90%;
     max-width: 900px;
