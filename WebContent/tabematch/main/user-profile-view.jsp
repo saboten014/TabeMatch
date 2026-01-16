@@ -1,12 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="bean.Users" %>
+<%@ page import="bean.Allergen" %>
+<%@ page import="java.util.List" %>
 <%@ include file="../../header.html" %>
-<%@include file="user_menu.jsp" %>
-<html>
-<head>
-<title>プロフィール確認</title>
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_prof_v.css">
-</head>
-<body>
+
+<%
+    Users loginUser = (Users) session.getAttribute("user");
+    String userType = (loginUser != null && loginUser.getUsersTypeId() != null) ? loginUser.getUsersTypeId().trim() : "";
+%>
+
+<%-- メニューの動的切り替え --%>
+<% if ("2".equals(userType)) { %>
+    <jsp:include page="../../tabematch/main/shop_menu.jsp" />
+<% } else { %>
+    <jsp:include page="user_menu.jsp" />
+<% } %>
+
+<%--
+  注意：<html><head>などはheader.htmlに含まれているため、ここでは書かないのが正解です。
+  読み込ませたいCSSだけここに記述します。
+--%>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_prof_v.css?v=<%= System.currentTimeMillis() %>">
+
 <div class="container">
     <h2 class="text-center">プロフィール確認</h2>
 
@@ -16,15 +31,16 @@
     <% } %>
 
     <%
-        bean.Users user = (bean.Users) request.getAttribute("user");
+        Users user = (Users) request.getAttribute("user");
         if (user != null) {
+            List<Allergen> aList = (List<Allergen>) request.getAttribute("allergenList");
     %>
 
     <div class="card">
         <div class="card-body">
             <table>
                 <tr>
-                    <th style="width:30%;">ユーザー名</th>
+                    <th>ユーザー名</th>
                     <td><%= user.getUserName() %></td>
                 </tr>
                 <tr>
@@ -37,23 +53,19 @@
                 </tr>
                 <tr>
                     <th>アレルギー</th>
-                    <%
-                        String allergen = user.getAllergenId();
-                        if (allergen != null && !allergen.isEmpty()) {
-                            String display = allergen
-                                .replace("A01", "卵")
-                                .replace("A02", "乳")
-                                .replace("A03", "小麦")
-                                .replace("A04", "えび")
-                                .replace("A05", "かに")
-                                .replace("A06", "そば");
-                    %>
-                        <td><%= display.replace(",", "・") %></td>
-                    <%
-                        } else {
-                    %>
-                        <td>なし</td>
-                    <% } %>
+                    <td>
+                        <%
+                            if (aList != null && !aList.isEmpty()) {
+                                for (int i = 0; i < aList.size(); i++) {
+                        %>
+                                    <%= aList.get(i).getAllergenName() %><%= (i < aList.size() - 1) ? "・" : "" %>
+                        <%
+                                }
+                            } else {
+                        %>
+                                アレルギーなし
+                        <% } %>
+                    </td>
                 </tr>
             </table>
 
@@ -68,5 +80,5 @@
         <div class="alert alert-warning">ユーザー情報が見つかりません。</div>
     <% } %>
 </div>
-</body>
-</html>
+
+<%@ include file="../../footer.html" %>

@@ -1,10 +1,14 @@
 package tabematch.main;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bean.Allergen; // 追加
 import bean.Users;
+import dao.AllergenDAO;
 import dao.UserDAO;
 import tool.Action;
 
@@ -40,6 +44,14 @@ public class UserProfileViewAction extends Action {
             return;
         }
 
+        // --- ★アレルギー情報の取得処理 ---
+        AllergenDAO aldao = new AllergenDAO();
+        List<Allergen> allergenList = aldao.getAllergensByUserId(user.getUserId());
+
+
+     // JSP側で表示するためにリクエストにセット
+        req.setAttribute("allergenList", allergenList);
+        // --- ★ここまで ---
         req.setAttribute("user", user);
         req.getRequestDispatcher("user-profile-view.jsp").forward(req, res);
     }

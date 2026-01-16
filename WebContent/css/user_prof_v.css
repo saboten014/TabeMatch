@@ -1,79 +1,116 @@
-
-table {
-    width: 100%;
-    margin: 20px 0;
-    border-collapse: collapse;
-    table-layout: fixed;
-    background-color: #FFFFFF;
-    border-radius: 8px;
-
-}
-    th, td {
-        border: 2px solid #c0c0c0;
-        padding: 12px 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #eff7ff;
-        color: #3f3f3f;
-        font-weight: bold;
-    }
-
-h2 {
-    margin-top: 100px;
-    text-align: center;
+/* 全体のベース設定 */
+body {
+    background-color:  #e8f8e8;
+    font-family: 'Kosugi Maru', sans-serif;
+    color: #333;
+    margin: 0;
 }
 
 .container {
-	width: 90%;
-    max-width: 1100px;
+    width: 90%;
+    max-width: 800px; /* プロフィールなので少し幅を絞ると読みやすい */
     margin: 0 auto;
     padding: 20px;
     min-height: 500px;
 }
 
-.btn {
-	display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 30px;
+h2 {
+    margin-top: 120px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #4CAF50; /* テーマカラーの緑 */
+    font-size: 1.8em;
 }
 
-.btn-hensyu {
-	text-decoration: none;
-    padding: 10px 20px;
+/* カード風のコンテナ */
+.card {
+    background-color: #FFFFFF;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* 柔らかい影 */
+    border: 1px solid #eee;
+}
 
-    border: 2px solid #c0c0c0;
-    border-radius: 4px;
-    color: #333;
-    background-color: #f4f4ff;
+/* テーブルデザイン */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
 
-    transition: background-color 0.3s;
-    cursor: pointer;
+th, td {
+    padding: 18px 15px;
+    border-bottom: 1px solid #f0f0f0; /* 太い枠線から細い下線に変更 */
+    text-align: left;
+}
+
+th {
+    background-color: #f9fdf9; /* ごく薄い緑 */
+    color: #555;
+    font-weight: bold;
+    width: 30%;
+}
+
+tr:last-child th, tr:last-child td {
+    border-bottom: none; /* 最後の下線は消す */
+}
+
+/* ボタンのレイアウト */
+.btn {
+    display: flex;
+    justify-content: center; /* 中央寄せに変更 */
+    gap: 20px;
+    margin-top: 40px;
+}
+
+/* 共通ボタン基本スタイル */
+.btn-hensyu, .btn-modoru {
+    text-decoration: none;
+    padding: 12px 35px;
+    border-radius: 30px; /* 丸みのあるボタン */
     font-size: 16px;
     font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+}
+
+/* 編集ボタン（メインアクション） */
+.btn-hensyu {
+    color: white;
+    background-color: #4CAF50; /* 緑 */
+    border: none;
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
 }
 
 .btn-hensyu:hover {
-    background-color: #d6d6ff;
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
 }
 
+/* 戻るボタン（サブアクション） */
 .btn-modoru {
-	text-decoration: none;
-    padding: 10px 20px;
-
-    border: 2px solid #c0c0c0;
-    border-radius: 4px;
-    color: #333;
-    background-color: #f4f4ff;
-
-    transition: background-color 0.3s;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+    color: #666;
+    background-color: #f0f0f0;
+    border: none;
 }
 
 .btn-modoru:hover {
-    background-color: #d6d6ff;
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
 }
 
+/* エラーメッセージ */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.alert-danger {
+    background-color: #ffebee;
+    color: #c62828;
+}
