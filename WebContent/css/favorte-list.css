@@ -1,64 +1,133 @@
-h1 {
-	    margin-top: 100px;
-	}
+/* フォントと全体のベース */
+body {
+    font-family: 'Kosugi Maru', sans-serif;
+    background-color: #e8f8e8; /* 予約リストと同じ薄緑 */
+    color: #333;
+    margin: 0;
+}
 
+/* タイトル：予約リストのh2のデザインを反映 */
+h1 {
+    margin-top: 120px;
+    text-align: center;
+    color: #4CAF50;
+    font-size: 1.8em;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h1::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #4CAF50;
+    border-radius: 3px;
+}
+
+/* コンテナ設定 */
+.container {
+    width: 95%;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+    min-height: 500px;
+}
+
+/* テーブルデザイン：予約リストの刷新スタイルを反映 */
 table {
     width: 100%;
     margin: 20px 0;
-    border-collapse: collapse;
-    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
     background-color: #FFFFFF;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+    table-layout: fixed; /* JSPの指定に合わせる */
 }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #fff4ff;
-        color: #004D40;
-        font-weight: bold;
-    }
-    td a {
-        color: #00796B;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    td a:hover {
-        text-decoration: underline;
-    }
-    .container {
-        width: 90%;
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 20px;
-        min-height: 500px;
-    }
-    .no-favorites-message {
-        margin-top: 40px;
-        padding: 30px;
-        border: 1px dashed #ccc;
-        text-align: center;
-        color: #666;
-    }
 
-    .button-container {
-        margin-top: 30px;
-        text-align: right;
-    }
-    .button-container a {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    .button-container a:hover {
-        background-color: #45a049;
-    }
+th {
+    background-color: #f4fbf4;
+    color: #2e7d32;
+    font-weight: bold;
+    padding: 15px 10px;
+    border-bottom: 2px solid #e8f5e9;
+    font-size: 0.95em;
+    text-align: left;
+}
+
+td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+    line-height: 1.5;
+    word-break: break-all;
+    vertical-align: middle;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background-color: #fafafa;
+}
+
+/* リンクのデザイン：お気に入りらしく緑を基調に */
+td a {
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
+/* アレルギー情報の強調（予約リストの配色に合わせる） */
+td:nth-child(4) {
+    color: #d32f2f; /* 少し落ち着いた赤 */
+    font-weight: bold;
+}
+
+/* お気に入りがない時のメッセージ：予約リストの .no-yoyaku を踏襲 */
+.no-favorites-message {
+    max-width: 500px;
+    margin: 80px auto;
+    text-align: center;
+    background-color: #f1f8f1; /* 緑系の背景に変更 */
+    padding: 30px;
+    color: #2e7d32;
+    border-radius: 10px;
+    border-left: 5px solid #4CAF50;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* 戻るボタンのエリア：予約リストの .button-container と完全統一 */
+.button-container {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.button-container a {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.button-container a:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
