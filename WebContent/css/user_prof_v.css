@@ -114,3 +114,52 @@ tr:last-child th, tr:last-child td {
     background-color: #ffebee;
     color: #c62828;
 }
+
+/* 入力フィールドのスタイル */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #e8f5e9;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    border-color: #81c784;
+}
+
+/* アレルギーのチェックボックスを綺麗に並べる */
+.allergen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #f9fdf9;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #e8f5e9;
+    transition: all 0.2s;
+}
+
+.checkbox-label:hover {
+    background-color: #e8f5e9;
+}
+
+.checkbox-text {
+    margin-left: 8px;
+    font-size: 14px;
+}
+
+/* チェックが入った時のラベルの色を変えたい場合（任意） */
+.checkbox-label:has(input:checked) {
+    background-color: #c8e6c9;
+    border-color: #81c784;
+}

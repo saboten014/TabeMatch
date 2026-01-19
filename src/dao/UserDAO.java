@@ -135,17 +135,24 @@ public class UserDAO extends DAO {
     public boolean updateUser(Users user) throws Exception {
         Connection con = getConnection();
 
-        String sql = "UPDATE users SET password = ?, user_name = ?, allergen_id = ? WHERE user_id = ?";
+        // PostgreSQL側で明示的にキャスト (::character(3)[]) を行うとより確実です
+        String sql = "UPDATE users SET password = ?, user_name = ?, allergen_id = ?::character(3)[] WHERE user_id = ?";
         PreparedStatement stmt = con.prepareStatement(sql);
+
         stmt.setString(1, user.getPassword());
         stmt.setString(2, user.getUserName());
 
         if (user.getAllergenId() != null && !user.getAllergenId().isEmpty()) {
-            String[] allergenArray = user.getAllergenId().split(",");
-            java.sql.Array sqlArray = con.createArrayOf("varchar", allergenArray);
+            String cleanId = user.getAllergenId().replace("{", "").replace("}", "");
+            String[] allergenArray = cleanId.split(",");
+
+            // "character" ではなく "bpchar" を指定する
+            java.sql.Array sqlArray = con.createArrayOf("bpchar", allergenArray);
             stmt.setArray(3, sqlArray);
         } else {
-            stmt.setNull(3, java.sql.Types.ARRAY);
+            // こちらも同様に "bpchar"
+            java.sql.Array emptyArray = con.createArrayOf("bpchar", new String[0]);
+            stmt.setArray(3, emptyArray);
         }
 
         stmt.setString(4, user.getUserId());
