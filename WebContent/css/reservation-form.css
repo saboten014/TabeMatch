@@ -1,129 +1,220 @@
-.zenbu {
-    width: 100%;
+@charset "UTF-8";
+
+/* 共通フォント設定：ヘッダーのKosugi Maruと統一 */
+body {
+    background-color: #e8f8e8;
+    color: #444;
+    font-family: 'Kosugi Maru', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+}
+
+/* 全体コンテナ：少し丸みを持たせて柔らかい印象に */
+.container {
     max-width: 800px;
-
-    /* 水平方向の中央寄せ */
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 100px; /* 上部に少し余白 */
-    margin-bottom: 100px;
-
-    /* フォーム全体に影をつけて立体感を出す */
+    margin: 40px auto;
     padding: 30px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 h2 {
-	text-align: center;
-}
-
-table {
-	border: 2px solid #868686; /* 外側の枠線 */
-    margin-bottom: 25px; /* フォームとの間に余白を空ける */
-    margin-left: 80px;
-}
-
-th,
-td {
-    border: 2px solid #868686; /* セル間の区切り線 */
-    padding: 12px; /* セルの内側余白 */
-    text-align: left;
-}
-
-th {
-	background-color: #effff7;
-}
-
-form > div {
-    /* フォーム内の各フィールド間に余白を持たせる */
-    margin-bottom: 20px;
-}
-
-
-label {
-    /* labelを独立した行にする */
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
     color: #333;
-    margin-left: 80px;
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
 }
 
+.shop-name-display {
+    text-align: center;
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 35px;
+}
 
+.shop-name-display strong {
+    color: #e67e22; /* ロゴのオレンジ色 */
+    font-size: 1.2rem;
+    margin-left: 5px;
+}
+
+/* フォームグループ */
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.sub-label {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* 入力項目：ヘッダーの枠線と質感を統一 */
 input[type="date"],
 input[type="time"],
 input[type="number"],
-textarea
- {
-    /* 親要素の幅いっぱいに広げる */
-    width: 80%;
-    padding: 10px;
-    /* 落ち着いた灰色の枠線 */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    /* paddingやborderを幅に含めることで、width: 100%が崩れないようにする */
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #555;
     box-sizing: border-box;
-    font-size: 16px;
-    margin-left: 80px;
+    transition: all 0.3s ease;
 }
 
-.btn {
-	display: flex;
-    justify-content: space-between;
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #f39c12; /* 少し明るいオレンジ */
+    background-color: #fffaf5;
+}
+
+/* アレルギー選択グリッド */
+.allergy-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* アイテム基本形：たべまっち風の角丸カード */
+.allergy-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 5px;
+    border-radius: 15px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    text-align: center;
+}
+
+.allergy-item input[type="checkbox"] {
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.allergen-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge {
+    font-size: 0.65rem;
+    margin-top: 5px;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+/* 対応可：明るいオレンジ/グリーン系でポジティブに */
+.allergy-item.available {
+    background-color: #fff4e5; /* 薄いオレンジ */
+    color: #d35400;
+}
+
+.allergy-item.available:hover {
+    transform: scale(1.05);
+    background-color: #ffe8cc;
+}
+
+.available .status-badge {
+    background-color: #e67e22; /* ロゴオレンジ */
+    color: white;
+}
+
+/* 要相談：落ち着いたグレー */
+.allergy-item.unavailable {
+    background-color: #f5f5f5;
+    color: #bbb;
+    cursor: not-allowed;
+}
+
+.unavailable .status-badge {
+    background-color: #ddd;
+    color: #999;
+}
+
+/* ボタンエリア */
+.button-group {
+    display: flex;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
-.modoru {
-    text-decoration: none; /* 下線を消す */
-    padding: 10px 20px;
-
-    /* 控えめな色合いで設定 */
-    border: 2px solid #c6c6ff;
-    border-radius: 4px;
-    color: #333;
-    background-color: #e5f2ff;
-
-    /* ホバー効果 */
-    transition: background-color 0.3s;
-    cursor: pointer;
-    font-size: 16px;
+.btn-submit {
+    flex: 2;
+    background: linear-gradient(135deg, #e67e22, #f39c12);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 50px; /* 丸いボタンで親しみやすさを */
+    font-size: 1.1rem;
     font-weight: bold;
-}
-
-.modoru:hover {
-    background-color: #c6e2ff;
-}
-
-
-.sousin {
-    padding: 10px 20px;
-    border: 2px solid #ffc184;
-    border-radius: 4px;
-    justify-content: flex-end;
-
-    /* メインカラー */
-    background-color: #ffe2c6;
-
-    /* ホバー効果 */
-    font-weight: bold;
+    font-family: inherit;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+    transition: all 0.3s ease;
 }
 
-.sousin:hover {
-    background-color: #ffd6ad;
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(230, 126, 34, 0.4);
 }
 
-span {
-	color: red;
+.btn-back {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #888;
+    text-decoration: none;
+    border-radius: 50px;
+    border: 2px solid #eee;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
 
+.btn-back:hover {
+    background-color: #f9f9f9;
+    border-color: #ccc;
+}
 
+/* エラーメッセージ */
+.error-message {
+    background-color: #fdf2f2;
+    color: #e74c3c;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+    border: 1px solid #fadbd8;
+    text-align: center;
+}
 
+/* 区切り線 */
+hr {
+    border: 0;
+    border-top: 2px dashed #eee;
+    margin: 30px 0;
+}
 
-
-
+/* スマホ対応 */
+@media (max-width: 480px) {
+    .container { margin: 10px; padding: 20px; }
+    .allergy-options { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .allergen-name { font-size: 0.75rem; }
+    .button-group { flex-direction: column; }
+}

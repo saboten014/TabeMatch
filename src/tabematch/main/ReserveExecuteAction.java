@@ -29,6 +29,9 @@ public class ReserveExecuteAction extends Action {
         String visitDateParam = req.getParameter("visitDate");
         String visitTimeParam = req.getParameter("visitTime");
         String peopleParam = req.getParameter("numOfPeople");
+
+        // チェックボックスの値を取得 (配列)
+        String[] selectedAllergies = req.getParameterValues("allergy");
         String allergyNotes = req.getParameter("allergyNotes");
         String message = req.getParameter("message");
 
@@ -44,10 +47,6 @@ public class ReserveExecuteAction extends Action {
             setErrorAndReturn(req, res, shopId, "人数は数値で入力してください。");
             return;
         }
-        if (numOfPeople <= 0) {
-            setErrorAndReturn(req, res, shopId, "人数は1以上で入力してください。");
-            return;
-        }
 
         Date visitDate;
         Time visitTime;
@@ -59,13 +58,24 @@ public class ReserveExecuteAction extends Action {
             return;
         }
 
+        // 選択されたアレルギーと自由入力を合体させる
+        StringBuilder fullAllergyInfo = new StringBuilder();
+        if (selectedAllergies != null && selectedAllergies.length > 0) {
+            fullAllergyInfo.append("【選択項目】: ");
+            fullAllergyInfo.append(String.join(", ", selectedAllergies));
+        }
+        if (!isBlank(allergyNotes)) {
+            if (fullAllergyInfo.length() > 0) fullAllergyInfo.append(" / ");
+            fullAllergyInfo.append("【詳細】: ").append(allergyNotes);
+        }
+
         Reserve reserve = new Reserve();
         reserve.setUserId(loginUser.getUserId());
         reserve.setShopId(shopId);
         reserve.setVisitDate(visitDate);
         reserve.setVisitTime(visitTime);
         reserve.setNumOfPeople(numOfPeople);
-        reserve.setAllergyNotes(allergyNotes);
+        reserve.setAllergyNotes(fullAllergyInfo.toString());
         reserve.setMessage(message);
         reserve.setStatus("受付中");
 
@@ -80,21 +90,22 @@ public class ReserveExecuteAction extends Action {
         Shop shop = shopDao.getShopById(shopId);
         reserve.setShopName(shop != null ? shop.getShopName() : "");
 
-
         session.setAttribute("completedReserve", reserve);
         session.setAttribute("completedShop", shop);
         res.sendRedirect(req.getContextPath() + "/tabematch/main/reservation-complete.jsp");
     }
 
     private void setErrorAndReturn(HttpServletRequest req, HttpServletResponse res, String shopId, String message) throws Exception {
-        Shop shop = null;
-        if (shopId != null && !shopId.trim().isEmpty()) {
-            ShopDAO shopDao = new ShopDAO();
-            shop = shopDao.getShopById(shopId);
-        }
-        req.setAttribute("errorMessage", message);
+        ShopDAO shopDao = new ShopDAO();
+        Shop shop = shopDao.getShopById(shopId);
+
         if (shop != null) {
+            // ★修正ポイント：IDリストではなく「名前リスト」を再セットする
+            req.setAttribute("allAllergens", shopDao.getAllAllergens());
+            req.setAttribute("shopAllergenNames", shopDao.getShopAllergenNames(shopId));
+
             req.setAttribute("shop", shop);
+            req.setAttribute("errorMessage", message);
             req.getRequestDispatcher("reservation-form.jsp").forward(req, res);
         } else {
             req.setAttribute("errorMessage", message + " 店舗検索画面から再度操作してください。");

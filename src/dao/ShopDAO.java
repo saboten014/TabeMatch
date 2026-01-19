@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.Allergen;
 import bean.Shop;
 
 public class ShopDAO extends DAO {
@@ -623,5 +624,37 @@ public class ShopDAO extends DAO {
 
 	     return result > 0;
 	 }
+
+	 public List<Allergen> getAllAllergens() throws Exception {
+		    List<Allergen> list = new ArrayList<>();
+		    String sql = "SELECT * FROM allergen ORDER BY allergen_id";
+
+		    try (Connection con = getConnection();
+		         PreparedStatement stmt = con.prepareStatement(sql);
+		         ResultSet rs = stmt.executeQuery()) {
+		        while (rs.next()) {
+		            Allergen a = new Allergen();
+		            a.setAllergenId(rs.getString("allergen_id"));
+		            a.setAllergenName(rs.getString("allergen_name"));
+		            list.add(a);
+		        }
+		    }
+		    return list;
+		}
+
+	 public List<String> getShopAllergenNames(String shopId) throws Exception {
+		    List<String> list = new ArrayList<>();
+		    Shop shop = getShopById(shopId);
+
+		    if (shop != null && shop.getShopAllergy() != null) {
+		        // 全角カンマと半角カンマの両方に対応
+		        String allergyStr = shop.getShopAllergy().replace("、", ",");
+		        String[] names = allergyStr.split(",");
+		        for (String name : names) {
+		            list.add(name.trim()); // 「卵」などの名前がリストに入る
+		        }
+		    }
+		    return list;
+		}
 
 }
