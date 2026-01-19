@@ -177,13 +177,12 @@ public class ReserveDAO extends DAO {
         return result > 0;
     }
 
-    // ResultSet → Reserve オブジェクトへ変換
+ // dao/ReserveDAO.java の一番下にあるメソッドを以下に差し替え
     private Reserve mapReserve(ResultSet rs) throws Exception {
         Reserve reserve = new Reserve();
 
-        // reserve_idはUUID（String型）として扱う
-        String reserveIdStr = rs.getString("reserve_id");
-        reserve.setReserveIdString(reserveIdStr); // 文字列IDを設定
+        // IDはUUID(文字列)として取得
+        reserve.setReserveIdString(rs.getString("reserve_id"));
 
         reserve.setUserId(rs.getString("user_id"));
         reserve.setShopId(rs.getString("shop_id"));
@@ -191,15 +190,27 @@ public class ReserveDAO extends DAO {
         reserve.setVisitTime(rs.getTime("reserve_time"));
         reserve.setNumOfPeople(rs.getInt("reserve_count"));
         reserve.setAllergyNotes(rs.getString("reserve_allergy"));
+
+        // ★ここがポイント：メッセージには純粋にメモだけを入れる
         reserve.setMessage(rs.getString("reserve_note"));
-        reserve.setStatus(String.valueOf(rs.getTimestamp("reserve_send")));
+
         reserve.setReserveStatus(rs.getInt("reserve_status"));
         reserve.setShopName(rs.getString("shop_name"));
 
+        // ★ここがポイント：名前は専用のフィールドに入れる
+        try {
+            String uName = rs.getString("user_name");
+            if (uName != null && !uName.isEmpty()) {
+                reserve.setUserName(uName);
+            } else {
+                reserve.setUserName("ゲスト");
+            }
+        } catch (Exception e) {
+            reserve.setUserName("不明");
+        }
+
         return reserve;
     }
-
-
 
  // 店舗ごとの今日の予約一覧取得 (予約日時順でソート)
     public List<Reserve> getTodayReservations(String shopId) throws Exception {
