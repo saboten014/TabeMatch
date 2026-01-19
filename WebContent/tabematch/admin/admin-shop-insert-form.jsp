@@ -101,6 +101,13 @@
     padding: 10px;
     margin-bottom: 20px;
 }
+
+body {
+	background-color:  #e8f8e8;
+}
+.edit-request-container {
+	margin-top: 100px;
+}
 </style>
 
 <div class="edit-request-container">

@@ -2,6 +2,8 @@
 <%@page import="bean.Shop" %>
 <%@include file="../../header.html" %>
 <%@include file="../main/admin_menu.jsp" %>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/a-s-d-c.css">
+
 
 <h2>店舗削除確認</h2>
 

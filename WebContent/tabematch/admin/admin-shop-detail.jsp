@@ -2,6 +2,7 @@
 <%@page import="bean.Shop" %>
 <%@include file="../../header.html" %>
 <%@include file="../main/admin_menu.jsp" %>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin-shop-d.css">
 
 <h2>店舗詳細</h2>
 
@@ -9,7 +10,7 @@
 Shop shop = (Shop) request.getAttribute("shop");
 %>
 
-<table>
+<table style="width: 70%; border-collapse: collapse;">
     <tr><th>ID</th><td><%= shop.getShopId() %></td></tr>
     <tr><th>店舗名</th><td><%= shop.getShopName() %></td></tr>
     <tr><th>住所</th><td><%= shop.getShopAddress() %></td></tr>
@@ -20,14 +21,15 @@ Shop shop = (Shop) request.getAttribute("shop");
 
 <div class="btn-area">
     <% if (shop.getIsPublic()) { %>
-        <a href="AdminShopPrivate.action?shopId=<%=shop.getShopId()%>">非公開にする</a>
+        <div class="koukai"><a href="AdminShopPrivate.action?shopId=<%=shop.getShopId()%>">非公開にする</a></div>
     <% } else { %>
-        <a href="AdminShopPublic.action?shopId=<%=shop.getShopId()%>">公開する</a>
+        <div class="koukai"><a href="AdminShopPublic.action?shopId=<%=shop.getShopId()%>">公開する</a>
+        </div>
     <% } %>
-
-    <a href="AdminShopDeleteConfirm.action?shopId=<%=shop.getShopId()%>" style="color:red;">
+	<div class="sakujo">
+    <a href="AdminShopDeleteConfirm.action?shopId=<%=shop.getShopId()%>">
         削除する
-    </a>
+    </a></div>
 </div>
 
 <%@include file="../../footer.html" %>

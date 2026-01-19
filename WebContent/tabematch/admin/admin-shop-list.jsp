@@ -3,8 +3,46 @@
 <%@page import="bean.Shop" %>
 <%@include file="../../header.html" %>
 <%@include file="../main/admin_menu.jsp" %>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin_shop_list.css?v=<%= System.currentTimeMillis() %>">
 
 <h2>店舗一覧</h2>
+
+<!-- ▼ フィルタ -->
+<div class="filter-container">
+<div class="filter-group">
+    五十音：
+    <a href="AdminShopList.action?kana=ア">ア</a>
+    <a href="AdminShopList.action?kana=カ">カ</a>
+    <a href="AdminShopList.action?kana=サ">サ</a>
+    <a href="AdminShopList.action?kana=タ">タ</a>
+    <a href="AdminShopList.action?kana=ナ">ナ</a>
+    <a href="AdminShopList.action?kana=ハ">ハ</a>
+    <a href="AdminShopList.action?kana=マ">マ</a>
+    <a href="AdminShopList.action?kana=ヤ">ヤ</a>
+    <a href="AdminShopList.action?kana=ラ">ラ</a>
+    <a href="AdminShopList.action?kana=ワ">ワ</a>
+</div>
+<div class="filter-group">
+    <br>A〜Z：
+<%
+for(char c='A'; c<='Z'; c++){
+%>
+    <a href="AdminShopList.action?kana=<%=c%>"><%=c%></a>
+<%
+}
+%>
+
+    <br><a href="AdminShopList.action?kana=ALL">すべて表示</a>
+    </div>
+</div>
+
+<%
+int pageNum = (int)request.getAttribute("page");    // ← 修正
+int maxPage = (int)request.getAttribute("maxPage");
+String kana = (String)request.getAttribute("kana");
+if (kana == null) kana = "ALL";
+%>
+
 
 <div class="table-container">
 <%
@@ -48,38 +86,7 @@ for (Shop s : list) {
 %>
 </div>
 
-<!-- ▼ フィルタ -->
-<div class="filter-container">
-    五十音：
-    <a href="AdminShopList.action?kana=ア">ア</a>
-    <a href="AdminShopList.action?kana=カ">カ</a>
-    <a href="AdminShopList.action?kana=サ">サ</a>
-    <a href="AdminShopList.action?kana=タ">タ</a>
-    <a href="AdminShopList.action?kana=ナ">ナ</a>
-    <a href="AdminShopList.action?kana=ハ">ハ</a>
-    <a href="AdminShopList.action?kana=マ">マ</a>
-    <a href="AdminShopList.action?kana=ヤ">ヤ</a>
-    <a href="AdminShopList.action?kana=ラ">ラ</a>
-    <a href="AdminShopList.action?kana=ワ">ワ</a>
 
-    <br>A〜Z：
-<%
-for(char c='A'; c<='Z'; c++){
-%>
-    <a href="AdminShopList.action?kana=<%=c%>"><%=c%></a>
-<%
-}
-%>
-
-    <br><a href="AdminShopList.action?kana=ALL">すべて表示</a>
-</div>
-
-<%
-int pageNum = (int)request.getAttribute("page");    // ← 修正
-int maxPage = (int)request.getAttribute("maxPage");
-String kana = (String)request.getAttribute("kana");
-if (kana == null) kana = "ALL";
-%>
 
 <!-- ▼ ページネーション -->
 <div class="pagination">

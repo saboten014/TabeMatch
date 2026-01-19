@@ -1,0 +1,80 @@
+body {
+    background-color: #e8f8e8;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.confirm-box {
+    max-width: 600px;
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.confirm-box p {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    width: 30%;
+    background-color: #f0f2f5;
+    text-align: left;
+}
+
+td {
+    background-color: #fff;
+}
+
+.btn-area {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.btn {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+/* 削除ボタン */
+.btn.delete {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.btn.delete:hover {
+    background-color: #c0392b;
+}
+
+/* 戻るボタン */
+.btn.back {
+    background-color: #bdc3c7;
+    color: #333;
+}
+
+.btn.back:hover {
+    background-color: #aab0b6;
+}
