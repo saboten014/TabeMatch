@@ -1,27 +1,150 @@
-
+/* 全体のベース */
 body {
+    font-family: 'Kosugi Maru', sans-serif;
+    background-color: #e8f8e8; /* 統一のパステルグリーン背景 */
+    color: #333;
     margin: 0;
-    padding: 0;
-}
-.result{
-    margin-top: 100px !important;
-    padding-top: 0 !important;
-    text-align: center;
 }
 
-th {
-	background-color: #fff4ea;
+/* メインカード */
+.result-container {
+    max-width: 1000px;
+    margin: 120px auto 40px auto; /* ヘッダー分を空ける */
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
-td {
-	background-color: white;
+
+/* タイトル */
+h1.result {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+/* 戻るリンク */
+.navigation {
+    margin-bottom: 20px;
+}
+.back-link {
+    color: #81c784;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.back-link:hover {
+    color: #4CAF50;
+    text-decoration: underline;
+}
+
+/* 警告ボックス */
+.warning-box {
+    background-color: #fff3cd;
+    border-left: 5px solid #ffc107;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.ok-btn {
+    background: #ffc107;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* 件数表示 */
+.result-count {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    color: #666;
+}
+.result-count strong {
+    color: #4CAF50;
+    font-size: 1.3em;
+}
+
+/* テーブルデザイン */
+.table-wrapper {
+    overflow-x: auto; /* スマホで横スクロール可能に */
+    border-radius: 15px;
+    border: 1px solid #e0f0e0;
 }
 
 table {
-   max-width: calc(100% - 40px);
-    margin-left: 20px;
-    margin-right: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
 }
 
-p{
-	margin-left: 20px;
+th {
+    background-color: #f4fbf4; /* 薄い緑 */
+    color: #2e7d32;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #e8f8e8;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.95em;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* ホバーで行の色を変える */
+tr:hover td {
+    background-color: #f9fff9;
+}
+
+/* 店名を目立たせる */
+.shop-name-cell {
+    font-weight: bold;
+    color: #333;
+}
+
+/* ジャンルタグ風 */
+.genre-tag {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+}
+
+/* 詳細ボタン（ショップ詳細のボタンと統一） */
+.detail-btn {
+    display: inline-block;
+    background-color: #81c784;
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.85em;
+    transition: 0.3s;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.detail-btn:hover {
+    background-color: #4CAF50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 結果なしメッセージ */
+.no-result {
+    text-align: center;
+    padding: 40px;
+    color: #888;
 }

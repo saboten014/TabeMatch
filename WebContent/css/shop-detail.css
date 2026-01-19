@@ -1,148 +1,154 @@
-  body {
-    background-color: #e8f8e8 !important;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
+/* フォントと全体のベース */
+body {
+    font-family: 'Kosugi Maru', sans-serif;
+    background-color: #e8f8e8; /* 統一の薄緑 */
+    color: #333;
     margin: 0;
-    padding: 0;
-  }
+}
 
+.container {
+    max-width: 900px;
+    margin: 120px auto 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
 
-h2{
-    margin-top: 100px;
-    padding-top: 20px;
-    font-size: 32px;
+/* 店舗名 */
+h2.shopname {
     text-align: center;
-    color: #333;
-    margin-bottom: 10px;
-  }
-
-
-th {
-	padding: 15px 10px;
-	background-color: #fff4ea;
-}
-td {
-	padding: 15px 10px;
-	background-color: white;
+    color: #4CAF50;
+    font-size: 2em;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 10px;
 }
 
-tr {
-	padding: 15px 10px;
-	background-color: #f0f0f0;;
-}
-table {
-   max-width: calc(100% - 40px);
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.shopname {
-	margin-top: 20px;
-    padding-top: 20px;
-    font-size: 32px;
-    text-align: center;
-    color: #333;
-    margin-bottom: 10px;
+h2.shopname::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: #81c784;
+    border-radius: 4px;
 }
 
-  p{
-	margin-left: 20px;
-}
-
-.yoyaku,
-.loginB,
-.love,
-.kutikomisuru,
-.kutikomiru,
-.kaijo,
+/* 前に戻るボタン */
 .goback {
-    /* マージン */
-	margin-top: 10px;
-	margin-left: 10px;
-
-    /* レイアウトとサイズ */
- 	padding: 10px 20px;
- 	border-radius: 5px;
- 	display: inline-block;
- 	font-size: 16px;
-
-    /* テキスト装飾 */
- 	color: black;
- 	text-decoration: none;
-
-    /* アニメーション */
- 	transition: background-color 0.3s ease;
-}
-.yoyaku {
- 	background-color: #ffeaff; /* 薄いピンク */
- 	border: 2px solid #ff89ff; /* 濃いピンク */
-}
-
-.yoyaku:hover {
- 	background-color: #ffc6ff;
-}
-
-/* --------------------------------------
-   個別設定: ログインボタン (.loginB)
-   -------------------------------------- */
-.loginB {
- 	background-color: #eaf4ff; /* 薄い青 */
- 	border: 2px solid #007bff; /* 濃い青 */
-}
-
-.loginB:hover {
- 	background-color: #c6e2ff;
-}
-
-/* --------------------------------------
-   個別設定: お気に入り登録ボタン (.love)
-   -------------------------------------- */
-.love, .kaijo {
- 	background-color: #ffffef; /* 薄い黄色/クリーム色 */
- 	border: 2px solid #ffc993; /* オレンジ系 */
-}
-
-.love:hover, .kaijo:hover {
- 	background-color: #ffffcc;
-}
-
-/* --------------------------------------
-   個別設定: 口コミボタン (.kutikomisuru, .kutikomiru)
-   -------------------------------------- */
-.kutikomisuru, .kutikomiru {
- 	background-color: #e5f2ff; /* 薄い水色 */
- 	border: 2px solid #007bff; /* 濃い青 */
-}
-
-.kutikomisuru:hover, .kutikomiru:hover {
- 	background-color: #c6e2ff;
-}
-
-.backlist {
-	margin-left: 20px;
-}
-
-.btn {
-	display: flex;
-	margin-top: 20px;
-	margin-bottom: 40px;
-	justify-content: center;
-}
-
-.sakusesu, .dame {
-	margin-top: 20px;
-	margin-left: 20px;
-	background-color: white;
-	width: 230px;
-	padding: 10px 20px;
- 	border-radius: 5px;
- 	font-size: 16px;
-}
-
-.goback {
-	background-color: #eaf4ff;
- 	border: 2px solid #a0a0a0;
+    background-color: #f1f8f1;
+    color: #81c784;
+    border: 2px solid #81c784;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: 0.3s;
 }
 
 .goback:hover {
- 	background-color: #c6e2ff;
+    background-color: #81c784;
+    color: white;
 }
+
+/* テーブルスタイル */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-bottom: 30px;
+}
+
+th {
+    background-color: #f4fbf4;
+    color: #2e7d32;
+    padding: 15px;
+    border-radius: 15px 0 0 15px;
+    text-align: left;
+    width: 25%;
+}
+
+td {
+    background-color: #fafafa;
+    padding: 15px;
+    border-radius: 0 15px 15px 0;
+}
+
+/* --- ボタンエリア：重なり防止の要 --- */
+.shop-actions {
+    display: flex;
+    flex-wrap: wrap;        /* 画面幅に合わせて自動改行 */
+    justify-content: center;
+    align-items: center;
+    gap: 15px;              /* ボタン同士の隙間 */
+    margin-top: 40px;
+    width: 100%;
+}
+
+/* Formタグが余計なマージンを持たないようにする */
+.inline-form {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+/* 全ボタン共通のサイズと形 */
+.love, .kaijo, .yoyaku, .kutikomisuru, .kutikomiru {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    min-width: 180px;      /* 横幅を揃える */
+    padding: 0 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+/* 予約ボタン */
+.yoyaku {
+    background-color: #4CAF50;
+    color: white !important;
+}
+
+/* お気に入りボタン */
+.love { background-color: #fff0f3; color: #ff4d6d; border-color: #ff4d6d; }
+.kaijo { background-color: #ff4d6d; color: white; border-color: #ff4d6d; }
+
+/* 口コミボタン */
+.kutikomisuru { background-color: #e3f2fd; color: #1976d2; border-color: #1976d2; }
+.kutikomiru { background-color: #fff3e0; color: #ef6c00; border-color: #ef6c00; }
+
+/* ホバー演出 */
+.shop-actions a:hover, .shop-actions button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    opacity: 0.9;
+}
+
+/* ログインガイド */
+.login-guide {
+    text-align: center;
+    color: #666;
+}
+
+/* 画像 */
+.img-fluid {
+    border-radius: 15px;
+    border: 5px solid #f1f8f1;
+    max-width: 100%;
+}
+
+/* 通知メッセージ */
+.sakusesu { background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; border-left: 5px solid #4CAF50; }
+.dame { background: #fff1f0; color: #d32f2f; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; border-left: 5px solid #f44336; }
