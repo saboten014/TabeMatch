@@ -32,10 +32,15 @@ public class ReviewDAO extends DAO {
     }
 
 
-    // 店舗IDを元に口コミ一覧取得
+ // 店舗IDを元に口コミ一覧取得（ユーザー名も取得するように修正）
     public List<Review> getReviewsByShopId(String shopId) throws Exception {
 
-        String sql = "SELECT * FROM review WHERE shop_id = ? AND delete_flg = '0' ORDER BY created_at DESC";
+        // ★SQLを修正：reviewテーブル(r)とusersテーブル(u)を結合
+        String sql = "SELECT r.*, u.user_name " +
+                     "FROM review r " +
+                     "JOIN users u ON r.user_id = u.user_id " +
+                     "WHERE r.shop_id = ? AND r.delete_flg = '0' " +
+                     "ORDER BY r.created_at DESC";
 
         List<Review> list = new ArrayList<>();
 
@@ -54,6 +59,11 @@ public class ReviewDAO extends DAO {
                     r.setTitle(rs.getString("title"));
                     r.setBody(rs.getString("body"));
                     r.setRating(rs.getInt("rating"));
+
+                    // ★ここでusersテーブルから取得したuser_nameをセット
+                    // ※ReviewクラスにuserNameフィールドとsetterがある前提です
+                    r.setUserName(rs.getString("user_name"));
+
                     r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
                     list.add(r);

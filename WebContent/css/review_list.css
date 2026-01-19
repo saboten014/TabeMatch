@@ -1,67 +1,121 @@
-.zenbu {
-	text-align: center;
+/* ベース背景 */
+body {
+    background-color: #e8f8e8;
+    font-family: "Kosugi Maru", sans-serif;
 }
 
-
-h2 {
-	margin-top:100px;
-	margin-bottom:50px;
-	text-align: center;
+.container {
+    max-width: 900px;
+    margin: 120px auto 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
+h2.title {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
 
+/* メッセージ（他画面と統一） */
+.sakusesu {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-left: 5px solid #4CAF50;
+}
 
+.action-bar {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* 投稿ボタン（他画面とサイズ統一） */
 .toko {
-    text-decoration: none; /* 下線を消す */
-    padding: 10px 20px;
-
-    /* 控えめな色合いで設定 */
-    border: 2px solid #ffbf7f;
-    border-radius: 4px;
-    color: #333;
-    background-color: #ffffc1;
-
-    /* ホバー効果 */
-    transition: background-color 0.3s;
-    cursor: pointer;
-    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 30px;
+    background-color: #4CAF50;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 24px;
     font-weight: bold;
+    transition: all 0.3s;
 }
 
 .toko:hover {
-    background-color: #ffff7f;
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76,175,80,0.3);
 }
 
-.nai {
-	margin-top: 20px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 20px;
-	background-color: white;
-	width: 230px;
-	padding: 10px 20px;
- 	font-size: 16px;
+/* 口コミカード */
+.card {
+    background-color: #fafafa;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    overflow: hidden;
 }
 
-
-.modoru {
-
-    text-decoration: none; /* 下線を消す */
+.card-header {
+    background-color: #fff3e0; /* 優しいオレンジ */
     padding: 10px 20px;
+    border-bottom: 1px solid #ffe0b2;
+}
 
-    /* 控えめな色合いで設定 */
-    border: 2px solid #c6c6ff;
-    border-radius: 4px;
-    color: #333;
-    background-color: #e5f2ff;
-
-    /* ホバー効果 */
-    transition: background-color 0.3s;
-    cursor: pointer;
-    font-size: 16px;
+.star-rating {
+    color: #ef6c00;
     font-weight: bold;
+    font-size: 1.2em;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-body h5 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.card-body p {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.card-footer-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    color: #888;
+    border-top: 1px dotted #ccc;
+    padding-top: 10px;
+}
+
+/* 戻るボタン */
+.modoru {
+    background-color: #f1f8f1;
+    color: #81c784;
+    border: 2px solid #81c784;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
 .modoru:hover {
-    background-color: #c6e2ff;
+    background-color: #81c784;
+    color: white;
 }

@@ -1,131 +1,156 @@
-.zenbu {
-	/* Flexboxを使って親要素（body）内で垂直・水平中央に配置 */
-    /* ただし、ここではブロック要素として扱い、幅を指定して中央寄せする */
-    width: 100%; /* フォームの最大幅を設定 */
-    max-width: 800px; /* 広い画面でも広がりすぎないように制限 */
-
-    /* 水平方向の中央寄せ */
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 100px; /* 上部に少し余白 */
-    margin-bottom: 100px;
-
-    /* フォーム全体に影をつけて立体感を出す */
-    padding: 30px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+/* ベース：他画面と統一 */
+body {
+    background-color: #e8f8e8; /* 統一の薄緑 */
+    font-family: "Kosugi Maru", sans-serif;
+    margin: 0;
 }
 
+.zenbu {
+    max-width: 700px; /* 少しスリムにして可愛く */
+    margin: 120px auto 40px auto; /* ヘッダー分を空ける */
+    padding: 40px;
+    background-color: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* 影をやわらかく */
+    border-radius: 30px; /* 角をしっかり丸く */
+}
 
 h2 {
-	text-align: center;
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 40px;
+    font-size: 1.8em;
+    position: relative;
+}
+
+/* タイトルの下の飾り線 */
+h2::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: #81c784;
+    margin: 10px auto;
+    border-radius: 10px;
+}
+
+/* 入力エリアのまとまり */
+form > div {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 中央寄せ */
 }
 
 label {
-    /* labelを独立した行にする */
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: bold;
-    color: #333;
-    margin-left: 80px;
+    color: #555;
+    width: 85%; /* 入力欄と幅を合わせる */
+    font-size: 0.95em;
 }
 
-form > div {
-    /* フォーム内の各フィールド間に余白を持たせる */
-    margin-bottom: 20px;
-}
-
-
+/* 入力欄共通 */
 input[type="text"],
-textarea
- {
-    /* 親要素の幅いっぱいに広げる */
-    width: 80%;
-    padding: 10px;
-    /* 落ち着いた灰色の枠線 */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    /* paddingやborderを幅に含めることで、width: 100%が崩れないようにする */
+textarea,
+.form-select {
+    width: 85%;
+    padding: 15px;
+    border: 2px solid #e0f0e0; /* 薄い緑の枠線 */
+    border-radius: 15px; /* 角丸を可愛く */
     box-sizing: border-box;
     font-size: 16px;
-    margin-left: 80px;
-}
-
-.form-select {
-    width: 25%;
-    border: 1px solid #aaa;
-    border-radius: 6px;
-    padding: 10px 30px 10px 10px;
-    font-size: 16px;
-	margin-left: 80px;
-    /* フォーカス時のアニメーション */
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-/* 3. フォーカス時のスタイル (選択時) */
-.form-select:focus {
-    /* デフォルトのアウトラインを無効化 */
+    font-family: inherit;
+    background-color: #fafafa;
+    transition: all 0.3s;
     outline: none;
-    /* 枠線をメインカラー（例: 青）に変更 */
-    border-color: #007bff;
-    /* 影を追加して、選択中の項目を強調する */
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-
-.btn {
-	display: flex;
-    /* 修正箇所: 要素を両端に広げ、間にスペースを最大限取る */
-    justify-content: space-between;
-    /* gapは不要になるため削除（または、そのまま残しても影響は少ない） */
-    gap: 15px;
-    margin-top: 30px;
+/* フォーカスした時 */
+input[type="text"]:focus,
+textarea:focus,
+.form-select:focus {
+    border-color: #81c784;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(129, 199, 132, 0.2);
 }
-.sousin {
 
-/* 	margin-left: 650px; */
-	padding: 10px 20px;
-    border: 2px solid #ffc184;
-    border-radius: 4px;
-
-    /* メインカラー */
-    background-color: #ffe2c6;
-
-    /* ホバー効果 */
-    font-weight: bold;
+/* セレクトボックス（評価） */
+.form-select {
+    width: 85%;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
-}
-
-.sousin:hover {
-    background-color: #ffc993;
+    appearance: none; /* デフォルトの矢印を消してカスタム（必要なら） */
 }
 
 textarea {
-	height: 150px;ss
+    height: 180px;
+    resize: vertical; /* 縦方向のみリサイズ可 */
 }
 
+/* ボタンを包むエリア */
+.btn {
+    display: flex;
+    flex-direction: row;    /* 横並びにする */
+    justify-content: center; /* 中央に寄せる */
+    align-items: center;
+    gap: 20px;              /* ボタンとボタンの間の距離をしっかりあける */
+    width: 100%;            /* 親要素いっぱいまで広げる */
+    margin-top: 40px;       /* 上の入力欄との距離 */
+}
 
-.modoru {
-
-    text-decoration: none; /* 下線を消す */
-    padding: 10px 20px;
-
-    /* 控えめな色合いで設定 */
-    border: 2px solid #c6c6ff;
-    border-radius: 4px;
-    color: #333;
-    background-color: #e5f2ff;
-
-    /* ホバー効果 */
-    transition: background-color 0.3s;
-    cursor: pointer;
+/* 送信ボタンと戻るボタン共通 */
+.sousin, .modoru {
+    /* どちらのボタンも同じサイズ感にする */
+    min-width: 160px;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: 25px;    /* ぷっくりした角丸 */
     font-size: 16px;
     font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    border: none;
+}
+
+/* 送信ボタン（右側） */
+.sousin {
+    background-color: #ffb74d; /* 優しいオレンジ */
+    color: white;
+    box-shadow: 0 4px 0 #e69b28; /* 立体感の影 */
+    order: 2; /* 常に右側に配置 */
+}
+
+.sousin:hover {
+    background-color: #ffa726;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #e69b28;
+}
+
+/* 戻るボタン（左側） */
+.modoru {
+    background-color: #f0f0f0;
+    color: #777;
+    border: 2px solid #e0e0e0;
+    order: 1; /* 常に左側に配置 */
 }
 
 .modoru:hover {
-    background-color: #c6e2ff;
+    background-color: #e0e0e0;
+    color: #555;
+}
+
+/* スマホなど画面が狭いときは縦に並べる */
+@media (max-width: 500px) {
+    .btn {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .sousin, .modoru {
+        width: 85%; /* 横いっぱいに広げる */
+    }
 }

@@ -12,7 +12,14 @@ public class Review {
     private int rating;
     private LocalDateTime createdAt;
 
+    // ★追加：投稿者の名前を保持するフィールド
+    private String userName;
+
     // ---- getter/setter ----
+
+    // ★追加：userNameのgetter/setter
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public String getReviewIdString() { return reviewId; }
     public void setReviewIdString(String reviewId) { this.reviewId = reviewId; }
