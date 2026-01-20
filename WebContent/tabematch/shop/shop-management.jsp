@@ -4,15 +4,24 @@
     String contextPath = request.getContextPath();
     String actionPath = contextPath + "/tabematch/shop/ShopManagement.action";
 
+    // Actionから渡されたデータ
     List<Reserve> todayReservations = (List<Reserve>) request.getAttribute("todayReservations");
     Map<Integer, ReservationDayStatus> reservationStatusMap = (Map<Integer, ReservationDayStatus>) request.getAttribute("reservationStatusMap");
     if (reservationStatusMap == null) { reservationStatusMap = new java.util.HashMap<>(); }
 
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
+    // 日付管理
     String currentMonthYear = (String) request.getAttribute("currentMonthYear");
     int currentYear = (request.getAttribute("currentYear") != null) ? (Integer) request.getAttribute("currentYear") : Calendar.getInstance().get(Calendar.YEAR);
     int currentMonth = (request.getAttribute("currentMonth") != null) ? (Integer) request.getAttribute("currentMonth") : Calendar.getInstance().get(Calendar.MONTH) + 1;
+
+    // ★URLから選択された「日」を取得（クリックされた日）
+    String dayParam = request.getParameter("day");
+    int selectedDay = -1;
+    if (dayParam != null) {
+        try { selectedDay = Integer.parseInt(dayParam); } catch (Exception e) {}
+    }
 
     String selectedDateString = (String) request.getAttribute("selectedDateString");
     if (selectedDateString == null) { selectedDateString = "今日"; }
@@ -69,7 +78,7 @@
                         </div>
                     <% } %>
                 <% } else { %>
-                    <p style="text-align: center; color: #ccc; margin-top: 40px;">予約はないよ ☕</p>
+                    <p style="text-align: center; color: #ccc; margin-top: 40px;">予約はありません ☕</p>
                 <% } %>
             </div>
         </div>
@@ -93,7 +102,10 @@
 
                 <% for (int i = 1; i <= daysInMonth; i++) {
                     ReservationDayStatus status = reservationStatusMap.get(i);
-                    String cellClass = "day-cell" + (i == todayDay ? " today" : "");
+                    // ★ クラスを判定：今日なら 'today'、選択中なら 'selected-day' を追加
+                    String cellClass = "day-cell";
+                    if (i == todayDay) cellClass += " today";
+                    if (i == selectedDay) cellClass += " selected-day";
                 %>
                     <a class="<%= cellClass %>" href="<%= actionPath %>?year=<%= currentYear %>&month=<%= currentMonth %>&day=<%= i %>">
                         <span style="font-weight: bold; font-size: 1.1rem;"><%= i %></span>
@@ -113,41 +125,35 @@
 <div id="reserveModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeDetailModal()">&times;</span>
-        <h2 class="modal-title">予約をかくにん ✨</h2>
-
+        <h2 class="modal-title">予約を確認 ✨</h2>
         <div class="modal-item">
-            <span class="modal-label">おなまえ</span>
+            <span class="modal-label">お名前</span>
             <span id="m-name" class="modal-value"></span>
         </div>
-
         <div style="display: flex; gap: 15px;">
             <div class="modal-item" style="flex: 1;">
-                <span class="modal-label">じかん</span>
+                <span class="modal-label">予約時間</span>
                 <span id="m-time" class="modal-value"></span>
             </div>
             <div class="modal-item" style="flex: 1;">
-                <span class="modal-label">にんずう</span>
+                <span class="modal-label">人数</span>
                 <span id="m-people" class="modal-value"></span>
             </div>
         </div>
-
         <div class="modal-item">
-            <span class="modal-label">じょうたい</span>
+            <span class="modal-label">状態</span>
             <span id="m-status" class="modal-value"></span>
         </div>
-
         <div class="modal-item">
             <span class="modal-label">アレルギー</span>
             <div id="m-allergy" class="allergy-alert"></div>
         </div>
-
         <div class="modal-item" style="border: none; background: transparent;">
             <span class="modal-label">メッセージ</span>
             <div id="m-message" class="message-box"></div>
         </div>
-
         <div style="text-align: center; margin-top: 20px;">
-            <button onclick="closeDetailModal()" style="padding: 12px 40px; border-radius: 15px; border: none; background: #5ab45e; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(90,180,94,0.3);">とじる</button>
+            <button onclick="closeDetailModal()" style="padding: 12px 40px; border-radius: 15px; border: none; background: #5ab45e; color: white; font-weight: bold; cursor: pointer;">とじる</button>
         </div>
     </div>
 </div>
@@ -160,17 +166,12 @@ function openDetailModal(id, name, time, people, status, color, allergy, message
     document.getElementById('m-status').innerText = status;
     document.getElementById('m-status').style.color = color;
     document.getElementById('m-message').innerText = message;
-
     const allergyElem = document.getElementById('m-allergy');
     allergyElem.innerText = allergy;
     allergyElem.className = (allergy === 'なし') ? 'allergy-alert' : 'allergy-alert allergy-exist';
-
     document.getElementById('reserveModal').style.display = 'block';
 }
-
-function closeDetailModal() {
-    document.getElementById('reserveModal').style.display = 'none';
-}
+function closeDetailModal() { document.getElementById('reserveModal').style.display = 'none'; }
 </script>
 
 <%@include file="../../footer.html" %>

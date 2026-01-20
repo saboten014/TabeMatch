@@ -226,3 +226,38 @@ body {
     color: #666;
     margin-top: 5px;
 }
+
+/* 選択されている日付の強調表示 */
+.day-cell.selected-day {
+    background-color: #f0f9f0; /* 優しい薄緑 */
+    border: 3px solid #5ab45e; /* メインカラーの太枠 */
+    box-shadow: 0 0 10px rgba(90, 180, 94, 0.3); /* ほんのり光る */
+}
+
+/* 選択されている日の数字を少し目立たせる */
+.day-cell.selected-day span:first-child {
+    color: #5ab45e;
+}
+
+/* ★ クリックして選択された日のスタイル（シンプル版） */
+.day-cell.selected-day {
+    background-color: #e6f3e6 !important; /* 落ち着いた薄緑 */
+    border: 2px solid #5ab45e !important; /* 太すぎないしっかりした枠 */
+}
+
+/* 選択されている日の数字の色 */
+.day-cell.selected-day span:first-child {
+    color: #2d5a2e; /* 濃いめの緑で数字をはっきりと */
+}
+
+/* 予約件数バッジが埋もれないように調整 */
+.day-cell.selected-day .reserve-count {
+    background: #5ab45e; /* バッジの色を維持して視認性を確保 */
+    box-shadow: none;    /* 余計な影を消す */
+}
+
+/* ホバー（マウスを乗せた時）も控えめに */
+.day-cell:hover {
+    background: #f9fdf9;
+    border-color: #d1e8d2;
+}

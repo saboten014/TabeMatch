@@ -216,8 +216,6 @@ public class ReserveDAO extends DAO {
     public List<Reserve> getTodayReservations(String shopId) throws Exception {
         List<Reserve> list = new ArrayList<>();
 
-        // 🚨 注意: リソースリーク防止のため、try-with-resourcesの使用を推奨します。
-        // （既存のメソッドは使用していないため、今回はスタイルを合わせます）
         Connection con = getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
