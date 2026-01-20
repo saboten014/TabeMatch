@@ -16,6 +16,7 @@ public class Reserve {
     private String status;
     private String shopName;
     private int reserveStatus; // 1=未承認, 2=承認, 3=拒否
+    private String userName;
 
     public Reserve() {}
 
@@ -61,4 +62,7 @@ public class Reserve {
 
     public int getReserveStatus() { return reserveStatus; }
     public void setReserveStatus(int reserveStatus) { this.reserveStatus = reserveStatus; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 }
