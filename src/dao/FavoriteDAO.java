@@ -85,12 +85,12 @@ public class FavoriteDAO extends DAO {
 
             while (rs.next()) {
                 Shop shop = new Shop();
-                // Shop Beanのプロパティに合わせて値をセット
-                // (shopsテーブルのカラム名が以前の想定通りであることを前提としています)
                 shop.setShopId(rs.getString("shop_id"));
                 shop.setShopName(rs.getString("shop_name"));
                 shop.setShopAddress(rs.getString("shop_address"));
-                shop.setShopAllergy("shop_allergy");
+                shop.setShopAllergy(rs.getString("shop_allergy"));
+                shop.setShopGenre(rs.getString("shop_genre"));
+                shop.setShopPrice(rs.getString("shop_price"));
 
                 favoriteShops.add(shop);
             }

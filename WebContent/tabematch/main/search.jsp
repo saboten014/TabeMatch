@@ -91,7 +91,7 @@
         boolean isChecked = false;
         if (userAllergens != null) {
             for (String userAllergenId : userAllergens) {
-                if (userAllergenId.trim().equals(allergen.getAllergenId())) {
+                if (userAllergenId.trim().replace("{", "").replace("}", "").equals(allergen.getAllergenId())) {
                     isChecked = true;
                     break;
                 }
