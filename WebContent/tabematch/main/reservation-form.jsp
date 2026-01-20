@@ -35,6 +35,16 @@
             <input type="number" name="numOfPeople" id="numOfPeople" min="1" value="1" required>
         </div>
 
+        <div class="form-item">
+		    <label>連絡先電話番号 <span style="color:red;">(必須)</span></label>
+		    <input type="tel" name="reserve_tel" required
+		           placeholder="09012345678"
+		           pattern="\d{10,11}"
+		           title="ハイフンなしで10桁または11桁の数字を入力してください"
+		           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+		    <p style="font-size: 0.8rem; color: #666;">※当日お店から連絡する場合があります。</p>
+		</div>
+
         <hr>
 
         <%-- アレルギー選択エリア（動的生成） --%>

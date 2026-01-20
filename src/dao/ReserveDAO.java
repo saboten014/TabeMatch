@@ -13,13 +13,13 @@ import bean.Reserve;
 
 public class ReserveDAO extends DAO {
 
-    // 予約登録（承認待ちで登録）
+    // 予約登録（電話番号 reserve_tel を追加）
     public boolean createReservation(Reserve reserve) throws Exception {
         Connection con = getConnection();
 
         String sql = "INSERT INTO reserve (reserve_id, user_id, shop_id, reserve_date, reserve_time, "
-                   + "reserve_count, reserve_allergy, reserve_seat, reserve_note, reserve_send, reserve_status) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1)";
+                   + "reserve_count, reserve_allergy, reserve_seat, reserve_note, reserve_tel, reserve_send, reserve_status) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1)";
         PreparedStatement stmt = con.prepareStatement(sql);
 
         // UUIDを自動生成してreserve_idに設定
@@ -33,6 +33,7 @@ public class ReserveDAO extends DAO {
         stmt.setString(7, reserve.getAllergyNotes());
         stmt.setString(8, "未指定"); // NOT NULL制約対応
         stmt.setString(9, reserve.getMessage());
+        stmt.setString(10, reserve.getReserveTel()); // ★電話番号を追加
 
         int result = stmt.executeUpdate();
 
@@ -48,7 +49,7 @@ public class ReserveDAO extends DAO {
         Connection con = getConnection();
 
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
-                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
                    + "r.reserve_status, s.shop_name "
                    + "FROM reserve r JOIN shop s ON r.shop_id = s.shop_id "
                    + "WHERE r.user_id = ? ORDER BY r.reserve_date DESC, r.reserve_time DESC";
@@ -68,13 +69,13 @@ public class ReserveDAO extends DAO {
         return list;
     }
 
-    // 店舗ごとの予約一覧取得（最新順でソート）
+    // 店舗ごとの予約一覧取得
     public List<Reserve> findByShop(String shopId) throws Exception {
         List<Reserve> list = new ArrayList<>();
         Connection con = getConnection();
 
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
-                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
                    + "r.reserve_status, s.shop_name, u.user_name "
                    + "FROM reserve r "
                    + "JOIN shop s ON r.shop_id = s.shop_id "
@@ -87,22 +88,7 @@ public class ReserveDAO extends DAO {
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            Reserve reserve = mapReserve(rs);
-            // ユーザー名も設定（店舗側で確認しやすくするため）
-            try {
-                String userName = rs.getString("user_name");
-                if (userName != null) {
-                    String currentMessage = reserve.getMessage();
-                    if (currentMessage == null || currentMessage.isEmpty()) {
-                        reserve.setMessage("[予約者: " + userName + "]");
-                    } else {
-                        reserve.setMessage(currentMessage + " [予約者: " + userName + "]");
-                    }
-                }
-            } catch (Exception e) {
-                // user_nameが取得できない場合は無視
-            }
-            list.add(reserve);
+            list.add(mapReserve(rs));
         }
 
         rs.close();
@@ -118,7 +104,7 @@ public class ReserveDAO extends DAO {
         Connection con = getConnection();
 
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
-                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
                    + "r.reserve_status, s.shop_name "
                    + "FROM reserve r JOIN shop s ON r.shop_id = s.shop_id "
                    + "WHERE r.reserve_id = ?";
@@ -138,7 +124,7 @@ public class ReserveDAO extends DAO {
         return reserve;
     }
 
-    // ステータス更新（店舗側から承認・拒否などを変更する用）
+    // ステータス更新
     public boolean updateReserveStatus(String reserveId, int status) throws Exception {
         Connection con = null;
         PreparedStatement stmt = null;
@@ -151,7 +137,6 @@ public class ReserveDAO extends DAO {
             stmt.setString(2, reserveId);
 
             int result = stmt.executeUpdate();
-
             return result > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,7 +147,7 @@ public class ReserveDAO extends DAO {
         }
     }
 
-    // 予約の削除（キャンセル機能用）
+    // 予約の削除
     public boolean deleteReservation(String reserveId) throws Exception {
         Connection con = getConnection();
         String sql = "DELETE FROM reserve WHERE reserve_id = ?";
@@ -177,97 +162,41 @@ public class ReserveDAO extends DAO {
         return result > 0;
     }
 
- // dao/ReserveDAO.java の一番下にあるメソッドを以下に差し替え
-    private Reserve mapReserve(ResultSet rs) throws Exception {
-        Reserve reserve = new Reserve();
-
-        // IDはUUID(文字列)として取得
-        reserve.setReserveIdString(rs.getString("reserve_id"));
-
-        reserve.setUserId(rs.getString("user_id"));
-        reserve.setShopId(rs.getString("shop_id"));
-        reserve.setVisitDate(rs.getDate("reserve_date"));
-        reserve.setVisitTime(rs.getTime("reserve_time"));
-        reserve.setNumOfPeople(rs.getInt("reserve_count"));
-        reserve.setAllergyNotes(rs.getString("reserve_allergy"));
-
-        // ★ここがポイント：メッセージには純粋にメモだけを入れる
-        reserve.setMessage(rs.getString("reserve_note"));
-
-        reserve.setReserveStatus(rs.getInt("reserve_status"));
-        reserve.setShopName(rs.getString("shop_name"));
-
-        // ★ここがポイント：名前は専用のフィールドに入れる
-        try {
-            String uName = rs.getString("user_name");
-            if (uName != null && !uName.isEmpty()) {
-                reserve.setUserName(uName);
-            } else {
-                reserve.setUserName("ゲスト");
-            }
-        } catch (Exception e) {
-            reserve.setUserName("不明");
-        }
-
-        return reserve;
-    }
-
- // 店舗ごとの今日の予約一覧取得 (予約日時順でソート)
+    // 店舗ごとの今日の予約一覧取得
     public List<Reserve> getTodayReservations(String shopId) throws Exception {
         List<Reserve> list = new ArrayList<>();
-
         Connection con = getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
 
-        // SQL: 該当店舗の予約で、日付が今日のもののみを取得し、時間順にソートする
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
-                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
                    + "r.reserve_status, s.shop_name, u.user_name "
                    + "FROM reserve r "
                    + "JOIN shop s ON r.shop_id = s.shop_id "
                    + "LEFT JOIN users u ON r.user_id = u.user_id "
-                   // ★★★ ここで日付を今日に絞り込む ★★★
                    + "WHERE r.shop_id = ? AND r.reserve_date = CURRENT_DATE "
-                   + "ORDER BY r.reserve_time ASC"; // 時間順でソート
+                   + "ORDER BY r.reserve_time ASC";
 
         try {
-            stmt = con.prepareStatement(sql);
+            PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, shopId);
-            rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Reserve reserve = mapReserve(rs);
-
-                // 予約者名の追加 (findByShopと同様のロジックを再利用)
-                try {
-                    String userName = rs.getString("user_name");
-                    if (userName != null) {
-                        String currentMessage = reserve.getMessage();
-                        if (currentMessage == null || currentMessage.isEmpty()) {
-                            reserve.setMessage("[予約者: " + userName + "]");
-                        } else {
-                            reserve.setMessage(currentMessage + " [予約者: " + userName + "]");
-                        }
-                    }
-                } catch (Exception e) {
-                    // user_nameが取得できない場合は無視
-                }
-                list.add(reserve);
+                list.add(mapReserve(rs));
             }
+
+            rs.close();
+            stmt.close();
+            con.close();
             return list;
 
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        } finally {
-            // リソースのクローズ処理
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
         }
     }
- // 指定された年月の日付ごとの予約ステータス情報を取得
+
+    // 指定された年月の日付ごとの予約ステータス情報を取得
     public Map<Integer, ReservationDayStatus> getReservationStatusByMonth(String shopId, int year, int month) throws Exception {
         Map<Integer, ReservationDayStatus> statusMap = new HashMap<>();
 
@@ -291,50 +220,23 @@ public class ReserveDAO extends DAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int day = rs.getInt("day");
-                    int totalCount = rs.getInt("total_count");
-                    int pendingCount = rs.getInt("pending_count");
-                    int approvedCount = rs.getInt("approved_count");
-
                     ReservationDayStatus status = new ReservationDayStatus();
-                    status.setTotalCount(totalCount);
-                    status.setPendingCount(pendingCount);
-                    status.setApprovedCount(approvedCount);
-
+                    status.setTotalCount(rs.getInt("total_count"));
+                    status.setPendingCount(rs.getInt("pending_count"));
+                    status.setApprovedCount(rs.getInt("approved_count"));
                     statusMap.put(day, status);
                 }
             }
         }
-
         return statusMap;
     }
 
-    // 内部クラス：予約ステータス情報を保持
-    public static class ReservationDayStatus {
-        private int totalCount;      // 総予約数
-        private int pendingCount;    // 承認待ち数
-        private int approvedCount;   // 承認済み数
-
-        public int getTotalCount() { return totalCount; }
-        public void setTotalCount(int totalCount) { this.totalCount = totalCount; }
-
-        public int getPendingCount() { return pendingCount; }
-        public void setPendingCount(int pendingCount) { this.pendingCount = pendingCount; }
-
-        public int getApprovedCount() { return approvedCount; }
-        public void setApprovedCount(int approvedCount) { this.approvedCount = approvedCount; }
-
-        // 承認待ちがあるかどうか
-        public boolean hasPending() { return pendingCount > 0; }
-
-        // すべて承認済みかどうか
-        public boolean isAllApproved() { return totalCount > 0 && pendingCount == 0; }
-    }
- // 店舗ごとの特定日の予約一覧取得
+    // 店舗ごとの特定日の予約一覧取得
     public List<Reserve> getReservationsByDate(String shopId, int year, int month, int day) throws Exception {
         List<Reserve> list = new ArrayList<>();
 
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
-                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_send, "
+                   + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
                    + "r.reserve_status, s.shop_name, u.user_name "
                    + "FROM reserve r "
                    + "JOIN shop s ON r.shop_id = s.shop_id "
@@ -355,27 +257,57 @@ public class ReserveDAO extends DAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Reserve reserve = mapReserve(rs);
-
-                    // 予約者名の追加
-                    try {
-                        String userName = rs.getString("user_name");
-                        if (userName != null) {
-                            String currentMessage = reserve.getMessage();
-                            if (currentMessage == null || currentMessage.isEmpty()) {
-                                reserve.setMessage("[予約者: " + userName + "]");
-                            } else {
-                                reserve.setMessage(currentMessage + " [予約者: " + userName + "]");
-                            }
-                        }
-                    } catch (Exception e) {
-                        // user_nameが取得できない場合は無視
-                    }
-                    list.add(reserve);
+                    list.add(mapReserve(rs));
                 }
             }
         }
-
         return list;
+    }
+
+    // 内部共通メソッド：ResultSetからReserveオブジェクトを生成
+    private Reserve mapReserve(ResultSet rs) throws Exception {
+        Reserve reserve = new Reserve();
+
+        reserve.setReserveIdString(rs.getString("reserve_id"));
+        reserve.setUserId(rs.getString("user_id"));
+        reserve.setShopId(rs.getString("shop_id"));
+        reserve.setVisitDate(rs.getDate("reserve_date"));
+        reserve.setVisitTime(rs.getTime("reserve_time"));
+        reserve.setNumOfPeople(rs.getInt("reserve_count"));
+        reserve.setAllergyNotes(rs.getString("reserve_allergy"));
+        reserve.setMessage(rs.getString("reserve_note"));
+        reserve.setReserveTel(rs.getString("reserve_tel")); // ★追加
+        reserve.setReserveStatus(rs.getInt("reserve_status"));
+
+        // shop_nameカラムが存在するかチェック（JOINしていないクエリ対策）
+        try {
+            reserve.setShopName(rs.getString("shop_name"));
+        } catch (Exception e) {}
+
+        // user_nameカラムが存在するかチェック
+        try {
+            String uName = rs.getString("user_name");
+            reserve.setUserName(uName != null && !uName.isEmpty() ? uName : "ゲスト");
+        } catch (Exception e) {
+            reserve.setUserName("不明");
+        }
+
+        return reserve;
+    }
+
+    // 内部クラス：ステータス情報保持用
+    public static class ReservationDayStatus {
+        private int totalCount;
+        private int pendingCount;
+        private int approvedCount;
+
+        public int getTotalCount() { return totalCount; }
+        public void setTotalCount(int totalCount) { this.totalCount = totalCount; }
+        public int getPendingCount() { return pendingCount; }
+        public void setPendingCount(int pendingCount) { this.pendingCount = pendingCount; }
+        public int getApprovedCount() { return approvedCount; }
+        public void setApprovedCount(int approvedCount) { this.approvedCount = approvedCount; }
+        public boolean hasPending() { return pendingCount > 0; }
+        public boolean isAllApproved() { return totalCount > 0 && pendingCount == 0; }
     }
 }

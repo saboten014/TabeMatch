@@ -16,7 +16,7 @@
     int currentYear = (request.getAttribute("currentYear") != null) ? (Integer) request.getAttribute("currentYear") : Calendar.getInstance().get(Calendar.YEAR);
     int currentMonth = (request.getAttribute("currentMonth") != null) ? (Integer) request.getAttribute("currentMonth") : Calendar.getInstance().get(Calendar.MONTH) + 1;
 
-    // ★URLから選択された「日」を取得（クリックされた日）
+    // URLから選択された「日」を取得
     String dayParam = request.getParameter("day");
     int selectedDay = -1;
     if (dayParam != null) {
@@ -64,8 +64,12 @@
                         String uName = (reserve.getUserName() != null) ? reserve.getUserName() : "ゲスト";
                         String allergyParam = (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) ? reserve.getAllergyNotes() : "なし";
                         String msgParam = (reserve.getMessage() != null && !reserve.getMessage().isEmpty()) ? reserve.getMessage() : "メッセージはありません";
+
+                        // ★電話番号を取得（null対策）
+                        String telParam = (reserve.getReserveTel() != null) ? reserve.getReserveTel() : "未登録";
                     %>
-                        <div class="reservation-list-item" onclick="openDetailModal('<%= reserve.getReserveIdString() %>', '<%= uName %>', '<%= formattedTime %>', '<%= reserve.getNumOfPeople() %>', '<%= statusText %>', '<%= statusColor %>', '<%= allergyParam %>', '<%= msgParam %>')">
+                        <%-- ★修正：onclickの引数の最後に telParam を追加 --%>
+                        <div class="reservation-list-item" onclick="openDetailModal('<%= reserve.getReserveIdString() %>', '<%= uName %>', '<%= formattedTime %>', '<%= reserve.getNumOfPeople() %>', '<%= statusText %>', '<%= statusColor %>', '<%= allergyParam %>', '<%= msgParam %>', '<%= telParam %>')">
                             <div class="reservation-time">
                                 <span class="time-badge"><%= formattedTime %></span>
                                 <span style="color: <%= statusColor %>; font-size: 0.8rem; font-weight: bold;">● <%= statusText %></span>
@@ -102,7 +106,6 @@
 
                 <% for (int i = 1; i <= daysInMonth; i++) {
                     ReservationDayStatus status = reservationStatusMap.get(i);
-                    // ★ クラスを判定：今日なら 'today'、選択中なら 'selected-day' を追加
                     String cellClass = "day-cell";
                     if (i == todayDay) cellClass += " today";
                     if (i == selectedDay) cellClass += " selected-day";
@@ -129,6 +132,10 @@
         <div class="modal-item">
             <span class="modal-label">お名前</span>
             <span id="m-name" class="modal-value"></span>
+        </div>
+        <div class="modal-item">
+            <span class="modal-label">お電話番号</span>
+            <span id="m-tel" class="modal-value" style="font-weight: bold; color: #2d5a2e;"></span>
         </div>
         <div style="display: flex; gap: 15px;">
             <div class="modal-item" style="flex: 1;">
@@ -159,13 +166,18 @@
 </div>
 
 <script>
-function openDetailModal(id, name, time, people, status, color, allergy, message) {
+// ★修正：引数の最後に tel を追加
+function openDetailModal(id, name, time, people, status, color, allergy, message, tel) {
     document.getElementById('m-name').innerText = name + " 様";
     document.getElementById('m-time').innerText = time;
     document.getElementById('m-people').innerText = people + " 名";
     document.getElementById('m-status').innerText = status;
     document.getElementById('m-status').style.color = color;
     document.getElementById('m-message').innerText = message;
+
+    // ★追加：電話番号をセット
+    document.getElementById('m-tel').innerText = tel;
+
     const allergyElem = document.getElementById('m-allergy');
     allergyElem.innerText = allergy;
     allergyElem.className = (allergy === 'なし') ? 'allergy-alert' : 'allergy-alert allergy-exist';

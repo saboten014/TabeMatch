@@ -18,6 +18,7 @@ public class ReserveExecuteAction extends Action {
 
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        // 1. セッション・ログインチェック
         HttpSession session = req.getSession(false);
         Users loginUser = session != null ? (Users) session.getAttribute("user") : null;
         if (loginUser == null) {
@@ -25,17 +26,21 @@ public class ReserveExecuteAction extends Action {
             return;
         }
 
+        // 2. パラメータの取得
         String shopId = req.getParameter("shopId");
         String visitDateParam = req.getParameter("visitDate");
         String visitTimeParam = req.getParameter("visitTime");
         String peopleParam = req.getParameter("numOfPeople");
+        // ★追加：電話番号の取得
+        String telParam = req.getParameter("reserve_tel");
 
         // チェックボックスの値を取得 (配列)
         String[] selectedAllergies = req.getParameterValues("allergy");
         String allergyNotes = req.getParameter("allergyNotes");
         String message = req.getParameter("message");
 
-        if (isBlank(shopId) || isBlank(visitDateParam) || isBlank(visitTimeParam) || isBlank(peopleParam)) {
+        // 3. バリデーション（電話番号 telParam もチェックに追加）
+        if (isBlank(shopId) || isBlank(visitDateParam) || isBlank(visitTimeParam) || isBlank(peopleParam) || isBlank(telParam)) {
             setErrorAndReturn(req, res, shopId, "必要な項目が入力されていません。");
             return;
         }
@@ -69,6 +74,7 @@ public class ReserveExecuteAction extends Action {
             fullAllergyInfo.append("【詳細】: ").append(allergyNotes);
         }
 
+        // 4. Reserveオブジェクトの作成とデータセット
         Reserve reserve = new Reserve();
         reserve.setUserId(loginUser.getUserId());
         reserve.setShopId(shopId);
@@ -78,7 +84,10 @@ public class ReserveExecuteAction extends Action {
         reserve.setAllergyNotes(fullAllergyInfo.toString());
         reserve.setMessage(message);
         reserve.setStatus("受付中");
+        // ★追加：電話番号をBeanにセット
+        reserve.setReserveTel(telParam);
 
+        // 5. データベース登録
         ReserveDAO reserveDao = new ReserveDAO();
         boolean success = reserveDao.createReservation(reserve);
         if (!success) {
@@ -86,6 +95,7 @@ public class ReserveExecuteAction extends Action {
             return;
         }
 
+        // 6. 完了画面への準備
         ShopDAO shopDao = new ShopDAO();
         Shop shop = shopDao.getShopById(shopId);
         reserve.setShopName(shop != null ? shop.getShopName() : "");
@@ -100,7 +110,6 @@ public class ReserveExecuteAction extends Action {
         Shop shop = shopDao.getShopById(shopId);
 
         if (shop != null) {
-            // ★修正ポイント：IDリストではなく「名前リスト」を再セットする
             req.setAttribute("allAllergens", shopDao.getAllAllergens());
             req.setAttribute("shopAllergenNames", shopDao.getShopAllergenNames(shopId));
 

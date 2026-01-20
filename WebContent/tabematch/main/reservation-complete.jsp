@@ -17,58 +17,64 @@
         return;
     }
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>予約完了 | たべまっち</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/reservation-comp.css">
-</head>
-<body>
-<div class="container">
-    <div class="success">
-        予約を受け付けました。店舗からの連絡をお待ちください。
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<!-- css読み込み -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/reservation-comp.css?v=<%= System.currentTimeMillis() %>">
+
+<div class="comp-container">
+    <div class="success-header">
+        <div class="check-icon">🎉</div>
+        <h1>予約を受け付けました！</h1>
+        <p>お店からの承認をお待ちください。✨</p>
     </div>
 
-   <div class="card">
-    <div class="card-header">予約内容</div>
-    <div class="card-body">
-        <table style="width: 80%; border-collapse: collapse;">
-            <tr>
-                <th style="width: 30%; text-align: left;">店舗名</th>
-                <td><%= shop != null ? shop.getShopName() : reserve.getShopName() %></td>
-            </tr>
-            <tr>
-                <th>来店日</th>
-                <td><%= reserve.getVisitDate() %></td>
-            </tr>
-            <tr>
-                <th>来店時間</th>
-                <td><%= reserve.getVisitTime() %></td>
-            </tr>
-            <tr>
-                <th>人数</th>
-                <td><%= reserve.getNumOfPeople() %> 名</td>
-            </tr>
-            <tr>
-                <th>アレルギー要望</th>
-                <td><%= reserve.getAllergyNotes() != null ? reserve.getAllergyNotes() : "なし" %></td>
-            </tr>
-            <tr>
-                <th>その他リクエスト</th>
-                <td><%= reserve.getMessage() != null ? reserve.getMessage() : "なし" %></td>
-            </tr>
-            <tr>
-                <th>ステータス</th>
-                <td><%= reserve.getStatus() %></td>
-            </tr>
-        </table>
+    <div class="info-card">
+        <div class="card-title">ご予約内容の確認</div>
+
+        <div class="info-list">
+            <div class="info-item">
+                <span class="label">店舗名</span>
+                <span class="value shop-name"><%= shop != null ? shop.getShopName() : reserve.getShopName() %></span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">来店日</span>
+                    <span class="value">📅 <%= reserve.getVisitDate() %></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">来店時間</span>
+                    <span class="value">⏰ <%= reserve.getVisitTime() %></span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">人数</span>
+                    <span class="value">👥 <%= reserve.getNumOfPeople() %> 名様</span>
+                </div>
+                <div class="info-item tel-item">
+                    <span class="label">ご連絡先</span>
+                    <span class="value">📞 <%= (reserve.getReserveTel() != null && !reserve.getReserveTel().isEmpty()) ? reserve.getReserveTel() : "未登録" %></span>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <span class="label">アレルギー要望</span>
+                <span class="value"><%= (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) ? reserve.getAllergyNotes() : "特になし" %></span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">その他リクエスト</span>
+                <span class="value"><%= (reserve.getMessage() != null && !reserve.getMessage().isEmpty()) ? reserve.getMessage() : "メッセージなし" %></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="ReservationList.action" class="btn-list">予約一覧を確認する</a>
+        <a href="search.jsp" class="btn-back">店舗検索に戻る</a>
     </div>
 </div>
 
-    <div class="btn">
-        <a href="ReservationList.action" class="yoyaku_itiran">予約一覧を確認</a>
-        <a href="search.jsp" class="modoru">店舗検索に戻る</a>
-    </div>
-</div>
-</body>
-</html>
+<%@ include file="../../footer.html" %>

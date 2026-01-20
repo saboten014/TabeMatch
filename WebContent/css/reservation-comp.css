@@ -1,98 +1,165 @@
+@charset "UTF-8";
 
-.btn {
-	display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 30px;
+/* 共通フォント設定：予約フォームやヘッダーと統一 */
+body {
+    background-color: #e8f8e8; /* フォームと同じ薄い緑 */
+    color: #444;
+    font-family: 'Kosugi Maru', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-
-
-.modoru {
-    text-decoration: none; /* 下線を消す */
-    padding: 10px 20px;
-
-    /* 控えめな色合いで設定 */
-    border: 2px solid #c6c6ff;
-    border-radius: 4px;
-    color: #333;
-    background-color: #e5f2ff;
-
-    /* ホバー効果 */
-    transition: background-color 0.3s;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+/* 全体コンテナ：フォームの.containerをベースに */
+.comp-container {
+    max-width: 650px;
+    margin: 60px auto;
+    padding: 40px 30px;
+    background-color: #ffffff;
+    border-radius: 25px; /* フォームより少し丸くして特別感を */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
 }
 
-.modoru:hover {
-    background-color: #c6e2ff;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-
-.yoyaku_itiran {
-	text-decoration: none;
-    padding: 10px 20px;
-    border: 2px solid #ffc184;
-    border-radius: 4px;
-    justify-content: flex-end;
-
-    /* メインカラー */
-    background-color: #ffe2c6;
-    color: #333;
-
-    /* ホバー効果 */
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
+/* ヘッダー部分 */
+.success-header {
+    margin-bottom: 40px;
 }
 
-.yoyaku_itiran:hover {
-    background-color: #ffd6ad;
+.check-icon {
+    font-size: 4.5rem;
+    margin-bottom: 10px;
+    display: inline-block;
+    animation: bounce 1.5s infinite;
 }
 
-.container {
-    width: 100%;
-    max-width: 800px;
-
-    /* 水平方向の中央寄せ */
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 100px; /* 上部に少し余白 */
-    margin-bottom: 100px;
-
-    /* フォーム全体に影をつけて立体感を出す */
-    padding: 30px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
 }
 
-
-table {
-	border: 2px solid #868686; /* 外側の枠線 */
-    margin-bottom: 25px; /* フォームとの間に余白を空ける */
-    margin-left: 80px;
+.success-header h1 {
+    color: #2d5a2e; /* 落ち着いた濃い緑 */
+    font-size: 1.8rem;
+    margin: 0;
+    letter-spacing: 1px;
 }
 
-th,
-td {
-    border: 2px solid #868686; /* セル間の区切り線 */
-    padding: 12px; /* セルの内側余白 */
+.success-header p {
+    color: #888;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+/* 予約内容カード：フォームの質感を踏襲 */
+.info-card {
+    background: #f9fff9; /* 非常に薄い緑 */
+    border-radius: 20px;
+    padding: 25px;
+    border: 2px solid #e0eee0;
     text-align: left;
 }
 
-th {
-	background-color: #effff7;
+.card-title {
+    font-weight: bold;
+    color: #2d5a2e;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed #c8e6c9;
+    text-align: center;
 }
 
-
-.success, .card-header{
-	text-align: center;
+/* 項目リスト */
+.info-item {
+    margin-bottom: 15px;
 }
 
-.card-header {
-	margin-top: 10px;
-	margin-bottom: 10px;
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.label {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 3px;
+}
+
+.value {
+    display: block;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.shop-name {
+    font-size: 1.3rem;
+    color: #e67e22; /* ロゴのオレンジをアクセントに */
+}
+
+/* 連絡先（電話番号）の強調 */
+.tel-item .value {
+    color: #2d5a2e;
+    background: #e8f5e9;
+    padding: 3px 10px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* ボタン：フォームのbtn-submitと質感を統一 */
+.action-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-list, .btn-back {
+    flex: 1;
+    padding: 16px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-list {
+    background: linear-gradient(135deg, #5ab45e, #43a047); /* 緑のグラデーション */
+    color: white;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-list:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(135deg, #66bb6a, #4caf50);
+}
+
+.btn-back {
+    background-color: #fff;
+    color: #888;
+    border: 2px solid #eee;
+}
+
+.btn-back:hover {
+    background-color: #f9f9f9;
+    border-color: #ccc;
+}
+
+/* スマホ対応 */
+@media (max-width: 480px) {
+    .comp-container { margin: 20px 10px; padding: 25px 20px; }
+    .action-buttons { flex-direction: column; }
+    .info-grid { grid-template-columns: 1fr; }
 }

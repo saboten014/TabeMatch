@@ -1,141 +1,156 @@
-/* フォントと全体のベース */
+/* 全体の設定 */
 body {
+    background-color: #e8f8e8;
     font-family: 'Kosugi Maru', sans-serif;
-    background-color:  #e8f8e8;
-    color: #333;
+    color: #555;
     margin: 0;
 }
 
-h2 {
-    margin-top: 120px;
-    text-align: center;
-    color: #4CAF50;
-    font-size: 1.8em;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-h2::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background-color: #4CAF50;
-    border-radius: 3px;
-}
-
-/* コンテナ設定 */
-.zenbu {
-    width: 95%;
+.reservation-container {
     max-width: 1100px;
-    margin: 20px auto;
-    padding: 20px;
-    min-height: 500px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-/* テーブルデザインの刷新 */
-table {
-    width: 100%;
-    margin: 20px 0;
-    border-collapse: separate; /* 角を丸くするためにseparateに変更 */
-    border-spacing: 0;
-    background-color: #FFFFFF;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    border: 1px solid #eee;
-}
-
-th {
-    background-color: #f4fbf4; /* 優しい緑系 */
-    color: #2e7d32;
-    font-weight: bold;
-    padding: 15px 10px;
-    border-bottom: 2px solid #e8f5e9;
-    font-size: 0.95em;
-}
-
-td {
-    padding: 15px 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 0.9em;
-    line-height: 1.5;
-    word-break: break-all;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:hover td {
-    background-color: #fafafa; /* 行ホバーで色を変える */
-}
-
-/* 予約状態のステータスバッジ（ここが一番分かりやすくなります） */
-.status-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    font-weight: bold;
-    color: white;
-}
-
-/* 承認待ち：オレンジ */
-.status-waiting {
-    background-color: #ff9800;
-}
-
-/* 承認済み：緑 */
-.status-success {
-    background-color: #4caf50;
-}
-
-/* 拒否：赤 */
-.status-error {
-    background-color: #f44336;
-}
-
-/* 不明：グレー */
-.status-unknown {
-    background-color: #9e9e9e;
-}
-
-/* 予約がない時のメッセージ */
-.no-yoyaku {
-    max-width: 400px;
-    margin: 80px auto;
+.page-header {
     text-align: center;
-    background-color: #e3f2fd;
-    padding: 20px;
-    color: #1976d2;
+    margin-bottom: 50px;
+}
+
+.page-header h1 {
+    color: #ff8e8e;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+/* カードを横に並べるグリッド設定 */
+.reserve-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* カード本体 */
+.reserve-card {
+    background: #ffffff;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(255, 142, 142, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #ffebeb;
+}
+
+.reserve-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(255, 142, 142, 0.2);
+}
+
+/* ステータス部分 */
+.status-section {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px dashed #ffe0e0;
+}
+
+.status-badge {
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.status-waiting { background: #fff3cd; color: #856404; } /* 承認待ち */
+.status-success { background: #d4edda; color: #155724; } /* 確定 */
+.status-error   { background: #f8d7da; color: #721c24; } /* 拒否 */
+.status-unknown { background: #eee; color: #666; }
+
+/* カードの中身 */
+.card-content {
+    padding: 25px;
+}
+
+.shop-name {
+    font-size: 1.3rem;
+    color: #333;
+    margin: 0 0 20px 0;
+    text-align: center;
+    color: #ff8e8e;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+
+.icon {
+    margin-right: 12px;
+    font-size: 1.2rem;
+    width: 25px;
+    text-align: center;
+}
+
+.tel-row {
+    color: #2d5a2e;
+    background: #f0fdf0;
+    padding: 5px 10px;
     border-radius: 10px;
-    border-left: 5px solid #2196f3;
 }
 
-/* 戻るボタンのエリア */
+.no-data {
+    color: #ccc;
+    font-weight: normal;
+}
+
+/* アレルギー・メッセージ */
+.allergy-box, .message-box {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+}
+
+.allergy-box {
+    background: #fff0f0;
+    border-left: 5px solid #ff8e8e;
+}
+
+.message-box {
+    background: #f0f7ff;
+    border-left: 5px solid #8eb9ff;
+}
+
+.allergy-box strong, .message-box strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* ボタン関係 */
 .button-container {
-    margin-top: 40px;
-    text-align: center; /* 中央寄せに変更 */
+    text-align: center;
 }
 
-.button-container a {
+.back-btn {
     display: inline-block;
-    padding: 12px 30px;
-    background-color: #4CAF50;
+    padding: 12px 40px;
+    background: #ff8e8e;
     color: white;
     text-decoration: none;
-    border-radius: 25px;
+    border-radius: 50px;
     font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.3s;
 }
 
-.button-container a:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+.back-btn:hover {
+    background: #ff7575;
+    box-shadow: 0 5px 15px rgba(255, 117, 117, 0.4);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
