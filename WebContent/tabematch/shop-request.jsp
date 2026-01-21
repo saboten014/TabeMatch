@@ -5,11 +5,9 @@
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../header.html" %>
 <%@include file="/tabematch/main/user_menu.jsp" %>
-<!-- Googleフォント -->
-<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-<!-- css読み込み -->
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/shop_request.css">
 
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/shop_request.css">
 
 <h1>店舗掲載リクエスト</h1>
 
@@ -24,48 +22,55 @@
 %>
 </div>
 
-<p class="description">店舗情報を入力してください。承認後、登録したメールアドレスにログイン情報をお送りします。</p>
+<p class="description">
+    店舗情報を入力してください。承認後、登録したメールアドレスにログイン情報をお送りします。
+</p>
 
 <div class="form-container">
-<form action="ShopRequestExecute.action" method="post">
+
+<form action="ShopRequestExecute.action"
+      method="post"
+      enctype="multipart/form-data">
+
     <table>
         <tr>
             <td>店名<span class="required">*</span></td>
             <td><input type="text" name="restaurantName" maxlength="100" required></td>
         </tr>
+
         <tr>
             <td>住所<span class="required">*</span></td>
             <td><input type="text" name="address" maxlength="255" required></td>
         </tr>
+
         <tr>
             <td>アレルギー対応<span class="required">*</span></td>
             <td>
-
 <%
-    // DB からアレルゲン一覧を取得
     AllergenDAO allergenDao = new AllergenDAO();
     List<Allergen> allergenList = allergenDao.getAllAllergens();
 %>
-
-<div class="checkbox-grid">
+                <div class="checkbox-grid">
 <%
     for (Allergen allergen : allergenList) {
 %>
-    <div class="checkbox-item">
-        <input type="checkbox"
-               name="allergyInfo"
-               value="<%= allergen.getAllergenName() %>"
-               id="allergy_<%= allergen.getAllergenId() %>">
-        <label for="allergy_<%= allergen.getAllergenId() %>">
-            <%= allergen.getAllergenName() %>
-        </label>
-    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox"
+                               name="allergyInfo"
+                               value="<%= allergen.getAllergenName() %>"
+                               id="allergy_<%= allergen.getAllergenId() %>">
+                        <label for="allergy_<%= allergen.getAllergenId() %>">
+                            <%= allergen.getAllergenName() %>
+                        </label>
+                    </div>
 <%
     }
 %>
-</div>
-                <small>対応しているアレルゲンを選択してください</small>      </td>
+                </div>
+                <small>対応しているアレルゲンを選択してください</small>
+            </td>
         </tr>
+
         <tr>
             <td>予約の可否<span class="required">*</span></td>
             <td>
@@ -75,6 +80,7 @@
                 <label for="res_no">不可</label>
             </td>
         </tr>
+
         <tr>
             <td>営業日・営業時間<span class="required">*</span></td>
             <td>
@@ -82,6 +88,7 @@
                 <small>例: 月～金 11:00-22:00、土日祝 10:00-23:00</small>
             </td>
         </tr>
+
         <tr>
             <td>決済方法<span class="required">*</span></td>
             <td>
@@ -89,6 +96,7 @@
                 <small>例: 現金、クレジットカード、電子マネー</small>
             </td>
         </tr>
+
         <tr>
             <td>お店のジャンル<span class="required">*</span></td>
             <td>
@@ -107,10 +115,28 @@
                 </select>
             </td>
         </tr>
-        <tr>
-            <td>写真URL</td>
-            <td><input type="text" name="photo" maxlength="50"></td>
-        </tr>
+
+
+<tr>
+  <td>店舗写真</td>
+  <td>
+    <div class="file-upload">
+      <label class="file-label">
+        画像を選択
+        <input type="file" name="photo" accept="image/*" class="file-input" multiple>
+      </label>
+
+      <div id="preview-container" class="preview-area"></div>
+
+      <div class="file-info">
+        <span class="file-count">未選択</span>
+      </div>
+      <small>jpg / png などの画像ファイルを選択してください</small>
+    </div>
+  </td>
+</tr>
+
+
         <tr>
             <td>価格帯</td>
             <td>
@@ -124,6 +150,7 @@
                 </select>
             </td>
         </tr>
+
         <tr>
             <td>座席<span class="required">*</span></td>
             <td>
@@ -131,24 +158,28 @@
                 <small>例: カウンター5席、テーブル20席</small>
             </td>
         </tr>
+
         <tr>
             <td>HPへのリンク</td>
             <td><input type="text" name="link" maxlength="255"></td>
         </tr>
+
         <tr>
             <td>電話番号<span class="required">*</span></td>
             <td><input type="text" name="number" maxlength="20" required></td>
         </tr>
+
         <tr>
             <td>メールアドレス<span class="required">*</span></td>
             <td><input type="email" name="request_mail" maxlength="100" required></td>
         </tr>
+
         <tr>
             <td colspan="2" align="center">
                 <input type="submit" value="リクエスト送信">
                 <input type="reset" value="クリア">
             </td>
-        </tr>
+
     </table>
 </form>
 </div>
@@ -156,5 +187,35 @@
 <div class="back-link">
     <a href="Login.action">← ログイン画面に戻る</a>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.querySelector(".file-input");
+  const container = document.getElementById("preview-container");
+  const countLabel = document.querySelector(".file-count");
+
+  input.addEventListener("change", () => {
+    container.innerHTML = ""; // 以前のプレビューをクリア
+
+    if (input.files && input.files.length > 0) {
+      countLabel.textContent = input.files.length + " 枚選択中";
+
+      Array.from(input.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const div = document.createElement("div");
+          div.className = "preview-item";
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          div.appendChild(img);
+          container.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      countLabel.textContent = "未選択";
+    }
+  });
+});
+</script>
 
 <%@include file="../footer.html" %>
