@@ -1,93 +1,142 @@
 package tabematch;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Collection; // 追加
+import java.util.Scanner;
+import java.util.StringJoiner; // 追加
+import java.util.UUID;
+
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import bean.Request;
 import dao.RequestDAO;
 import tool.Action;
 import util.PasswordGenerator;
 
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 1,
+    maxFileSize = 1024 * 1024 * 5,
+    maxRequestSize = 1024 * 1024 * 10
+)
 public class ShopRequestExecuteAction extends Action {
 
-	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res)
-			throws Exception {
+    @Override
+    public void execute(HttpServletRequest req, HttpServletResponse res)
+            throws Exception {
 
-		String url = "";
-		RequestDAO requestDao = new RequestDAO();
+        String url = "";
+        RequestDAO requestDao = new RequestDAO();
 
-		// リクエストパラメータ
-		String address = req.getParameter("address");
-		String restaurantName = req.getParameter("restaurantName");
+        // --- フォーム値取得 ---
+        String address        = getFormField(req, "address");
+        String restaurantName = getFormField(req, "restaurantName");
+        String reservationStr = getFormField(req, "reservation");
+        String businessHours  = getFormField(req, "businessHours");
+        String payment        = getFormField(req, "payment");
+        String genre          = getFormField(req, "genre");
+        String priceRange     = getFormField(req, "priceRange");
+        String seat           = getFormField(req, "seat");
+        String link           = getFormField(req, "link");
+        String number         = getFormField(req, "number");
+        String request_mail   = getFormField(req, "request_mail");
 
-		// チェックボックス
-		String[] allergyArray = req.getParameterValues("allergyInfo");
-		String allergySupport = "";
-		if (allergyArray != null) {
-			allergySupport = String.join(",", allergyArray);
-		}
+        String[] allergyArray = req.getParameterValues("allergyInfo");
+        String allergySupport = (allergyArray != null) ? String.join(",", allergyArray) : "";
 
-		String reservationStr = req.getParameter("reservation");
-		String businessHours = req.getParameter("businessHours");
-		String payment = req.getParameter("payment");
-		String genre = req.getParameter("genre");
-		String photo = req.getParameter("photo");
-		String priceRange = req.getParameter("priceRange");
-		String seat = req.getParameter("seat");
-		String link = req.getParameter("link");
-		String number = req.getParameter("number");
-		String request_mail = req.getParameter("request_mail");
+        // --- ★画像ファイル処理（複数対応版） ---
+        StringJoiner fileNames = new StringJoiner(",");
+        String savePath = req.getServletContext().getRealPath("/upload");
+        File uploadDir = new File(savePath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdir();
+        }
 
-		// 入力チェック
-		if (address == null || address.trim().isEmpty() ||
-			restaurantName == null || restaurantName.trim().isEmpty() ||
-			allergySupport == null || allergySupport.trim().isEmpty() ||
-			reservationStr == null || reservationStr.trim().isEmpty() ||
-			businessHours == null || businessHours.trim().isEmpty() ||
-			payment == null || payment.trim().isEmpty() ||
-			genre == null || genre.trim().isEmpty() ||
-			seat == null || seat.trim().isEmpty() ||
-			number == null || number.trim().isEmpty() ||
-			request_mail == null || request_mail.trim().isEmpty()) {
+        // 全てのPartを取得してループを回す
+        Collection<Part> parts = req.getParts();
+        for (Part part : parts) {
+            // inputのname属性が "photo" で、かつファイルが存在する場合
+            if (part.getName().equals("photo") && part.getSize() > 0) {
+                String originalFileName = part.getSubmittedFileName();
+                String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFileName;
 
-			req.setAttribute("errorMessage", "必須項目をすべて入力してください。");
-			url = "shop-request.jsp";
-		}
-		else {
-			// リクエスト登録
-			Request request = new Request();
-			request.setRequestId(PasswordGenerator.generateRequestId());
-			request.setAddress(address);
-			request.setRestaurantName(restaurantName);
+                // サーバーに保存
+                part.write(savePath + File.separator + uniqueFileName);
 
-			// ★ 修正済み
-			request.setAllergySupport(allergySupport);
+                // ファイル名をStringJoinerに追加
+                fileNames.add(uniqueFileName);
+            }
+        }
 
-			request.setReservation(Integer.parseInt(reservationStr));
-			request.setBusinessHours(businessHours);
-			request.setPayment(payment);
-			request.setGenre(genre);
-			request.setPhoto(photo);
-			request.setPriceRange(priceRange);
-			request.setSeat(seat);
-			request.setLink(link);
-			request.setNumber(number);
-			request.setCertification(1);
-			request.setRequest_mail(request_mail);
+        // 最終的なカンマ区切りの文字列（例: "uuid1.jpg,uuid2.png"）
+        String finalFileName = fileNames.toString();
 
-			boolean result = requestDao.insertRequest(request);
+        // --- 入力チェック ---
+        if (isEmpty(address) ||
+            isEmpty(restaurantName) ||
+            allergySupport.isEmpty() ||
+            isEmpty(reservationStr) ||
+            isEmpty(businessHours) ||
+            isEmpty(payment) ||
+            isEmpty(genre) ||
+            isEmpty(seat) ||
+            isEmpty(number) ||
+            isEmpty(request_mail)) {
 
-			if (result) {
-				req.setAttribute("requestId", request.getRequestId());
-				url = "shop-request-complete.jsp";
-			} else {
-				req.setAttribute("errorMessage", "リクエストの送信に失敗しました。もう一度お試しください。");
-				url = "shop-request.jsp";
-			}
-		}
+            req.setAttribute("errorMessage", "必須項目をすべて入力してください。");
+            url = "shop-request.jsp";
+        }
+        else {
+            Request request = new Request();
+            request.setRequestId(PasswordGenerator.generateRequestId());
+            request.setAddress(address);
+            request.setRestaurantName(restaurantName);
+            request.setAllergySupport(allergySupport);
+            request.setReservation(Integer.parseInt(reservationStr));
+            request.setBusinessHours(businessHours);
+            request.setPayment(payment);
+            request.setGenre(genre);
 
-		req.getRequestDispatcher(url).forward(req, res);
-	}
+            // ★ここにカンマ区切りの文字列をセット
+            request.setPhoto(finalFileName);
 
+            request.setPriceRange(priceRange);
+            request.setSeat(seat);
+            request.setLink(link);
+            request.setNumber(number);
+            request.setCertification(1);
+            request.setRequest_mail(request_mail);
+
+            boolean result = requestDao.insertRequest(request);
+
+            if (result) {
+                req.setAttribute("requestId", request.getRequestId());
+                url = "shop-request-complete.jsp";
+            } else {
+                req.setAttribute("errorMessage", "リクエストの送信に失敗しました。");
+                url = "shop-request.jsp";
+            }
+        }
+
+        req.getRequestDispatcher(url).forward(req, res);
+    }
+
+    private String getFormField(HttpServletRequest req, String name) throws Exception {
+        Part part = req.getPart(name);
+        if (part == null) return null;
+
+        try (InputStream is = part.getInputStream();
+             Scanner s = new Scanner(is, "UTF-8")) {
+            s.useDelimiter("\\A");
+            return s.hasNext() ? s.next().trim() : null;
+        }
+    }
+
+    private boolean isEmpty(String s) {
+        if (s == null) return true;
+        return s.replace("　", "").trim().isEmpty();
+    }
 }

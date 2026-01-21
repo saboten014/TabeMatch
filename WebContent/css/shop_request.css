@@ -197,3 +197,69 @@
     margin-left: 5px;
     white-space: nowrap;
   }
+
+
+/* プレビュー全体を囲むエリア */
+.preview-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #ffffff; /* 真っ白 */
+    border: 1px solid #f0f0f0; /* ほとんど見えないくらいの薄い線 */
+    border-radius: 12px;
+}
+
+/* 画像１枚ずつの枠 */
+.preview-item {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #e0e0e0; /* 控えめなグレーの線 */
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* 繊細な影 */
+    transition: all 0.3s ease;
+}
+
+/* マウスを乗せたとき：ふわっと浮き上がる */
+.preview-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #d0d0d0;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 画像選択ボタン（白ベースのミニマルデザイン） */
+.file-label {
+    display: inline-block;
+    padding: 8px 18px;
+    background-color: #ffffff;
+    color: #666666; /* 文字は優しいグレー */
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid #dddddd; /* シンプルな枠線 */
+    transition: all 0.2s;
+}
+
+/* ボタン：ホバー時に少しだけ色をつける */
+.file-label:hover {
+    background-color: #f9f9f9;
+    border-color: #bbbbbb;
+    color: #333333;
+}
+
+/* ファイル入力を隠す */
+.file-input {
+    display: none;
+}
+
+/* 枚数表示のテキスト */

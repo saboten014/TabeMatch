@@ -97,16 +97,36 @@
                     <% } %>
                 </td>
             </tr>
-            <tr>
-                <th>掲載画像</th>
-                <td>
-                    <% if (shop.getShopPicture() != null && !shop.getShopPicture().isEmpty()) { %>
-                        <img src="<%= shop.getShopPicture() %>" alt="店舗画像" class="img-fluid" style="max-width: 300px;">
-                    <% } else { %>
-                        画像なし
-                    <% } %>
-                </td>
-            </tr>
+
+
+
+
+<tr>
+    <th>掲載画像</th>
+    <td>
+        <div class="shop-images-scroll">
+            <%
+                String pictureField = shop.getShopPicture();
+                if (pictureField != null && !pictureField.isEmpty()) {
+                    String[] pictures = pictureField.split(",");
+                    for (String pic : pictures) {
+            %>
+                        <div class="image-item">
+                            <img src="<%= request.getContextPath() %>/upload/<%= pic.trim() %>"
+                                 alt="店舗画像">
+                        </div>
+            <%
+                    }
+                } else {
+            %>
+                画像なし
+            <% } %>
+        </div>
+    </td>
+</tr>
+
+
+
         </table>
     </div>
 
