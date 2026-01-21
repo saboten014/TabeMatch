@@ -70,16 +70,15 @@
                 <small>対応しているアレルゲンを選択してください</small>
             </td>
         </tr>
-
         <tr>
-            <td>予約の可否<span class="required">*</span></td>
-            <td>
-                <input type="radio" name="reservation" value="1" id="res_yes" required>
-                <label for="res_yes">可能</label>
-                <input type="radio" name="reservation" value="0" id="res_no">
-                <label for="res_no">不可</label>
-            </td>
-        </tr>
+		    <td>予約の可否<span class="required">*</span></td>
+		    <td>
+		        <input type="radio" name="reservation" value="1" id="res_yes" required>
+		        <label for="res_yes">可能</label>
+		        <input type="radio" name="reservation" value="2" id="res_no">
+		        <label for="res_no">不可</label>
+		    </td>
+		</tr>
 
         <tr>
             <td>営業日・営業時間<span class="required">*</span></td>
