@@ -5,6 +5,7 @@
 <%@include file="user_menu.jsp" %>
 
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/review_list.css">
+<title>口コミ閲覧</title>
 
 <div class="container">
     <h2 class="title">口コミ一覧</h2>
@@ -51,8 +52,10 @@
         </div>
 
         <div class="navigation-footer">
-            <%-- 前のページ（店舗詳細）に戻る --%>
-            <button onclick="window.history.back();" class="modoru">前のページに戻る</button>
+          <button onclick="location.href='ShopDetail.action?shopId=${param.shopId}'"
+          		class="modoru">
+   						 店舗詳細に戻る
+			</button>
         </div>
     </div>
 </div>

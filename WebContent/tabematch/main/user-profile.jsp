@@ -6,6 +6,7 @@
 <%@ include file="user_menu.jsp" %>
 
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_prof_v.css">
+<title>プロフィール編集</title>
 
 <div class="container">
     <h2 class="text-center">プロフィール編集</h2>

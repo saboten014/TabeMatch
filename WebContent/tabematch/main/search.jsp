@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <!-- css読み込み -->
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/search.css">
+<title>検索</title>
 
 <h1>店舗検索</h1>
 

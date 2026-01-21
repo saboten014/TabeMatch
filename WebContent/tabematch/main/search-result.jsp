@@ -5,6 +5,7 @@
 <%@include file="user_menu.jsp" %>
 
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/search_result.css">
+<title>検索結果｜tabematch</title>
 
 <div class="result-container">
     <h1 class="result">検索結果</h1>

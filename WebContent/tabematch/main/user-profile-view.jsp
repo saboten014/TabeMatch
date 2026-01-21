@@ -21,6 +21,7 @@
   読み込ませたいCSSだけここに記述します。
 --%>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_prof_v.css?v=<%= System.currentTimeMillis() %>">
+<title>プロフィール</title>
 
 <div class="container">
     <h2 class="text-center">プロフィール確認</h2>

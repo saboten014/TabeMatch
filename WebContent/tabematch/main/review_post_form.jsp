@@ -3,6 +3,7 @@
 <%@include file="user_menu.jsp" %>
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/review_post_form.css">
+<title>口コミ投稿</title>
 
 <div class="zenbu">
 <h2>口コミ投稿</h2>

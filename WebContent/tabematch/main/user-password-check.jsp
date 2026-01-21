@@ -10,6 +10,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/user_prof_v.css">
+<title>セキュリティ</title>
 
 <div class="container">
     <h2 class="text-center">セキュリティ確認</h2>
