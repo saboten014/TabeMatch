@@ -1,236 +1,228 @@
 <%@page pageEncoding="UTF-8" %>
-<%@page import="bean.Shop"%>
+<%@page import="bean.Shop, bean.Allergen, java.util.*"%>
 
 <%@include file="../../header.html" %>
 <%@include file="../main/shop_menu.jsp" %>
 
-
 <%
     Shop shop = (Shop) request.getAttribute("shop");
-    if (shop == null) {
-        response.sendRedirect(request.getContextPath() + "/tabematch/shop/ShopProfile.action");
-        return;
+    List<Allergen> allergenMaster = (List<Allergen>) request.getAttribute("allergenMaster");
+
+    Set<String> currentAllergies = new HashSet<String>();
+    if (shop != null && shop.getShopAllergy() != null) {
+        String[] split = shop.getShopAllergy().replace("、", ",").split(",");
+        for (String s : split) {
+            if (!s.trim().isEmpty()) {
+                currentAllergies.add(s.trim());
+            }
+        }
     }
 %>
 
 <style>
-.edit-request-container {
+/* 全体の背景となじむように少し柔らかいフォントと色使いに */
+
+body {
+  background-color: #e8f8e8;
+  }
+
+.edit-container {
     width: 90%;
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 30px;
-    border: 1px solid #4CAF50;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    font-family: 'Kosugi Maru', sans-serif;
+    max-width: 800px;
+    margin: 120px auto 60px;
+    padding: 40px;
+    border: none;
+    border-radius: 20px; /* 角を丸くしてかわいく */
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* ふわっとした影 */
+    font-family: 'Hiragino Kaku Gothic ProN', 'Kosugi Maru', sans-serif;
 }
-.page-header {
-    border-bottom: 3px solid #4CAF50;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
+
+h2 {
+    color: #2e7d32;
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 10px;
 }
-.page-title {
-    font-size: 2em;
-    font-weight: bold;
-    color: #333;
+
+.sub-text {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 40px;
 }
-.notice-box {
-    background-color: #fff3cd;
-    border: 1px solid #ffc107;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 25px;
-}
-.notice-box h3 {
-    color: #856404;
-    margin-top: 0;
-}
-.form-group {
-    margin-bottom: 20px;
-}
+
+.form-group { margin-bottom: 25px; }
+
 .form-group label {
     display: block;
     font-weight: bold;
+    margin-bottom: 8px;
     color: #4CAF50;
-    margin-bottom: 5px;
-    font-size: 1.1em;
+    font-size: 0.95em;
 }
-.form-group input[type="text"],
-.form-group input[type="url"],
-.form-group input[type="tel"],
-.form-group input[type="number"],
-.form-group select,
-.form-group textarea {
+
+/* 入力フィールドを少し丸く、フォーカス時に色が変わるように */
+.form-control {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 12px 15px;
+    border: 2px solid #e8f5e9;
+    border-radius: 12px;
     box-sizing: border-box;
     font-size: 1em;
+    transition: border-color 0.3s;
+    background-color: #fafafa;
 }
-.form-group textarea {
-    resize: vertical;
-    height: 100px;
+
+.form-control:focus {
+    outline: none;
+    border-color: #4CAF50;
+    background-color: #fff;
 }
-.required {
-    color: #F44336;
-    font-weight: bold;
+
+/* アレルギー選択エリアをカード風に */
+.allergy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    background: #f9fbf9;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px dashed #c8e6c9; /* 点線にしてかわいさを演出 */
 }
-.button-section {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
+
+.allergy-item {
     display: flex;
-    justify-content: center;
-    gap: 15px;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #444;
+    padding: 5px;
+    transition: transform 0.2s;
 }
-.btn {
-    padding: 12px 30px;
-    border-radius: 8px;
-    text-decoration: none;
+
+.allergy-item:hover {
+    transform: scale(1.05); /* ホバー時に少し大きく */
+}
+
+.allergy-item input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: #4CAF50; /* チェックボックスの色をテーマカラーに */
+}
+
+/* 送信ボタンをぷっくりしたデザインに */
+.btn-submit {
+    background: linear-gradient(135deg, #66bb6a, #43a047);
+    color: white;
+    padding: 15px 50px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
     font-weight: bold;
     font-size: 1.1em;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
     transition: all 0.3s;
-    border: none;
-    cursor: pointer;
-}
-.btn-submit {
-    background-color: #4CAF50;
-    color: white;
-}
-.btn-submit:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-}
-.btn-cancel {
-    background-color: #9E9E9E;
-    color: white;
-}
-.btn-cancel:hover {
-    background-color: #757575;
-    transform: translateY(-2px);
-}
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-.edit-request-container {
-	margin-top: 100px;
-}
-body{
-	background-color: #e8f8e8;
 }
 
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.required {
+    color: #ff5252;
+    margin-left: 3px;
+}
+
+.cancel-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #999;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.cancel-link:hover {
+    text-decoration: underline;
+}
 </style>
 
-<div class="edit-request-container">
-    <div class="page-header">
-        <h1 class="page-title">店舗情報編集リクエスト</h1>
-    </div>
+<div class="edit-container">
+    <h2>店舗情報編集リクエスト</h2>
+    <p class="sub-text">現在の内容を修正して送信してくださいね☘️</p>
 
-    <div class="notice-box">
-        <h3>⚠️ ご注意</h3>
-        <ul>
-            <li>この編集リクエストは、管理者による承認が必要です。</li>
-            <li>承認されるまで、現在の店舗情報は変更されません。</li>
-            <li>承認/却下の結果は、登録メールアドレスに通知されます。</li>
-        </ul>
-    </div>
-
-    <% if (request.getAttribute("errorMessage") != null) { %>
-        <div class="error-message">
-            <%= request.getAttribute("errorMessage") %>
-        </div>
-    <% } %>
-
-    <form action="${pageContext.request.contextPath}/tabematch/shop/ShopEditRequest.action" method="post">
+    <form action="ShopEditRequest.action" method="post">
         <input type="hidden" name="mode" value="submit">
 
         <div class="form-group">
-            <label for="shopName">店舗名 <span class="required">*</span></label>
-            <input type="text" id="shopName" name="shopName" value="<%= shop.getShopName() %>" required maxlength="100">
+            <label>店舗名 <span class="required">*</span></label>
+            <input type="text" name="shopName" class="form-control" value="<%= shop.getShopName() %>" placeholder="店名を入力" required>
         </div>
 
         <div class="form-group">
-            <label for="shopAddress">住所 <span class="required">*</span></label>
-            <input type="text" id="shopAddress" name="shopAddress" value="<%= shop.getShopAddress() %>" required maxlength="255">
+            <label>住所 <span class="required">*</span></label>
+            <input type="text" name="shopAddress" class="form-control" value="<%= shop.getShopAddress() %>" placeholder="住所を入力" required>
         </div>
 
         <div class="form-group">
-            <label for="shopTel">電話番号 <span class="required">*</span></label>
-            <input type="tel" id="shopTel" name="shopTel" value="<%= shop.getShopTel() %>" required maxlength="20">
+            <label>電話番号 <span class="required">*</span></label>
+            <input type="tel" name="shopTel" class="form-control" value="<%= shop.getShopTel() %>" placeholder="00-0000-0000" required>
         </div>
 
         <div class="form-group">
-            <label for="shopUrl">店舗URL</label>
-            <input type="url" id="shopUrl" name="shopUrl" value="<%= shop.getShopUrl() != null ? shop.getShopUrl() : "" %>" maxlength="255">
+            <label>アレルギー対応項目（✅をチェック！）</label>
+            <div class="allergy-grid">
+                <% if (allergenMaster != null) {
+                    for (Allergen a : allergenMaster) {
+                        boolean isChecked = currentAllergies.contains(a.getAllergenName());
+                %>
+                    <label class="allergy-item">
+                        <input type="checkbox" name="shopAllergies" value="<%= a.getAllergenName() %>" <%= isChecked ? "checked" : "" %>>
+                        <%= a.getAllergenName() %>
+                    </label>
+                <% } } %>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="shopGenre">ジャンル</label>
-            <select id="shopGenre" name="shopGenre">
-                <option value="">選択してください</option>
-                <option value="和食" <%= "和食".equals(shop.getShopGenre()) ? "selected" : "" %>>和食</option>
-                <option value="洋食" <%= "洋食".equals(shop.getShopGenre()) ? "selected" : "" %>>洋食</option>
-                <option value="中華" <%= "中華".equals(shop.getShopGenre()) ? "selected" : "" %>>中華</option>
-                <option value="イタリアン" <%= "イタリアン".equals(shop.getShopGenre()) ? "selected" : "" %>>イタリアン</option>
-                <option value="フレンチ" <%= "フレンチ".equals(shop.getShopGenre()) ? "selected" : "" %>>フレンチ</option>
-                <option value="カフェ" <%= "カフェ".equals(shop.getShopGenre()) ? "selected" : "" %>>カフェ</option>
-                <option value="居酒屋" <%= "居酒屋".equals(shop.getShopGenre()) ? "selected" : "" %>>居酒屋</option>
-                <option value="ラーメン" <%= "ラーメン".equals(shop.getShopGenre()) ? "selected" : "" %>>ラーメン</option>
-                <option value="焼肉" <%= "焼肉".equals(shop.getShopGenre()) ? "selected" : "" %>>焼肉</option>
-                <option value="その他" <%= "その他".equals(shop.getShopGenre()) ? "selected" : "" %>>その他</option>
-            </select>
+            <label>店舗URL</label>
+            <input type="url" name="shopUrl" class="form-control" value="<%= shop.getShopUrl() != null ? shop.getShopUrl() : "" %>" placeholder="https://example.com">
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+            <div class="form-group" style="flex: 1;">
+                <label>ジャンル</label>
+                <select name="shopGenre" class="form-control">
+                    <% String[] genres = {"和食", "洋食", "中華", "イタリアン", "カフェ", "ラーメン", "居酒屋"};
+                       for(String g : genres) { %>
+                        <option value="<%= g %>" <%= g.equals(shop.getShopGenre()) ? "selected" : "" %>><%= g %></option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>予約可否</label>
+                <select name="shopReserve" class="form-control">
+                    <option value="可能" <%= "可能".equals(shop.getShopReserve()) ? "selected" : "" %>>可能</option>
+                    <option value="不可" <%= "不可".equals(shop.getShopReserve()) ? "selected" : "" %>>不可</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="shopPrice">価格帯</label>
-            <select id="shopPrice" name="shopPrice">
-                <option value="">選択してください</option>
-                <option value="1000円以下" <%= "1000円以下".equals(shop.getShopPrice()) ? "selected" : "" %>>1000円以下</option>
-                <option value="1000円～2000円" <%= "1000円～2000円".equals(shop.getShopPrice()) ? "selected" : "" %>>1000円～2000円</option>
-                <option value="2000円～3000円" <%= "2000円～3000円".equals(shop.getShopPrice()) ? "selected" : "" %>>2000円～3000円</option>
-                <option value="3000円～5000円" <%= "3000円～5000円".equals(shop.getShopPrice()) ? "selected" : "" %>>3000円～5000円</option>
-                <option value="5000円以上" <%= "5000円以上".equals(shop.getShopPrice()) ? "selected" : "" %>>5000円以上</option>
-            </select>
+            <label>座席数</label>
+            <input type="number" name="shopSeat" class="form-control" value="<%= shop.getShopSeat() %>" min="0">
         </div>
 
         <div class="form-group">
-            <label for="shopPay">決済方法</label>
-            <input type="text" id="shopPay" name="shopPay" value="<%= shop.getShopPay() != null ? shop.getShopPay() : "" %>" maxlength="100" placeholder="例: 現金、クレジットカード、電子マネー">
+            <label>管理者へのひとこと</label>
+            <textarea name="requestNote" class="form-control" rows="3" placeholder="変更したい理由などがあれば教えてくださいね。"></textarea>
         </div>
 
-        <div class="form-group">
-            <label for="shopSeat">座席数</label>
-            <input type="number" id="shopSeat" name="shopSeat" value="<%= shop.getShopSeat() != null ? shop.getShopSeat() : "" %>" min="0">
-        </div>
-
-        <div class="form-group">
-            <label for="shopReserve">予約可否</label>
-            <select id="shopReserve" name="shopReserve">
-                <option value="可能" <%= "可能".equals(shop.getShopReserve()) ? "selected" : "" %>>可能</option>
-                <option value="不可" <%= "不可".equals(shop.getShopReserve()) ? "selected" : "" %>>不可</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="shopAllergy">アレルギー対応</label>
-            <textarea id="shopAllergy" name="shopAllergy" placeholder="対応可能なアレルギー情報を入力してください"><%= shop.getShopAllergy() != null ? shop.getShopAllergy() : "" %></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="requestNote">変更理由・備考</label>
-            <textarea id="requestNote" name="requestNote" placeholder="編集の理由や管理者への伝達事項があれば入力してください"></textarea>
-        </div>
-
-        <div class="button-section">
-            <button type="submit" class="btn btn-submit">編集リクエストを送信</button>
-            <a href="${pageContext.request.contextPath}/tabematch/shop/ShopProfile.action" class="btn btn-cancel">キャンセル</a>
+        <div style="text-align: center; margin-top: 40px;">
+            <button type="submit" class="btn-submit">リクエストを送信する</button><br>
+            <a href="ShopProfile.action" class="cancel-link">やっぱりやめる</a>
         </div>
     </form>
 </div>

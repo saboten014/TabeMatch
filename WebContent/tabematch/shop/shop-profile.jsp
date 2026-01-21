@@ -185,7 +185,7 @@ body {
         </a>
 
         <a href="${pageContext.request.contextPath}/tabematch/UserPassUpdate.action" class="action-btn btn-password">
-            パスワード変更
+            メールアドレス/パスワード変更
         </a>
 
         <a href="${pageContext.request.contextPath}/tabematch/shop/ShopDeleteRequest.action" class="action-btn btn-delete">

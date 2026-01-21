@@ -528,4 +528,69 @@ public class UserDAO extends DAO {
         return result > 0;
     }
 
+ // ======================================================
+    // メールアドレスの重複チェック
+    // ======================================================
+    public boolean isEmailExists(String email) throws Exception {
+        boolean exists = false;
+        Connection con = getConnection();
+
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        PreparedStatement stmt = con.prepareStatement(sql);
+        stmt.setString(1, email);
+
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            if (rs.getInt(1) > 0) {
+                exists = true;
+            }
+        }
+
+        rs.close();
+        stmt.close();
+        con.close();
+
+        return exists;
+    }
+
+    // ======================================================
+    // アカウント情報の統合更新（IDとパスワード）
+    // ======================================================
+    public int updateUserInfo(String oldId, String newId, String newPass) throws Exception {
+        Connection con = getConnection();
+        // オートコミットをオフにして、2つのテーブル更新をひとまとめにする
+        con.setAutoCommit(false);
+
+        try {
+            // 1. shopテーブルのメアド（shop_mail）を更新
+            String sqlShop = "UPDATE shop SET shop_mail = ? WHERE shop_mail = ?";
+            PreparedStatement stShop = con.prepareStatement(sqlShop);
+            stShop.setString(1, newId);  // 新しいメアド
+            stShop.setString(2, oldId);  // 現在のメアド
+            stShop.executeUpdate();
+            stShop.close();
+
+            // 2. usersテーブルのメアドとパスワードを更新
+            String sqlUser = "UPDATE users SET user_id = ?, password = ? WHERE user_id = ?";
+            PreparedStatement stUser = con.prepareStatement(sqlUser);
+            stUser.setString(1, newId);
+            stUser.setString(2, newPass);
+            stUser.setString(3, oldId);
+            int line = stUser.executeUpdate();
+            stUser.close();
+
+            // 両方成功したら確定！
+            con.commit();
+            return line;
+
+        } catch (Exception e) {
+            // どこかでエラーが出たら、ここまでの処理をすべてキャンセルして元に戻す
+            con.rollback();
+            throw e;
+        } finally {
+            con.setAutoCommit(true);
+            con.close();
+        }
+    }
+
 }

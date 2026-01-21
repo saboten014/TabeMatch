@@ -1,9 +1,14 @@
 package tabematch.shop;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bean.Allergen;
 import bean.Shop;
 import bean.Users;
 import dao.ShopDAO;
@@ -12,8 +17,7 @@ import tool.Action;
 public class ShopEditRequestAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest req, HttpServletResponse res)
-            throws Exception {
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         HttpSession session = req.getSession();
         String url = "";
@@ -43,17 +47,26 @@ public class ShopEditRequestAction extends Action {
         String mode = req.getParameter("mode");
 
         if (mode == null || mode.equals("form")) {
-            // フォーム表示
+            // --- フォーム表示 ---
             req.setAttribute("shop", shop);
+
+            // ★DBからアレルギー一覧（マスタ）を取得してリクエストにセット
+            List<Allergen> allergenMaster = shopDao.getAllAllergens();
+            req.setAttribute("allergenMaster", allergenMaster);
+
             url = "/tabematch/shop/shop-edit-request-form.jsp";
 
         } else if (mode.equals("submit")) {
-            // 編集リクエスト送信処理
+            // --- 編集リクエスト送信処理 ---
             String shopName = req.getParameter("shopName");
             String shopAddress = req.getParameter("shopAddress");
             String shopTel = req.getParameter("shopTel");
             String shopUrl = req.getParameter("shopUrl");
-            String shopAllergy = req.getParameter("shopAllergy");
+
+            // ★チェックボックス（配列）をカンマ区切りの1本の文字列に合体させる
+            String[] allergyArray = req.getParameterValues("shopAllergies");
+            String shopAllergy = (allergyArray != null) ? String.join(",", allergyArray) : "";
+
             String shopGenre = req.getParameter("shopGenre");
             String shopPrice = req.getParameter("shopPrice");
             String shopPay = req.getParameter("shopPay");
@@ -68,19 +81,22 @@ public class ShopEditRequestAction extends Action {
 
                 req.setAttribute("errorMessage", "必須項目を入力してください。");
                 req.setAttribute("shop", shop);
+                // 再表示用にもマスタが必要
+                req.setAttribute("allergenMaster", shopDao.getAllAllergens());
                 url = "/tabematch/shop/shop-edit-request-form.jsp";
                 req.getRequestDispatcher(url).forward(req, res);
                 return;
             }
 
             // 座席数の変換
-            Integer shopSeat = null;
+            Integer shopSeat = 0;
             if (shopSeatStr != null && !shopSeatStr.trim().isEmpty()) {
                 try {
                     shopSeat = Integer.parseInt(shopSeatStr);
                 } catch (NumberFormatException e) {
                     req.setAttribute("errorMessage", "座席数は数値で入力してください。");
                     req.setAttribute("shop", shop);
+                    req.setAttribute("allergenMaster", shopDao.getAllAllergens());
                     url = "/tabematch/shop/shop-edit-request-form.jsp";
                     req.getRequestDispatcher(url).forward(req, res);
                     return;
@@ -89,44 +105,41 @@ public class ShopEditRequestAction extends Action {
 
             // DBに編集リクエストを保存
             dao.DAO daoObj = new dao.DAO();
-            java.sql.Connection con = daoObj.getConnection();
+            try (Connection con = daoObj.getConnection()) {
+                String requestId = "EDITREQ" + System.currentTimeMillis();
+                String sql = "INSERT INTO shop_edit_requests " +
+                             "(request_id, shop_id, shop_name, shop_address, shop_tel, shop_url, " +
+                             "shop_allergy, shop_genre, shop_price, shop_pay, shop_seat, shop_reserve, " +
+                             "request_note, status, created_at) " +
+                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)";
 
-            String requestId = "EDITREQ" + System.currentTimeMillis();
-            String sql = "INSERT INTO shop_edit_requests " +
-                         "(request_id, shop_id, shop_name, shop_address, shop_tel, shop_url, " +
-                         "shop_allergy, shop_genre, shop_price, shop_pay, shop_seat, shop_reserve, " +
-                         "request_note, status, created_at) " +
-                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)";
+                PreparedStatement stmt = con.prepareStatement(sql);
+                stmt.setString(1, requestId);
+                stmt.setString(2, shop.getShopId());
+                stmt.setString(3, shopName);
+                stmt.setString(4, shopAddress);
+                stmt.setString(5, shopTel);
+                stmt.setString(6, shopUrl);
+                stmt.setString(7, shopAllergy); // 合体したアレルギー文字列
+                stmt.setString(8, shopGenre);
+                stmt.setString(9, shopPrice);
+                stmt.setString(10, shopPay);
+                stmt.setInt(11, shopSeat);
+                stmt.setString(12, shopReserve);
+                stmt.setString(13, requestNote);
 
-            java.sql.PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, requestId);
-            stmt.setString(2, shop.getShopId());
-            stmt.setString(3, shopName);
-            stmt.setString(4, shopAddress);
-            stmt.setString(5, shopTel);
-            stmt.setString(6, shopUrl);
-            stmt.setString(7, shopAllergy);
-            stmt.setString(8, shopGenre);
-            stmt.setString(9, shopPrice);
-            stmt.setString(10, shopPay);
-            stmt.setInt(11, shopSeat != null ? shopSeat : 0);
-            stmt.setString(12, shopReserve);
-            stmt.setString(13, requestNote);
-
-            int result = stmt.executeUpdate();
-            stmt.close();
-            con.close();
-
-            if (result > 0) {
-                session.setAttribute("successMessage", "編集リクエストを送信しました。管理者による承認をお待ちください。");
-                url = "/tabematch/shop/shop-edit-request-complete.jsp";
-            } else {
-                req.setAttribute("errorMessage", "リクエストの送信に失敗しました。");
-                req.setAttribute("shop", shop);
-                url = "/tabematch/shop/shop-edit-request-form.jsp";
+                int result = stmt.executeUpdate();
+                if (result > 0) {
+                    session.setAttribute("successMessage", "編集リクエストを送信しました。");
+                    url = "/tabematch/shop/shop-edit-request-complete.jsp";
+                } else {
+                    req.setAttribute("errorMessage", "リクエストの送信に失敗しました。");
+                    req.setAttribute("shop", shop);
+                    req.setAttribute("allergenMaster", shopDao.getAllAllergens());
+                    url = "/tabematch/shop/shop-edit-request-form.jsp";
+                }
             }
         }
-
         req.getRequestDispatcher(url).forward(req, res);
     }
 }
