@@ -64,7 +64,52 @@ public class AdminShopDeleteRequestApproveAction extends Action {
             rs.close();
             selectStmt.close();
 
-            // 4. 関連データを削除（予約、お気に入りなど）
+            // 4. 店舗のメールアドレスを取得（ユーザーアカウント削除用）
+            String getMailSql = "SELECT shop_mail FROM shop WHERE shop_id = ?";
+            PreparedStatement getMailStmt = con.prepareStatement(getMailSql);
+            getMailStmt.setString(1, shopId);
+            ResultSet mailRs = getMailStmt.executeQuery();
+
+            String shopMail = null;
+            if (mailRs.next()) {
+                shopMail = mailRs.getString("shop_mail");
+            }
+            mailRs.close();
+            getMailStmt.close();
+
+            // 5. 関連データを削除（外部キー制約の順序に注意）
+
+            // レビューコメント削除（review_comment → review）
+            String deleteCommentSql = "DELETE FROM review_comment WHERE review_id IN " +
+                                     "(SELECT review_id FROM review WHERE shop_id = ?)";
+            PreparedStatement deleteCommentStmt = con.prepareStatement(deleteCommentSql);
+            deleteCommentStmt.setString(1, shopId);
+            deleteCommentStmt.executeUpdate();
+            deleteCommentStmt.close();
+
+            // レビューいいね削除（review_like → review）
+            String deleteLikeSql = "DELETE FROM review_like WHERE review_id IN " +
+                                  "(SELECT review_id FROM review WHERE shop_id = ?)";
+            PreparedStatement deleteLikeStmt = con.prepareStatement(deleteLikeSql);
+            deleteLikeStmt.setString(1, shopId);
+            deleteLikeStmt.executeUpdate();
+            deleteLikeStmt.close();
+
+            // レビュー写真削除（review_photo → review）
+            String deletePhotoSql = "DELETE FROM review_photo WHERE review_id IN " +
+                                   "(SELECT review_id FROM review WHERE shop_id = ?)";
+            PreparedStatement deletePhotoStmt = con.prepareStatement(deletePhotoSql);
+            deletePhotoStmt.setString(1, shopId);
+            deletePhotoStmt.executeUpdate();
+            deletePhotoStmt.close();
+
+            // レビュー削除
+            String deleteReviewSql = "DELETE FROM review WHERE shop_id = ?";
+            PreparedStatement deleteReviewStmt = con.prepareStatement(deleteReviewSql);
+            deleteReviewStmt.setString(1, shopId);
+            deleteReviewStmt.executeUpdate();
+            deleteReviewStmt.close();
+
             // 予約削除
             String deleteReserveSql = "DELETE FROM reserve WHERE shop_id = ?";
             PreparedStatement deleteReserveStmt = con.prepareStatement(deleteReserveSql);
@@ -79,25 +124,19 @@ public class AdminShopDeleteRequestApproveAction extends Action {
             deleteFavoriteStmt.executeUpdate();
             deleteFavoriteStmt.close();
 
-            // レビュー削除
-            String deleteReviewSql = "DELETE FROM review WHERE shop_id = ?";
-            PreparedStatement deleteReviewStmt = con.prepareStatement(deleteReviewSql);
-            deleteReviewStmt.setString(1, shopId);
-            deleteReviewStmt.executeUpdate();
-            deleteReviewStmt.close();
+            // 店舗編集リクエスト削除
+            String deleteEditReqSql = "DELETE FROM shop_edit_requests WHERE shop_id = ?";
+            PreparedStatement deleteEditReqStmt = con.prepareStatement(deleteEditReqSql);
+            deleteEditReqStmt.setString(1, shopId);
+            deleteEditReqStmt.executeUpdate();
+            deleteEditReqStmt.close();
 
-            // 5. 店舗メールアドレスを取得してユーザーアカウントを削除
-            String getMailSql = "SELECT shop_mail FROM shop WHERE shop_id = ?";
-            PreparedStatement getMailStmt = con.prepareStatement(getMailSql);
-            getMailStmt.setString(1, shopId);
-            ResultSet mailRs = getMailStmt.executeQuery();
-
-            String shopMail = null;
-            if (mailRs.next()) {
-                shopMail = mailRs.getString("shop_mail");
-            }
-            mailRs.close();
-            getMailStmt.close();
+            // 店舗削除リクエスト削除（このリクエストも含めて全部削除）
+            String deleteDelReqSql = "DELETE FROM shop_delete_requests WHERE shop_id = ?";
+            PreparedStatement deleteDelReqStmt = con.prepareStatement(deleteDelReqSql);
+            deleteDelReqStmt.setString(1, shopId);
+            deleteDelReqStmt.executeUpdate();
+            deleteDelReqStmt.close();
 
             // 6. shopテーブルから削除
             String deleteShopSql = "DELETE FROM shop WHERE shop_id = ?";
@@ -123,13 +162,6 @@ public class AdminShopDeleteRequestApproveAction extends Action {
                 deleteUserStmt.close();
             }
 
-            // 8. リクエストのステータスを承認済み(2)に変更
-            String updateRequestSql = "UPDATE shop_delete_requests SET status = 2 WHERE request_id = ?";
-            PreparedStatement updateRequestStmt = con.prepareStatement(updateRequestSql);
-            updateRequestStmt.setString(1, requestId);
-            updateRequestStmt.executeUpdate();
-            updateRequestStmt.close();
-
             // コミット
             con.commit();
 
@@ -138,14 +170,22 @@ public class AdminShopDeleteRequestApproveAction extends Action {
         } catch (Exception e) {
             // エラー時はロールバック
             if (con != null) {
-                con.rollback();
+                try {
+                    con.rollback();
+                } catch (Exception rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
             }
             e.printStackTrace();
             session.setAttribute("errorMessage", "処理中にエラーが発生しました：" + e.getMessage());
         } finally {
             if (con != null) {
-                con.setAutoCommit(true);
-                con.close();
+                try {
+                    con.setAutoCommit(true);
+                    con.close();
+                } catch (Exception closeEx) {
+                    closeEx.printStackTrace();
+                }
             }
         }
 
