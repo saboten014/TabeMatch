@@ -48,11 +48,15 @@ public class ReserveDAO extends DAO {
         List<Reserve> list = new ArrayList<>();
         Connection con = getConnection();
 
+        // 修正ポイント:
+        // 1. WHERE句に "r.reserve_date >= CURRENT_DATE" を追加
+        // 2. ORDER BY を "ASC"（昇順）にして近い日付から並べる
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
                    + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
                    + "r.reserve_status, s.shop_name "
                    + "FROM reserve r JOIN shop s ON r.shop_id = s.shop_id "
-                   + "WHERE r.user_id = ? ORDER BY r.reserve_date DESC, r.reserve_time DESC";
+                   + "WHERE r.user_id = ? AND r.reserve_date >= CURRENT_DATE "
+                   + "ORDER BY r.reserve_date ASC, r.reserve_time ASC";
 
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, userId);
@@ -74,14 +78,13 @@ public class ReserveDAO extends DAO {
         List<Reserve> list = new ArrayList<>();
         Connection con = getConnection();
 
+        // SQLの最後を DESC（降順）から ASC（昇順）に変更し、さらに未来の予約に絞る
         String sql = "SELECT r.reserve_id, r.user_id, r.shop_id, r.reserve_date, r.reserve_time, "
                    + "r.reserve_count, r.reserve_allergy, r.reserve_note, r.reserve_tel, r.reserve_send, "
-                   + "r.reserve_status, s.shop_name, u.user_name "
-                   + "FROM reserve r "
-                   + "JOIN shop s ON r.shop_id = s.shop_id "
-                   + "LEFT JOIN users u ON r.user_id = u.user_id "
-                   + "WHERE r.shop_id = ? "
-                   + "ORDER BY r.reserve_date DESC, r.reserve_time DESC";
+                   + "r.reserve_status, u.user_name "
+                   + "FROM reserve r JOIN users u ON r.user_id = u.user_id "
+                   + "WHERE r.shop_id = ? AND r.reserve_date >= CURRENT_DATE " // 今日以降のみ
+                   + "ORDER BY r.reserve_date ASC, r.reserve_time ASC";        // 近い順
 
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, shopId);
