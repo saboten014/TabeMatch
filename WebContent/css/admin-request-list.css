@@ -1,33 +1,142 @@
-  body {
-    background-color: #e8f8e8 !important;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
-    margin: 0;
-    padding: 0;
-  }
+/* admin-request-list.css */
 
-  h1 {
-    margin-top: 100px;
-    padding-top: 20px;
-    font-size: 32px;
-    text-align: center;
+body {
+    font-family: 'Kosugi Maru', sans-serif;
+    background-color: #f0f9f0;
     color: #333;
-    margin-bottom: 10px;
-  }
-
-  p{
-	margin-left: 20px;
+    margin: 0;
 }
 
+.main-content {
+    max-width: 1000px;
+    margin: 100px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+h1 {
+    color: #2e7d32;
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 30px;
+    border-bottom: 3px dashed #a5d6a7;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+/* メッセージ */
+.msg-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #c8e6c9;
+}
+
+.msg-error {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #ffcdd2;
+}
+
+/* 戻るリンク */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #66bb6a;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.back-link:hover {
+    color: #2e7d32;
+    transform: translateX(-5px);
+}
+
+/* テーブル */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 10px;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #e8f5e9;
+}
 
 th {
-	background-color: #fff4ea;
-}
-td {
-	background-color: white;
+    background-color: #66bb6a;
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    text-align: left;
 }
 
-table {
-   max-width: calc(100% - 40px);
-    margin-left: 20px;
-    margin-right: 20px;
+td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* ボタン */
+button {
+    font-family: 'Kosugi Maru', sans-serif;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    margin: 2px;
+}
+
+button:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+}
+
+.btn-detail { background-color: #f0f0f0; color: #555; }
+.btn-approve { background: linear-gradient(135deg, #66bb6a, #43a047); color: white; }
+.btn-reject { background: linear-gradient(135deg, #ff8a65, #e64a19); color: white; }
+
+/* 詳細エリア */
+.detail-box {
+    background-color: #f9fff9 !important;
+    border-left: 5px solid #66bb6a;
+    padding: 20px !important;
+}
+
+.detail-box h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: #2e7d32;
+}
+
+/* 却下フォーム */
+.reject-box {
+    background-color: #fffde7 !important;
+    border-left: 5px solid #ffb300;
+    padding: 20px !important;
+}
+
+textarea {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-family: inherit;
+    margin: 10px 0;
 }

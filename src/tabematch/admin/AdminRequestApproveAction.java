@@ -16,133 +16,132 @@ import util.PasswordGenerator;
 
 public class AdminRequestApproveAction extends Action {
 
-	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res)
-			throws Exception {
-		// ローカル変数の宣言 1
-		String url = "";
-		HttpSession session = req.getSession();
-		RequestDAO requestDao = new RequestDAO();
-		UserDAO userDao = new UserDAO();
-		ShopDAO shopDao = new ShopDAO();
+    @Override
+    public void execute(HttpServletRequest req, HttpServletResponse res)
+            throws Exception {
 
-		// リクエストパラメータ―の取得 2
-		String requestId = req.getParameter("requestId");
+        String url = "";
+        HttpSession session = req.getSession();
+        RequestDAO requestDao = new RequestDAO();
+        UserDAO userDao = new UserDAO();
+        ShopDAO shopDao = new ShopDAO();
 
-		// DBからデータ取得 3
-		// ログインチェック
-		Users admin = (Users)session.getAttribute("user");
-		if (admin == null || !"3".equals(admin.getUsersTypeId())) {
-			// 管理者でない場合
-			req.setAttribute("errorMessage", "管理者権限が必要です。");
-			url = "../login.jsp";
-		} else if (requestId == null || requestId.trim().isEmpty()) {
-			// リクエストIDが指定されていない
-			req.setAttribute("errorMessage", "リクエストIDが指定されていません。");
-			url = "AdminRequestList.action";
-		} else {
-			// リクエスト情報取得
-			Request request = requestDao.getRequestById(requestId);
+        // 1. リクエストパラメータの取得
+        String requestId = req.getParameter("requestId");
 
-			if (request == null) {
-				req.setAttribute("errorMessage", "リクエストが見つかりませんでした。");
-				url = "AdminRequestList.action";
-			} else if (request.getCertification() != 1) {
-				req.setAttribute("errorMessage", "このリクエストは既に処理済みです。");
-				url = "AdminRequestList.action";
-			} else {
-				// ビジネスロジック 4
+        // 2. 権限チェックとバリデーション
+        Users admin = (Users)session.getAttribute("user");
+        if (admin == null || !"3".equals(admin.getUsersTypeId())) {
+            req.setAttribute("errorMessage", "管理者権限が必要です。");
+            url = "../login.jsp";
+            req.getRequestDispatcher(url).forward(req, res);
+            return;
+        }
 
-				// 1. 仮パスワード生成
-				String tempPassword = PasswordGenerator.generatePassword();
+        if (requestId == null || requestId.trim().isEmpty()) {
+            req.setAttribute("errorMessage", "リクエストIDが指定されていません。");
+            url = "AdminRequestList.action";
+            req.getRequestDispatcher(url).forward(req, res);
+            return;
+        }
 
-				// 2. 店舗ユーザーアカウント作成（USERSテーブル）
-				String shopEmail = request.getRequest_mail();
+        // 3. データの取得と状態確認
+        Request request = requestDao.getRequestById(requestId);
 
-				Users shopUser = new Users();
-				shopUser.setUserId(shopEmail);
-				shopUser.setPassword(tempPassword);
-				shopUser.setUserName(request.getRestaurantName());
-				shopUser.setAllergenId("001"); // デフォルトのアレルゲンID（要調整）
-				shopUser.setUsersTypeId("2"); // 店舗ユーザー
+        if (request == null) {
+            req.setAttribute("errorMessage", "リクエストが見つかりませんでした。");
+            url = "AdminRequestList.action";
+        } else if (request.getCertification() != 1) { // 1=未処理
+            req.setAttribute("errorMessage", "このリクエストは既に承認または却下されています。");
+            url = "AdminRequestList.action";
+        } else {
+            // 4. 重複チェック（ここが重要！）
+            String shopEmail = request.getRequest_mail();
 
-				boolean userCreated = userDao.registerUser(shopUser);
+            // すでにUSERSテーブルに登録されていないか確認
+            if (userDao.isEmailExists(shopEmail)) {
+                req.setAttribute("errorMessage", "このメールアドレス（" + shopEmail + "）は既に登録されているため承認できません。");
+                url = "AdminRequestList.action";
+            } else {
 
-				if (!userCreated) {
-					req.setAttribute("errorMessage", "店舗ユーザーの作成に失敗しました。");
-					url = "AdminRequestList.action";
-					req.getRequestDispatcher(url).forward(req, res);
-					return;
-				}
+                // 5. ビジネスロジック：店舗用データの作成
 
-				// 3. SHOPテーブルに店舗情報登録
-				Shop shop = new Shop();
-				shop.setShopId(PasswordGenerator.generateShopId());
-				shop.setPassword(tempPassword);
-				shop.setShopAddress(request.getAddress());
-				shop.setShopName(request.getRestaurantName());
-				shop.setShopAllergy(request.getAllergySupport());
-				shop.setShopMail(shopEmail);
-				shop.setShopTel(request.getNumber().replaceAll("[^0-9]", ""));
-				shop.setShopReserve(request.getReservation() == 1 ? "可能" : "不可");
-				shop.setShopGenre(request.getGenre());
-				shop.setShopPicture(request.getPhoto());
-				shop.setShopPrice(request.getPriceRange());
-				shop.setShopPay(request.getPayment());
-				shop.setShopSeat(extractSeatNumber(request.getSeat())); // 座席数を抽出
-				shop.setShopUrl(request.getLink());
+                // 仮パスワード生成
+                String tempPassword = PasswordGenerator.generatePassword();
 
-				boolean shopCreated = shopDao.insertShop(shop);
+                // (1) ユーザーアカウント（USERSテーブル）の準備
+                Users shopUser = new Users();
+                shopUser.setUserId(shopEmail);
+                shopUser.setPassword(tempPassword);
+                shopUser.setUserName(request.getRestaurantName());
+                shopUser.setAllergenId("001"); // デフォルト値
+                shopUser.setUsersTypeId("2"); // 店舗ユーザー
 
-				if (!shopCreated) {
-					req.setAttribute("errorMessage", "店舗情報の登録に失敗しました。");
-					url = "AdminRequestList.action";
-					req.getRequestDispatcher(url).forward(req, res);
-					return;
-				}
+                // (2) 店舗情報（SHOPテーブル）の準備
+                Shop shop = new Shop();
+                shop.setShopId(PasswordGenerator.generateShopId());
+                shop.setPassword(tempPassword);
+                shop.setShopAddress(request.getAddress());
+                shop.setShopName(request.getRestaurantName());
+                shop.setShopAllergy(request.getAllergySupport());
+                shop.setShopMail(shopEmail);
+                shop.setShopTel(request.getNumber().replaceAll("[^0-9]", ""));
+                shop.setShopReserve(request.getReservation() == 1 ? "可能" : "不可");
+                shop.setShopGenre(request.getGenre());
+                shop.setShopPicture(request.getPhoto());
+                shop.setShopPrice(request.getPriceRange());
+                shop.setShopPay(request.getPayment());
+                shop.setShopSeat(extractSeatNumber(request.getSeat()));
+                shop.setShopUrl(request.getLink());
 
-				// 4. リクエストを承認済みに更新
-				requestDao.updateCertification(requestId, 2); // 2=承認済み
+                // 6. DBへの一括登録処理（トランザクション管理はDAO側を想定）
+                boolean userCreated = userDao.registerUser(shopUser);
 
-				// DBへデータ保存 5
-				// 上記で完了
+                if (userCreated) {
+                    boolean shopCreated = shopDao.insertShop(shop);
 
-				// 5. メール送信
-				try {
-					EmailSender.sendApprovalEmail(shopEmail, request.getRestaurantName(), shopEmail, tempPassword);
-					req.setAttribute("successMessage", "承認が完了しました。店舗にメールを送信しました。");
-				} catch (Exception e) {
-					e.printStackTrace();
-					req.setAttribute("successMessage", "承認が完了しましたが、メール送信に失敗しました。");
-				}
+                    if (shopCreated) {
+                        // リクエストを承認済み（2）に更新
+                        requestDao.updateCertification(requestId, 2);
 
-				// レスポンス値をセット 6
-				url = "AdminRequestList.action";
-			}
-		}
+                        // 7. メール送信
+                        try {
+                            EmailSender.sendApprovalEmail(shopEmail, request.getRestaurantName(), shopEmail, tempPassword);
+                            req.setAttribute("successMessage", "承認が完了し、店舗「" + request.getRestaurantName() + "」のアカウントを作成しました。");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            req.setAttribute("successMessage", "承認は完了しましたが、通知メールの送信に失敗しました。");
+                        }
+                    } else {
+                        req.setAttribute("errorMessage", "SHOPテーブルへの登録に失敗しました。");
+                    }
+                } else {
+                    req.setAttribute("errorMessage", "USERSテーブルへの登録に失敗しました。");
+                }
+                url = "AdminRequestList.action";
+            }
+        }
 
-		// JSPへフォワード 7
-		req.getRequestDispatcher(url).forward(req, res);
-	}
+        // 8. 結果画面（一覧）へフォワード
+        req.getRequestDispatcher(url).forward(req, res);
+    }
 
-	// 座席情報から数字を抽出するヘルパーメソッド
-	private int extractSeatNumber(String seatInfo) {
-		if (seatInfo == null || seatInfo.isEmpty()) {
-			return 0;
-		}
-
-		// 数字を抽出して合計
-		String[] numbers = seatInfo.replaceAll("[^0-9]", " ").trim().split("\\s+");
-		int total = 0;
-		for (String num : numbers) {
-			if (!num.isEmpty()) {
-				try {
-					total += Integer.parseInt(num);
-				} catch (NumberFormatException e) {
-					// 無視
-				}
-			}
-		}
-		return total;
-	}
+    // 座席情報から数字を抽出するヘルパーメソッド
+    private int extractSeatNumber(String seatInfo) {
+        if (seatInfo == null || seatInfo.isEmpty()) {
+            return 0;
+        }
+        String[] numbers = seatInfo.replaceAll("[^0-9]", " ").trim().split("\\s+");
+        int total = 0;
+        for (String num : numbers) {
+            if (!num.isEmpty()) {
+                try {
+                    total += Integer.parseInt(num);
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+        }
+        return total;
+    }
 }

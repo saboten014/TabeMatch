@@ -3,121 +3,116 @@
 <%@page import="bean.Request" %>
 <%@include file="../main/user_menu.jsp" %>
 <%@include file="../../header.html" %>
-<!-- 丸文字フォント -->
+
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-<!-- css読み込み -->
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/admin-request-list.css">
 
-<h1>掲載リクエスト承認画面</h1>
+<body>
+<div class="main-content">
+    <h1>✨ 掲載リクエスト承認</h1>
 
-<%
-    String successMessage = (String)request.getAttribute("successMessage");
-    String errorMessage = (String)request.getAttribute("errorMessage");
+    <%-- メッセージ表示 --%>
+    <% String successMessage = (String)request.getAttribute("successMessage");
+       String errorMessage = (String)request.getAttribute("errorMessage");
+       if (successMessage != null) { %>
+        <div class="msg-success">✅ <%= successMessage %></div>
+    <% } if (errorMessage != null) { %>
+        <div class="msg-error">🚨 <%= errorMessage %></div>
+    <% } %>
 
-    if (successMessage != null) {
-%>
-    <p style="color: green;"><%= successMessage %></p>
-<%
-    }
+    <a href="../main/admin_home.jsp" class="back-link">← 管理者トップに戻る</a>
 
-    if (errorMessage != null) {
-%>
-    <p style="color: red;"><%= errorMessage %></p>
-<%
-    }
-%>
+    <%
+        List<Request> pendingRequests = (List<Request>)request.getAttribute("pendingRequests");
+        if (pendingRequests == null || pendingRequests.isEmpty()) {
+    %>
+        <div style="text-align: center; padding: 50px; color: #999;">
+            <p style="font-size: 1.2em;">現在、承認待ちのリクエストはありません☘️</p>
+        </div>
+    <% } else { %>
+        <p style="margin-bottom: 10px; color: #666;">
+            現在の承認待ち: <b><%= pendingRequests.size() %></b> 件
+        </p>
 
-<p><a href="../main/admin_home.jsp">← 管理者トップに戻る</a></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>店舗名</th>
+                    <th>住所</th>
+                    <th>ジャンル</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% for (Request req : pendingRequests) { %>
+                <tr>
+                    <td><%= req.getRequestId() %></td>
+                    <td><b><%= req.getRestaurantName() %></b></td>
+                    <td style="font-size: 0.85em;"><%= req.getAddress() %></td>
+                    <td><span style="background:#e8f5e9; padding:4px 10px; border-radius:10px;"><%= req.getGenre() %></span></td>
+                    <td>
+                        <button class="btn-detail" onclick="showDetails('<%= req.getRequestId() %>')">詳細</button>
+                        <button class="btn-approve" onclick="approveRequest('<%= req.getRequestId() %>')">承認</button>
+                        <button class="btn-reject" onclick="showRejectForm('<%= req.getRequestId() %>')">却下</button>
+                    </td>
+                </tr>
 
-<%
-    List<Request> pendingRequests = (List<Request>)request.getAttribute("pendingRequests");
+                <%-- 詳細パネル --%>
+                <tr id="details_<%= req.getRequestId() %>" style="display: none;">
+                    <td colspan="5" class="detail-box">
+                        <h3>📋 店舗の詳細情報</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
+                            <p><b>電話番号:</b> <%= req.getNumber() %></p>
+                            <p><b>アレルギー対応:</b> <%= req.getAllergySupport() %></p>
+                            <p><b>予約可否:</b> <%= req.getReservation() == 1 ? "可能" : "不可" %></p>
+                            <p><b>営業時間:</b> <%= req.getBusinessHours() %></p>
+                            <p><b>決済方法:</b> <%= req.getPayment() %></p>
+                            <p><b>価格帯:</b> <%= req.getPriceRange() != null ? req.getPriceRange() : "未設定" %></p>
+                            <p><b>座席:</b> <%= req.getSeat() %></p>
+                            <p><b>HPリンク:</b> <%= req.getLink() != null ? req.getLink() : "未設定" %></p>
+                        </div>
+                    </td>
+                </tr>
 
-    if (pendingRequests == null || pendingRequests.isEmpty()) {
-%>
-    <p>現在、承認待ちのリクエストはありません。</p>
-<%
-    } else {
-%>
-    <p>承認待ちリクエスト: <%= pendingRequests.size() %>件</p>
-
-    <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <tr style="background-color: #f0f0f0;">
-            <th>リクエストID</th>
-            <th>店舗名</th>
-            <th>住所</th>
-            <th>ジャンル</th>
-            <th>電話番号</th>
-            <th>操作</th>
-        </tr>
-<%
-        for (Request req : pendingRequests) {
-%>
-        <tr>
-            <td><%= req.getRequestId() %></td>
-            <td><%= req.getRestaurantName() %></td>
-            <td><%= req.getAddress() %></td>
-            <td><%= req.getGenre() %></td>
-            <td><%= req.getNumber() %></td>
-            <td>
-                <button onclick="showDetails('<%= req.getRequestId() %>')">詳細</button>
-                <button onclick="approveRequest('<%= req.getRequestId() %>')" style="background-color: #28a745; color: white;">承認</button>
-                <button onclick="showRejectForm('<%= req.getRequestId() %>')" style="background-color: #dc3545; color: white;">却下</button>
-            </td>
-        </tr>
-        <tr id="details_<%= req.getRequestId() %>" style="display: none;">
-            <td colspan="6" style="background-color: #f9f9f9;">
-                <h3>詳細情報</h3>
-                <p><strong>アレルギー対応:</strong> <%= req.getAllergySupport() %></p>
-                <p><strong>予約可否:</strong> <%= req.getReservation() == 1 ? "可能" : "不可" %></p>
-                <p><strong>営業時間:</strong> <%= req.getBusinessHours() %></p>
-                <p><strong>決済方法:</strong> <%= req.getPayment() %></p>
-                <p><strong>価格帯:</strong> <%= req.getPriceRange() != null ? req.getPriceRange() : "未設定" %></p>
-                <p><strong>座席:</strong> <%= req.getSeat() %></p>
-                <p><strong>HPリンク:</strong> <%= req.getLink() != null ? req.getLink() : "未設定" %></p>
-            </td>
-        </tr>
-        <tr id="reject_<%= req.getRequestId() %>" style="display: none;">
-            <td colspan="6" style="background-color: #fff3cd;">
-                <h3>却下理由を入力</h3>
-                <form action="AdminRequestReject.action" method="post">
-                    <input type="hidden" name="requestId" value="<%= req.getRequestId() %>">
-                    <textarea name="reason" rows="4" cols="60" required></textarea><br>
-                    <button type="submit" style="background-color: #dc3545; color: white;">却下確定</button>
-                    <button type="button" onclick="hideRejectForm('<%= req.getRequestId() %>')">キャンセル</button>
-                </form>
-            </td>
-        </tr>
-<%
-        }
-%>
-    </table>
-<%
-    }
-%>
+                <%-- 却下フォームパネル --%>
+                <tr id="reject_<%= req.getRequestId() %>" style="display: none;">
+                    <td colspan="5" class="reject-box">
+                        <h3>理由を教えてください</h3>
+                        <form action="AdminRequestReject.action" method="post">
+                            <input type="hidden" name="requestId" value="<%= req.getRequestId() %>">
+                            <textarea name="reason" placeholder="店舗側に通知される却下理由を入力してください..." required></textarea>
+                            <div style="text-align: right;">
+                                <button type="button" onclick="hideRejectForm('<%= req.getRequestId() %>')">キャンセル</button>
+                                <button type="submit" class="btn-reject">却下を確定する</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    <% } %>
+</div>
 
 <script>
+// (既存のスクリプトをそのまま使用)
 function showDetails(requestId) {
     var detailRow = document.getElementById('details_' + requestId);
-    if (detailRow.style.display === 'none') {
-        detailRow.style.display = 'table-row';
-    } else {
-        detailRow.style.display = 'none';
-    }
+    detailRow.style.display = (detailRow.style.display === 'none') ? 'table-row' : 'none';
 }
-
 function approveRequest(requestId) {
-    if (confirm('このリクエストを承認しますか？')) {
+    if (confirm('このリクエストを承認して、お店を公開しますか？')) {
         window.location.href = 'AdminRequestApprove.action?requestId=' + requestId;
     }
 }
-
 function showRejectForm(requestId) {
     document.getElementById('reject_' + requestId).style.display = 'table-row';
 }
-
 function hideRejectForm(requestId) {
     document.getElementById('reject_' + requestId).style.display = 'none';
 }
 </script>
+</body>
 
-<%@include file="../../header.html" %>
+<%@include file="../../footer.html" %>
