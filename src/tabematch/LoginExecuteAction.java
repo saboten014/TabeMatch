@@ -53,7 +53,7 @@ public class LoginExecuteAction extends Action {
             }
         } else {
             // ログイン失敗 → forwardでOK（エラー表示）
-            req.setAttribute("errorMessage", "メールアドレスまたはパスワードが間違っています。");
+            req.setAttribute("errorMessage", "メールアドレスまたはパスワードが違います");
             req.getRequestDispatcher("login.jsp").forward(req, res);
         }
     }
