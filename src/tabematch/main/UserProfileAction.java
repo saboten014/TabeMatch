@@ -90,8 +90,10 @@ public class UserProfileAction extends Action {
                 return;
             }
 
+            // ★ 重要：更新前のIDを保持（WHERE句で使うため）
+            String oldUserId = loginUser.getUserId();
+
             // Beanの更新
-            String oldUserId = loginUser.getUserId(); // 更新前のIDを保持（エラー時の復旧用）
             loginUser.setUserName(userName);
             loginUser.setPassword(password);
             loginUser.setUserId(userMail);
@@ -104,9 +106,8 @@ public class UserProfileAction extends Action {
             }
 
             try {
-                // DB更新実行
-                // ※DAOのupdateUser内で例外をthrowするようにしておくと、ここでキャッチできます
-                boolean result = dao.updateUser(loginUser);
+                // ★ 修正：古いIDを引数として渡す
+                boolean result = dao.updateUser(loginUser, oldUserId);
 
                 if (result) {
                     session.setAttribute("user", loginUser);
@@ -118,7 +119,7 @@ public class UserProfileAction extends Action {
                 }
 
             } catch (Exception e) {
-                // ★ ここが重要！コンソールにエラーの詳細を出す
+                // エラーの詳細をコンソールに出力
                 e.printStackTrace();
 
                 // 失敗したのでBeanを元のIDに戻す（画面表示の整合性のため）

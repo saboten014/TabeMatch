@@ -130,32 +130,38 @@ public class UserDAO extends DAO {
     }
 
     // ======================================================
-    // ユーザー更新
+    // ユーザー更新（メールアドレス変更対応版）
     // ======================================================
-    public boolean updateUser(Users user) throws Exception {
+    /**
+     * ユーザー情報を更新します（メールアドレスの変更に対応）
+     * @param user 更新後のユーザー情報（新しいメールアドレスを含む）
+     * @param oldUserId 更新前のメールアドレス（WHERE句で使用）
+     * @return 更新成功時true、失敗時false
+     * @throws Exception データベースエラー
+     */
+    public boolean updateUser(Users user, String oldUserId) throws Exception {
         Connection con = getConnection();
 
-        // PostgreSQL側で明示的にキャスト (::character(3)[]) を行うとより確実です
-        String sql = "UPDATE users SET password = ?, user_name = ?, allergen_id = ?::character(3)[] WHERE user_id = ?";
+        // ★ user_idも更新対象に追加！
+        String sql = "UPDATE users SET user_id = ?, password = ?, user_name = ?, allergen_id = ?::character(3)[] WHERE user_id = ?";
         PreparedStatement stmt = con.prepareStatement(sql);
 
-        stmt.setString(1, user.getPassword());
-        stmt.setString(2, user.getUserName());
+        stmt.setString(1, user.getUserId());  // 新しいメールアドレス
+        stmt.setString(2, user.getPassword());
+        stmt.setString(3, user.getUserName());
 
         if (user.getAllergenId() != null && !user.getAllergenId().isEmpty()) {
             String cleanId = user.getAllergenId().replace("{", "").replace("}", "");
             String[] allergenArray = cleanId.split(",");
 
-            // "character" ではなく "bpchar" を指定する
             java.sql.Array sqlArray = con.createArrayOf("bpchar", allergenArray);
-            stmt.setArray(3, sqlArray);
+            stmt.setArray(4, sqlArray);
         } else {
-            // こちらも同様に "bpchar"
             java.sql.Array emptyArray = con.createArrayOf("bpchar", new String[0]);
-            stmt.setArray(3, emptyArray);
+            stmt.setArray(4, emptyArray);
         }
 
-        stmt.setString(4, user.getUserId());
+        stmt.setString(5, oldUserId);  // ★ WHERE句には古いメールアドレスを使用
 
         int result = stmt.executeUpdate();
 
@@ -247,12 +253,9 @@ public class UserDAO extends DAO {
     // ======================================================
     // 一般ユーザ削除
     // ======================================================
-    public boolean deleteUser(String userId) throws Exception {
-
+    public boolean deleteGeneralUser(String userId) throws Exception {
         Connection con = getConnection();
-
         String sql = "DELETE FROM users WHERE user_id = ? AND users_type_id = '1'";
-
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, userId);
 
@@ -265,7 +268,7 @@ public class UserDAO extends DAO {
     }
 
     // ======================================================
-    // 一般ユーザ一覧（フィルタあり + ページネーション）
+    // 一般ユーザ一覧（フィルタ + ページネーション）
     // ======================================================
     public List<Users> getGeneralUserList(String initial, int offset, int limit) throws Exception {
 
@@ -327,10 +330,9 @@ public class UserDAO extends DAO {
     }
 
     // ======================================================
-    // 一般ユーザ数
+    // 一般ユーザ総数
     // ======================================================
     public int getGeneralUserCount(String initial) throws Exception {
-
         Connection con = getConnection();
 
         StringBuilder sql = new StringBuilder();

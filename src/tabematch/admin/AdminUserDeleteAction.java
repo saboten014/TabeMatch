@@ -14,7 +14,7 @@ public class AdminUserDeleteAction extends Action {
         String userId = req.getParameter("userId");
 
         UserDAO dao = new UserDAO();
-        boolean result = dao.deleteUser(userId);
+        boolean result = dao.deleteGeneralUser(userId);
 
         if (result) {
             req.setAttribute("successMessage", "ユーザーを削除しました。");
