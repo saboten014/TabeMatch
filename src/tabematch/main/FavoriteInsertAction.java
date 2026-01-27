@@ -59,7 +59,7 @@ public class FavoriteInsertAction extends Action {
 			// 修正後のDAOメソッド (insertFavorite(String, String)) に合わせて呼び出す
 			success = favDao.insertFavorite(userId, shopIdStr);
 			if (success) {
-				session.setAttribute("successMessage", "お気に入りに登録しました。");
+				session.setAttribute("successMessage", "お気に入り登録しました。");
 			} else {
 				session.setAttribute("errorMessage", "お気に入りの登録に失敗しました。");
 			}

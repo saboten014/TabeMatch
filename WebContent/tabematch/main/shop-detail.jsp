@@ -143,7 +143,7 @@
             <form action="FavoriteInsert.action" method="post" class="inline-form">
                 <input type="hidden" name="shopId" value="<%= shop.getShopId() %>">
                 <% if (isFavorite) { %>
-                    <button type="submit" class="kaijo">★ お気に入り解除</button>
+                    <button type="submit" class="kaijo">★ お気に入り登録済み</button>
                 <% } else { %>
                     <button type="submit" class="love">☆ お気に入り登録</button>
                 <% } %>

@@ -24,7 +24,7 @@
         </div>
 
         <c:if test="${empty reviewList}">
-            <p class="nai">まだ口コミがありません。最初の投稿をお待ちしています！</p>
+            <p class="nai">現在、口コミはありません。</p>
         </c:if>
 
         <div class="review-grid">
