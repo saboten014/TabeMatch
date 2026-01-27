@@ -147,11 +147,61 @@ h2 {
 .cancel-link:hover {
     text-decoration: underline;
 }
+
+/* 注意文ボックスのスタイル */
+.alert-box {
+    background-color: #fff9c4; /* 優しい黄色 */
+    border-left: 5px solid #fbc02d; /* 左側のアクセントライン */
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.alert-title {
+    font-weight: bold;
+    color: #f57f17;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.alert-list {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: none; /* デフォルトの点を消す */
+}
+
+.alert-list li {
+    color: #555;
+    font-size: 0.95em;
+    line-height: 1.6;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+/* 箇条書きの点の代わりに「・」を擬似要素で配置 */
+.alert-list li::before {
+    content: "・";
+    position: absolute;
+    left: -15px;
+    color: #fbc02d;
+    font-weight: bold;
+}
 </style>
 
 <div class="edit-container">
     <h2>店舗情報編集リクエスト</h2>
     <p class="sub-text">現在の内容を修正して送信してくださいね☘️</p>
+
+    <div class="alert-box">
+		<div class="alert-title">⚠️ ご確認ください</div>
+		    <ul class="alert-list">
+		        <li>この編集リクエストは、管理者による認証が必要です。</li>
+		        <li>認証されるまで、現在の店舗情報は更新されません。</li>
+		        <li>承認/却下の結果は、ご登録のメールに通知されます。</li>
+		    </ul>
+		</div>
+
 
     <form action="ShopEditRequest.action" method="post">
         <input type="hidden" name="mode" value="submit">
