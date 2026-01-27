@@ -23,7 +23,7 @@ public class LoginExecuteAction extends Action {
         if (userId == null || userId.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {
             // 入力がない場合 → forwardでOK（エラー表示）
-            req.setAttribute("errorMessage", "ユーザーIDとパスワードを入力してください。");
+            req.setAttribute("errorMessage", "ユーザーIDとパスワードを入力してください");
             req.getRequestDispatcher("login.jsp").forward(req, res);
             return;
         }
@@ -53,8 +53,6 @@ public class LoginExecuteAction extends Action {
             }
         } else {
             // ログイン失敗 → forwardでOK（エラー表示）
-            req.setAttribute("errorMessage", "メールアドレスまたはパスワードが違います。");
-            req.getRequestDispatcher("login.jsp").forward(req, res);
         }
     }
 }
