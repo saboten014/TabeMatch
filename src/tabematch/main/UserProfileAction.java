@@ -91,28 +91,41 @@ public class UserProfileAction extends Action {
             }
 
             // Beanの更新
+            String oldUserId = loginUser.getUserId(); // 更新前のIDを保持（エラー時の復旧用）
             loginUser.setUserName(userName);
             loginUser.setPassword(password);
             loginUser.setUserId(userMail);
 
+            // アレルギー設定
             if (allergens != null && allergens.length > 0) {
-                // 例: "A01,A05" という文字列になる
                 loginUser.setAllergenId(String.join(",", allergens));
             } else {
-                // 何も選択されていない場合は空文字
                 loginUser.setAllergenId("");
             }
 
-            // DB更新実行
-            boolean result = dao.updateUser(loginUser);
+            try {
+                // DB更新実行
+                // ※DAOのupdateUser内で例外をthrowするようにしておくと、ここでキャッチできます
+                boolean result = dao.updateUser(loginUser);
 
-            if (result) {
-                // セッション情報の更新
-                session.setAttribute("user", loginUser);
-                // 完了画面へ
-                req.getRequestDispatcher("profile-complete.jsp").forward(req, res);
-            } else {
-                req.setAttribute("errorMessage", "DBの更新に失敗しました。");
+                if (result) {
+                    session.setAttribute("user", loginUser);
+                    req.getRequestDispatcher("profile-complete.jsp").forward(req, res);
+                } else {
+                    req.setAttribute("errorMessage", "DBの更新に失敗しました。（更新対象が見つからないか、制約違反です）");
+                    reloadEditData(req, loginUser);
+                    req.getRequestDispatcher("user-profile.jsp").forward(req, res);
+                }
+
+            } catch (Exception e) {
+                // ★ ここが重要！コンソールにエラーの詳細を出す
+                e.printStackTrace();
+
+                // 失敗したのでBeanを元のIDに戻す（画面表示の整合性のため）
+                loginUser.setUserId(oldUserId);
+
+                // 画面に具体的なエラー原因を表示
+                req.setAttribute("errorMessage", "エラー発生: " + e.getMessage());
                 reloadEditData(req, loginUser);
                 req.getRequestDispatcher("user-profile.jsp").forward(req, res);
             }
