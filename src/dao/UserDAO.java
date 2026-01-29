@@ -129,46 +129,43 @@ public class UserDAO extends DAO {
         return result > 0;
     }
 
+ // ======================================================
+    // ユーザー更新（ON UPDATE CASCADE対応版）
     // ======================================================
-    // ユーザー更新（メールアドレス変更対応版）
-    // ======================================================
-    /**
-     * ユーザー情報を更新します（メールアドレスの変更に対応）
-     * @param user 更新後のユーザー情報（新しいメールアドレスを含む）
-     * @param oldUserId 更新前のメールアドレス（WHERE句で使用）
-     * @return 更新成功時true、失敗時false
-     * @throws Exception データベースエラー
-     */
     public boolean updateUser(Users user, String oldUserId) throws Exception {
-        Connection con = getConnection();
+        Connection con = null;
+        PreparedStatement stmt = null;
 
-        // ★ user_idも更新対象に追加！
-        String sql = "UPDATE users SET user_id = ?, password = ?, user_name = ?, allergen_id = ?::character(3)[] WHERE user_id = ?";
-        PreparedStatement stmt = con.prepareStatement(sql);
+        try {
+            con = getConnection();
 
-        stmt.setString(1, user.getUserId());  // 新しいメールアドレス
-        stmt.setString(2, user.getPassword());
-        stmt.setString(3, user.getUserName());
+            String sql = "UPDATE users SET user_id = ?, password = ?, user_name = ?, allergen_id = ?::character(3)[] WHERE user_id = ?";
+            stmt = con.prepareStatement(sql);
 
-        if (user.getAllergenId() != null && !user.getAllergenId().isEmpty()) {
-            String cleanId = user.getAllergenId().replace("{", "").replace("}", "");
-            String[] allergenArray = cleanId.split(",");
+            stmt.setString(1, user.getUserId());  // 新しいメールアドレス
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getUserName());
 
-            java.sql.Array sqlArray = con.createArrayOf("bpchar", allergenArray);
-            stmt.setArray(4, sqlArray);
-        } else {
-            java.sql.Array emptyArray = con.createArrayOf("bpchar", new String[0]);
-            stmt.setArray(4, emptyArray);
+            if (user.getAllergenId() != null && !user.getAllergenId().isEmpty()) {
+                String cleanId = user.getAllergenId().replace("{", "").replace("}", "");
+                String[] allergenArray = cleanId.split(",");
+                java.sql.Array sqlArray = con.createArrayOf("bpchar", allergenArray);
+                stmt.setArray(4, sqlArray);
+            } else {
+                java.sql.Array emptyArray = con.createArrayOf("bpchar", new String[0]);
+                stmt.setArray(4, emptyArray);
+            }
+
+            stmt.setString(5, oldUserId);  // WHERE句には古いメールアドレス
+
+            int result = stmt.executeUpdate();
+
+            return result > 0;
+
+        } finally {
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
         }
-
-        stmt.setString(5, oldUserId);  // ★ WHERE句には古いメールアドレスを使用
-
-        int result = stmt.executeUpdate();
-
-        stmt.close();
-        con.close();
-
-        return result > 0;
     }
 
     // ======================================================
