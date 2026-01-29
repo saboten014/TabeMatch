@@ -1,105 +1,205 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.List" %>
+<%@ page import="bean.Reserve" %>
+<%@ page import="bean.Shop" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
+
 <%@ include file="../../header.html" %>
-<jsp:include page="user_menu.jsp" />
+<%@ include file="../main/shop_menu.jsp" %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>予約一覧</title>
+    <meta charset="UTF-8">
+    <title>予約管理 | たべまっち</title>
     <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/reservation-list.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/shop-reservation.css">
+    <style>
+        .highlight-row {
+            background-color: #fffbeb !important;
+            border-left: 4px solid #f59e0b !important;
+        }
+    </style>
 </head>
 <body>
 
-<div class="reservation-container">
-    <div class="page-header">
-        <h1>🍴 予約マイリスト</h1>
-        <p>予約状況をこちらから確認できます ✨</p>
+<div class="container">
+    <h1>📅 予約管理</h1>
+
+    <%
+        String successMessage = (String) session.getAttribute("successMessage");
+        String errorMessage = (String) session.getAttribute("errorMessage");
+
+        // カレンダーから遷移してきた場合の予約IDを取得
+        String highlightReserveId = request.getParameter("reserveId");
+
+        if (successMessage != null) {
+    %>
+        <div class="message success-message"><%= successMessage %></div>
+    <%
+            session.removeAttribute("successMessage");
+        }
+
+        if (errorMessage != null) {
+    %>
+        <div class="message error-message"><%= errorMessage %></div>
+    <%
+            session.removeAttribute("errorMessage");
+        }
+
+        List<Reserve> reservationList = (List<Reserve>) request.getAttribute("reservationList");
+
+        if (reservationList == null || reservationList.isEmpty()) {
+    %>
+        <div class="no-reservations">現在、予約はありません。</div>
+    <%
+        } else {
+    %>
+
+    <div class="filter-section">
+        <label><input type="radio" name="statusFilter" value="all" checked onchange="filterReservations('all')"> すべて</label>
+        <label><input type="radio" name="statusFilter" value="1" onchange="filterReservations('1')"> 承認待ち</label>
+        <label><input type="radio" name="statusFilter" value="2" onchange="filterReservations('2')"> 承認済み</label>
+        <label><input type="radio" name="statusFilter" value="3" onchange="filterReservations('3')"> 拒否</label>
     </div>
 
-    <c:choose>
-        <c:when test="${empty reserveList}">
-            <div class="empty-state">
-                <p>現在、予約はありません ☕</p>
-                <div class="button-container">
-                    <a href="search.jsp" class="back-btn">お店を探しにいく</a>
-                </div>
-            </div>
-        </c:when>
+    <table class="reservation-table">
+        <thead>
+            <tr>
+                <th>予約日</th>
+                <th>時間</th>
+                <th>人数</th>
+                <th>連絡先</th>
+                <th>ステータス</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+        <%
+            String[] dayOfWeeks = {"", "月", "火", "水", "木", "金", "土", "日"};
 
-        <c:otherwise>
-            <div class="reserve-grid">
-                <c:forEach var="r" items="${reserveList}">
-                    <div class="reserve-card">
-                        <div class="status-section">
-                            <c:choose>
-                                <c:when test="${r.reserveStatus == 1}">
-                                    <span class="status-badge status-waiting">⏳ 承認待ち</span>
-                                </c:when>
-                                <c:when test="${r.reserveStatus == 2}">
-                                    <span class="status-badge status-success">✅ 予約確定</span>
-                                </c:when>
-                                <c:when test="${r.reserveStatus == 3}">
-                                    <span class="status-badge status-error">❌ 拒否/キャンセル</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="status-badge status-unknown">❓ 不明</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+            for (Reserve reserve : reservationList) {
+                String statusClass = "";
+                String statusText = "";
 
-                        <div class="card-content">
-                            <h2 class="shop-name">🏢 ${r.shopName}</h2>
+                // カレンダーから選択された予約かどうかをチェック
+                boolean isHighlight = (highlightReserveId != null && highlightReserveId.equals(reserve.getReserveIdString()));
+                String rowClass = isHighlight ? "highlight-row" : "";
 
-                            <div class="info-row">
-                                <span class="icon">📅</span>
-                                <span class="text"><strong>来店日:</strong> ${r.visitDate}</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="icon">⏰</span>
-                                <span class="text"><strong>時間:</strong> ${r.visitTime}〜</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="icon">👥</span>
-                                <span class="text"><strong>人数:</strong> ${r.numOfPeople} 名様</span>
-                            </div>
+                String visitDateRaw = (reserve.getVisitDate() != null) ? reserve.getVisitDate().toString() : null;
+                String visitTimeRaw = (reserve.getVisitTime() != null) ? reserve.getVisitTime().toString() : null;
 
-                            <div class="info-row tel-row">
-                                <span class="icon">📞</span>
-                                <span class="text"><strong>連絡先:</strong>
-                                    <c:choose>
-                                        <c:when test="${not empty r.reserveTel}">${r.reserveTel}</c:when>
-                                        <c:otherwise><span class="no-data">未登録</span></c:otherwise>
-                                    </c:choose>
-                                </span>
-                            </div>
+                // 日付の整形 (yyyy-MM-dd -> M月d日(曜))
+                String formattedDate = (visitDateRaw != null) ? visitDateRaw : "不明";
+                try {
+                    if (visitDateRaw != null) {
+                        LocalDate date = LocalDate.parse(visitDateRaw);
+                        formattedDate = date.getMonthValue() + "月" + date.getDayOfMonth() + "日(" + dayOfWeeks[date.getDayOfWeek().getValue()] + ")";
+                    }
+                } catch (Exception e) {
+                    formattedDate = (visitDateRaw != null) ? visitDateRaw : "不明";
+                }
 
-                            <c:if test="${not empty r.allergyNotes}">
-                                <div class="allergy-box">
-                                    <strong>⚠️ アレルギー情報</strong>
-                                    <p>${r.allergyNotes}</p>
-                                </div>
-                            </c:if>
+                // 時間の整形 (HH:mm:ss -> HH:mm)
+                String formattedTime = (visitTimeRaw != null && visitTimeRaw.length() >= 5) ? visitTimeRaw.substring(0, 5) : "不明";
 
-                            <c:if test="${not empty r.message}">
-                                <div class="message-box">
-                                    <strong>✉️ メッセージ</strong>
-                                    <p>${r.message}</p>
-                                </div>
-                            </c:if>
-                        </div>
+                switch (reserve.getReserveStatus()) {
+                    case 1: statusClass = "status-pending"; statusText = "承認待ち"; break;
+                    case 2: statusClass = "status-approved"; statusText = "承認済み"; break;
+                    case 3: statusClass = "status-rejected"; statusText = "拒否"; break;
+                    default: statusClass = "status-pending"; statusText = "不明";
+                }
+        %>
+            <tr class="reservation-row <%= rowClass %>" data-status="<%= reserve.getReserveStatus() %>" id="row_<%= reserve.getReserveId() %>">
+                <td style="font-weight: bold;"><%= formattedDate %></td>
+                <td><%= formattedTime %></td>
+                <td><%= reserve.getNumOfPeople() %>名</td>
+                <td style="color: #2d5a2e; font-weight: bold;">
+                    <%= (reserve.getReserveTel() != null && !reserve.getReserveTel().isEmpty()) ? "📞 " + reserve.getReserveTel() : "-" %>
+                </td>
+                <td><span class="status-badge <%= statusClass %>"><%= statusText %></span></td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-detail" onclick="toggleDetail('detail_<%= reserve.getReserveId() %>')">詳細</button>
+                        <% if (reserve.getReserveStatus() == 1) { %>
+                            <button class="btn btn-approve" onclick="updateReservation('<%= reserve.getReserveIdString() %>', 2)">承認</button>
+                            <button class="btn btn-reject" onclick="updateReservation('<%= reserve.getReserveIdString() %>', 3)">拒否</button>
+                        <% } %>
                     </div>
-                </c:forEach>
-            </div>
-
-            <div class="button-container" style="margin-top: 40px;">
-                <a href="search.jsp" class="back-btn">店舗検索ページに戻る</a>
-            </div>
-        </c:otherwise>
-    </c:choose>
+                </td>
+            </tr>
+            <tr id="detail_<%= reserve.getReserveId() %>" class="detail-row" style="display: <%= isHighlight ? "table-row" : "none" %>;">
+                <td colspan="6">
+                    <div class="detail-content">
+                        <h3>予約詳細情報</h3>
+                        <p><strong>ご連絡先:</strong> <%= (reserve.getReserveTel() != null) ? reserve.getReserveTel() : "未登録" %></p>
+                        <p><strong>予約ID:</strong> <%= reserve.getReserveIdString() %></p>
+                        <p><strong>来店日時:</strong> <%= formattedDate %> <%= formattedTime %></p>
+                        <p><strong>アレルギー情報:</strong> <%= (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) ? reserve.getAllergyNotes() : "なし" %></p>
+                        <p><strong>リクエスト:</strong> <%= (reserve.getMessage() != null && !reserve.getMessage().isEmpty()) ? reserve.getMessage() : "なし" %></p>
+                    </div>
+                </td>
+            </tr>
+        <%
+            }
+        %>
+        </tbody>
+    </table>
+    <%
+        }
+    %>
 </div>
 
+<script>
+// ページ読み込み時にハイライトされた予約までスクロール
+window.addEventListener('DOMContentLoaded', function() {
+    const highlightRow = document.querySelector('.highlight-row');
+    if (highlightRow) {
+        setTimeout(function() {
+            highlightRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+    }
+});
+
+function toggleDetail(detailId) {
+    const detailRow = document.getElementById(detailId);
+    if(detailRow) {
+        detailRow.style.display = (detailRow.style.display === 'none') ? 'table-row' : 'none';
+    }
+}
+
+function updateReservation(reserveId, status) {
+    const statusText = status === 2 ? '承認' : '拒否';
+    if (confirm('この予約を' + statusText + 'しますか？')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'ShopReservationUpdate.action';
+        const params = {reserveId: reserveId, status: status};
+        for(let key in params) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = params[key];
+            form.appendChild(input);
+        }
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function filterReservations(status) {
+    document.querySelectorAll('.reservation-row').forEach(row => {
+        const isShow = (status === 'all' || row.dataset.status === status);
+        row.style.display = isShow ? '' : 'none';
+        const nextRow = row.nextElementSibling;
+        if (nextRow && nextRow.classList.contains('detail-row')) {
+            nextRow.style.display = 'none';
+        }
+    });
+}
+</script>
+
+<%@ include file="../../footer.html" %>
 </body>
 </html>
-<%@ include file="../../footer.html" %>

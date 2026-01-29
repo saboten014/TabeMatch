@@ -63,13 +63,9 @@
                         String formattedTime = (reserve.getVisitTime() != null) ? timeFormat.format(reserve.getVisitTime()) : "--:--";
                         String uName = (reserve.getUserName() != null) ? reserve.getUserName() : "ゲスト";
                         String allergyParam = (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) ? reserve.getAllergyNotes() : "なし";
-                        String msgParam = (reserve.getMessage() != null && !reserve.getMessage().isEmpty()) ? reserve.getMessage() : "メッセージはありません";
-
-                        // ★電話番号を取得（null対策）
-                        String telParam = (reserve.getReserveTel() != null) ? reserve.getReserveTel() : "未登録";
                     %>
-                        <%-- ★修正：onclickの引数の最後に telParam を追加 --%>
-                        <div class="reservation-list-item" onclick="openDetailModal('<%= reserve.getReserveIdString() %>', '<%= uName %>', '<%= formattedTime %>', '<%= reserve.getNumOfPeople() %>', '<%= statusText %>', '<%= statusColor %>', '<%= allergyParam %>', '<%= msgParam %>', '<%= telParam %>')">
+                        <%-- 予約一覧ページへのリンクに変更 --%>
+                        <a href="<%= contextPath %>/tabematch/shop/ShopReservationList.action?reserveId=<%= reserve.getReserveIdString() %>" class="reservation-list-item" style="text-decoration: none; color: inherit; display: block;">
                             <div class="reservation-time">
                                 <span class="time-badge"><%= formattedTime %></span>
                                 <span style="color: <%= statusColor %>; font-size: 0.8rem; font-weight: bold;">● <%= statusText %></span>
@@ -79,7 +75,7 @@
                             <% if (!"なし".equals(allergyParam)) { %>
                                 <div style="color: #ff5e5e; font-size: 0.75rem; margin-top: 5px; font-weight: bold;">⚠️ アレルギーあり</div>
                             <% } %>
-                        </div>
+                        </a>
                     <% } %>
                 <% } else { %>
                     <p style="text-align: center; color: #ccc; margin-top: 40px;">予約はありません ☕</p>
@@ -124,66 +120,5 @@
         </div>
     </div>
 </div>
-
-<div id="reserveModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeDetailModal()">&times;</span>
-        <h2 class="modal-title">予約を確認 ✨</h2>
-        <div class="modal-item">
-            <span class="modal-label">お名前</span>
-            <span id="m-name" class="modal-value"></span>
-        </div>
-        <div class="modal-item">
-            <span class="modal-label">お電話番号</span>
-            <span id="m-tel" class="modal-value" style="font-weight: bold; color: #2d5a2e;"></span>
-        </div>
-        <div style="display: flex; gap: 15px;">
-            <div class="modal-item" style="flex: 1;">
-                <span class="modal-label">予約時間</span>
-                <span id="m-time" class="modal-value"></span>
-            </div>
-            <div class="modal-item" style="flex: 1;">
-                <span class="modal-label">人数</span>
-                <span id="m-people" class="modal-value"></span>
-            </div>
-        </div>
-        <div class="modal-item">
-            <span class="modal-label">状態</span>
-            <span id="m-status" class="modal-value"></span>
-        </div>
-        <div class="modal-item">
-            <span class="modal-label">アレルギー</span>
-            <div id="m-allergy" class="allergy-alert"></div>
-        </div>
-        <div class="modal-item" style="border: none; background: transparent;">
-            <span class="modal-label">メッセージ</span>
-            <div id="m-message" class="message-box"></div>
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button onclick="closeDetailModal()" style="padding: 12px 40px; border-radius: 15px; border: none; background: #5ab45e; color: white; font-weight: bold; cursor: pointer;">とじる</button>
-        </div>
-    </div>
-</div>
-
-<script>
-// ★修正：引数の最後に tel を追加
-function openDetailModal(id, name, time, people, status, color, allergy, message, tel) {
-    document.getElementById('m-name').innerText = name + " 様";
-    document.getElementById('m-time').innerText = time;
-    document.getElementById('m-people').innerText = people + " 名";
-    document.getElementById('m-status').innerText = status;
-    document.getElementById('m-status').style.color = color;
-    document.getElementById('m-message').innerText = message;
-
-    // ★追加：電話番号をセット
-    document.getElementById('m-tel').innerText = tel;
-
-    const allergyElem = document.getElementById('m-allergy');
-    allergyElem.innerText = allergy;
-    allergyElem.className = (allergy === 'なし') ? 'allergy-alert' : 'allergy-alert allergy-exist';
-    document.getElementById('reserveModal').style.display = 'block';
-}
-function closeDetailModal() { document.getElementById('reserveModal').style.display = 'none'; }
-</script>
 
 <%@include file="../../footer.html" %>
