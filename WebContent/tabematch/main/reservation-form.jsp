@@ -102,4 +102,77 @@
     </form>
 </div>
 
+
+<script>
+    // 現在の日時を取得
+    const now = new Date();
+
+    // 日付フィールドの最小値を今日に設定
+    const dateInput = document.getElementById('visitDate');
+    const today = now.toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
+    // 時間フィールドの制御
+    const timeInput = document.getElementById('visitTime');
+
+    // 2時間後の時刻を計算
+    const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    const hours = String(twoHoursLater.getHours()).padStart(2, '0');
+    const minutes = String(twoHoursLater.getMinutes()).padStart(2, '0');
+    const minTime = hours + ':' + minutes;
+
+    // 日付が変更されたときと、ページ読み込み時に時間制限をチェック
+    function updateTimeRestriction() {
+        const selectedDate = dateInput.value;
+
+        if (selectedDate === today) {
+            // 今日が選択された場合、2時間後以降のみ選択可能
+            timeInput.setAttribute('min', minTime);
+
+            // 既に入力されている時間が制限より前なら、クリア
+            if (timeInput.value && timeInput.value < minTime) {
+                timeInput.value = '';
+            }
+        } else {
+            // 今日以外の日付が選択された場合、時間制限なし
+            timeInput.removeAttribute('min');
+        }
+    }
+
+    // 時間が入力されたときにもチェック
+    function validateTime() {
+        const selectedDate = dateInput.value;
+        const selectedTime = timeInput.value;
+
+        if (selectedDate === today && selectedTime && selectedTime < minTime) {
+            alert('予約時間は2時間後（' + minTime + '）以降を選択してください。');
+            timeInput.value = '';
+        }
+    }
+
+    // イベントリスナーを設定
+    dateInput.addEventListener('change', updateTimeRestriction);
+    timeInput.addEventListener('change', validateTime);
+    timeInput.addEventListener('blur', validateTime);
+
+    // ページ読み込み時に初期チェックを実行
+    updateTimeRestriction();
+
+    // フォーム送信時のバリデーション
+    document.querySelector('.reserve-form').addEventListener('submit', function(e) {
+        const selectedDate = dateInput.value;
+        const selectedTime = timeInput.value;
+
+        if (selectedDate === today && selectedTime) {
+            const selectedDateTime = new Date(selectedDate + 'T' + selectedTime);
+
+            if (selectedDateTime < twoHoursLater) {
+                e.preventDefault();
+                alert('予約時間は2時間後（' + minTime + '）以降を選択してください。');
+                return false;
+            }
+        }
+    });
+</script>
+
 <%@ include file="../../footer.html" %>
