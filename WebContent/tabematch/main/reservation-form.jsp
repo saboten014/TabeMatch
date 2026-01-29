@@ -31,9 +31,10 @@
         </div>
 
         <div class="form-group">
-            <label for="numOfPeople">人数</label>
-            <input type="number" name="numOfPeople" id="numOfPeople" min="1" value="1" required>
-        </div>
+		    <label for="numOfPeople">人数</label>
+		    <input type="number" name="numOfPeople" id="numOfPeople" min="1" max="10" value="1" required>
+		    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">※11名以上の予約は直接店舗へお電話でご確認ください。</p>
+		</div>
 
         <div class="form-item">
 		    <label>連絡先電話番号 <span style="color:red;">(必須)</span></label>
@@ -173,6 +174,22 @@
             }
         }
     });
+
+ // 人数フィールドの制御
+    const numInput = document.getElementById('numOfPeople');
+
+    function validateNumOfPeople() {
+        const val = parseInt(numInput.value);
+        if (val > 10) {
+            alert('WEBからの予約は10名様までとなります。\n11名以上の場合は、直接店舗へお電話にてお問い合わせください。');
+            numInput.value = 10; // 最大値にリセット
+        }
+    }
+
+    // イベントリスナーを設定
+    numInput.addEventListener('change', validateNumOfPeople);
+    numInput.addEventListener('input', validateNumOfPeople); // キーボード入力にも対応
+
 </script>
 
 <%@ include file="../../footer.html" %>
