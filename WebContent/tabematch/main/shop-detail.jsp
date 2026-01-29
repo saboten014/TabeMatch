@@ -53,39 +53,41 @@
         <table border="0">
             <tr>
                 <th>住所</th>
-                <td><%= shop.getShopAddress() %></td>
+                <td><%= (shop.getShopAddress() != null && !shop.getShopAddress().isEmpty()) ? shop.getShopAddress() : "未登録" %></td>
             </tr>
             <tr>
                 <th>電話番号</th>
-                <td><%= shop.getShopTel() %></td>
-            </tr>
-            <tr>
-                <th>メールアドレス</th>
-                <td><%= shop.getShopMail() %></td>
+                <td><%= (shop.getShopTel() != null && !shop.getShopTel().isEmpty()) ? shop.getShopTel() : "未登録" %></td>
             </tr>
             <tr>
                 <th>ジャンル</th>
-                <td><%= shop.getShopGenre() %></td>
+                <td><%= (shop.getShopGenre() != null && !shop.getShopGenre().isEmpty()) ? shop.getShopGenre() : "未登録" %></td>
             </tr>
             <tr>
                 <th>価格帯</th>
-                <td><%= shop.getShopPrice() %></td>
+                <td><%= (shop.getShopPrice() != null && !shop.getShopPrice().isEmpty()) ? shop.getShopPrice() : "未登録" %></td>
             </tr>
             <tr>
                 <th>支払い方法</th>
-                <td><%= shop.getShopPay() %></td>
+                <td><%= (shop.getShopPay() != null && !shop.getShopPay().isEmpty()) ? shop.getShopPay() : "未登録" %></td>
             </tr>
             <tr>
                 <th>座席数</th>
-                <td><%= shop.getShopSeat() %> 席</td>
+                <td>
+                    <% if (shop.getShopSeat() != null) { %>
+                        <%= shop.getShopSeat() %> 席
+                    <% } else { %>
+                        未登録
+                    <% } %>
+                </td>
             </tr>
             <tr>
                 <th>アレルギー対応</th>
-                <td><%= shop.getShopAllergy() != null ? shop.getShopAllergy() : "未登録" %></td>
+                <td><%= (shop.getShopAllergy() != null && !shop.getShopAllergy().isEmpty()) ? shop.getShopAllergy() : "未登録" %></td>
             </tr>
             <tr>
                 <th>予約可否</th>
-                <td><%= shop.getShopReserve() %></td>
+                <td><%= (shop.getShopReserve() != null && !shop.getShopReserve().isEmpty()) ? shop.getShopReserve() : "未登録" %></td>
             </tr>
             <tr>
                 <th>店舗URL</th>
@@ -93,40 +95,39 @@
                     <% if (shop.getShopUrl() != null && !shop.getShopUrl().isEmpty()) { %>
                         <a href="<%= shop.getShopUrl() %>" target="_blank"><%= shop.getShopUrl() %></a>
                     <% } else { %>
-                        登録なし
+                        未登録
                     <% } %>
                 </td>
             </tr>
-
-
-
-
-<tr>
-    <th>掲載画像</th>
-    <td>
-        <div class="shop-images-scroll">
-            <%
-                String pictureField = shop.getShopPicture();
-                if (pictureField != null && !pictureField.isEmpty()) {
-                    String[] pictures = pictureField.split(",");
-                    for (String pic : pictures) {
-            %>
-                        <div class="image-item">
-                            <img src="<%= request.getContextPath() %>/upload/<%= pic.trim() %>"
-                                 alt="店舗画像">
-                        </div>
-            <%
-                    }
-                } else {
-            %>
-                画像なし
-            <% } %>
-        </div>
-    </td>
-</tr>
-
-
-
+			<tr>
+			    <th>掲載画像</th>
+			    <td>
+			        <%
+			            String pictureField = shop.getShopPicture();
+			            if (pictureField != null && !pictureField.isEmpty()) {
+			        %>
+			            <div class="shop-images-scroll">
+			                <%
+			                    String[] pictures = pictureField.split(",");
+			                    for (String pic : pictures) {
+			                %>
+			                    <div class="image-item">
+			                        <img src="<%= request.getContextPath() %>/upload/<%= pic.trim() %>"
+			                             alt="店舗画像">
+			                    </div>
+			                <%
+			                    }
+			                %>
+			            </div>
+			        <%
+			            } else {
+			        %>
+			            未登録
+			        <%
+			            }
+			        %>
+			    </td>
+			</tr>
         </table>
     </div>
 
