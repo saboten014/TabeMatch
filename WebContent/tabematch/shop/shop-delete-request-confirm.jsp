@@ -15,6 +15,9 @@
 %>
 
 <style>
+body {
+  background-color: #e8f8e8;
+  }
 .delete-confirm-container {
 	margin-top: 100px;
     width: 80%;
