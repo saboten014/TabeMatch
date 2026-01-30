@@ -23,14 +23,20 @@
     <input type="hidden" name="shopId" value="<%= shopId %>">
 
     <div class="mb-3">
-        <label>タイトル</label>
-        <input type="text" name="title" class="form-control" required>
-    </div>
+	    <label for="title">タイトル</label>
+	    <input type="text" name="title" id="title" maxlength="100" class="form-control" required>
+	    <small class="text-muted">
+	        <span id="title-count">0</span>/100文字
+	    </small>
+	</div>
 
-    <div class="mb-3">
-        <label>コメント</label>
-        <textarea name="body" class="form-control" required></textarea>
-    </div>
+	<div class="mb-3">
+	    <label for="body">コメント</label>
+	    <textarea name="body" id="body" class="form-control" rows="5" maxlength="1000" required></textarea>
+	    <small class="text-muted">
+	        <span id="body-count">0</span>/1000文字
+	    </small>
+	</div>
 
     <div class="mb-3">
         <label>評価（1〜5）</label>
@@ -53,5 +59,16 @@
     } // shopIdのチェック終了
 %>
 </div>
+
+<script>
+	// リアルタイム文字数カウント
+	document.getElementById('title').addEventListener('input', function() {
+	    document.getElementById('title-count').textContent = this.value.length;
+	});
+
+	document.getElementById('body').addEventListener('input', function() {
+	    document.getElementById('body-count').textContent = this.value.length;
+	});
+</script>
 
 <%@include file="../../footer.html" %>
