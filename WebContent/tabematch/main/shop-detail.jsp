@@ -136,7 +136,10 @@
         <%
             Users loginUserDetail = (Users) session.getAttribute("user");
             String reserveFlag = shop.getShopReserve();
-            boolean reservable = reserveFlag != null && (reserveFlag.contains("可") || "Y".equalsIgnoreCase(reserveFlag));
+            // 修正: 「可能」の場合のみ予約可能とする（「不可」が含まれる場合は予約不可）
+            boolean reservable = reserveFlag != null &&
+                                 !reserveFlag.contains("不可") &&
+                                 (reserveFlag.contains("可能") || reserveFlag.equals("可"));
 
             if (loginUserDetail != null) {
         %>

@@ -42,16 +42,26 @@ public class ReserveFormAction extends Action {
             return;
         }
 
-        // --- 修正ポイント ---
-        // アレルゲンマスター全件取得 (A01:卵, A02:乳...)
+        // 4. 予約可否チェック
+        String reserveFlag = shop.getShopReserve();
+        boolean reservable = reserveFlag != null &&
+                             !reserveFlag.contains("不可") &&
+                             (reserveFlag.contains("可能") || reserveFlag.equals("可"));
+
+        if (!reservable) {
+            session.setAttribute("errorMessage", "この店舗は予約を受け付けていません。");
+            res.sendRedirect("ShopDetail.action?shopId=" + shopId);
+            return;
+        }
+
+        // 5. アレルゲンマスター全件取得 (A01:卵, A02:乳...)
         List<Allergen> allAllergens = shopDao.getAllAllergens();
 
         // 店舗が対応しているアレルゲン「名」のリストを取得
         // メソッド名を getShopAllergenNames に変える（※ShopDAOも修正してください）
         List<String> shopAllergenNames = shopDao.getShopAllergenNames(shopId);
-        // ------------------
 
-        // 4. リクエスト属性にセットしてフォワード
+        // 6. リクエスト属性にセットしてフォワード
         req.setAttribute("shop", shop);
         req.setAttribute("allAllergens", allAllergens);
         // JSP側でも shopAllergenNames を使うように合わせる
