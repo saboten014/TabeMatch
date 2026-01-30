@@ -112,6 +112,38 @@ h2 {
     accent-color: #4CAF50; /* チェックボックスの色をテーマカラーに */
 }
 
+/* 価格帯のチェックボックスグリッド（アレルギーと同じスタイル） */
+.price-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    background: #f9fbf9;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px dashed #c8e6c9;
+}
+
+.price-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #444;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.price-item:hover {
+    transform: scale(1.05);
+}
+
+.price-item input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: #4CAF50;
+}
+
 /* 送信ボタンをぷっくりしたデザインに */
 .btn-submit {
     background: linear-gradient(135deg, #66bb6a, #43a047);
@@ -258,6 +290,28 @@ h2 {
                     <option value="不可" <%= "不可".equals(shop.getShopReserve()) ? "selected" : "" %>>不可</option>
                 </select>
             </div>
+        </div>
+
+        <div class="form-group">
+            <label>価格帯 <span class="required">*</span></label>
+            <select name="shopPrice" class="form-control" required>
+                <option value="">選択してください</option>
+                <%
+                String[] priceRanges = {"1000円以下", "1000円～2000円", "2000円～3000円", "3000円～5000円", "5000円以上"};
+                String currentPrice = (shop != null && shop.getShopPrice() != null) ? shop.getShopPrice() : "";
+                for (String price : priceRanges) {
+                %>
+                    <option value="<%= price %>" <%= price.equals(currentPrice) ? "selected" : "" %>><%= price %></option>
+                <% } %>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>決済方法 <span class="required">*</span></label>
+            <input type="text" name="shopPay" class="form-control"
+                   value="<%= shop.getShopPay() != null ? shop.getShopPay() : "" %>"
+                   placeholder="例: 現金、クレジットカード、電子マネー" required>
+            <small style="color: #666; font-size: 0.85em;">対応している決済方法を入力してください</small>
         </div>
 
         <div class="form-group">

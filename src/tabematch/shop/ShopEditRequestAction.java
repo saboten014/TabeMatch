@@ -68,8 +68,19 @@ public class ShopEditRequestAction extends Action {
             String shopAllergy = (allergyArray != null) ? String.join(",", allergyArray) : "";
 
             String shopGenre = req.getParameter("shopGenre");
+
+            // ★価格帯は単一選択（セレクトボックス）
             String shopPrice = req.getParameter("shopPrice");
+            if (shopPrice != null) {
+                shopPrice = shopPrice.trim();
+            }
+
+            // ★決済方法はテキスト入力から取得
             String shopPay = req.getParameter("shopPay");
+            if (shopPay != null) {
+                shopPay = shopPay.trim();
+            }
+
             String shopSeatStr = req.getParameter("shopSeat");
             String shopReserve = req.getParameter("shopReserve");
             String requestNote = req.getParameter("requestNote");
@@ -77,7 +88,9 @@ public class ShopEditRequestAction extends Action {
             // バリデーション
             if (shopName == null || shopName.trim().isEmpty() ||
                 shopAddress == null || shopAddress.trim().isEmpty() ||
-                shopTel == null || shopTel.trim().isEmpty()) {
+                shopTel == null || shopTel.trim().isEmpty() ||
+                shopPrice == null || shopPrice.isEmpty() ||  // 価格帯必須チェック
+                shopPay == null || shopPay.isEmpty()) {  // 決済方法必須チェック
 
                 req.setAttribute("errorMessage", "必須項目を入力してください。");
                 req.setAttribute("shop", shop);
@@ -122,8 +135,8 @@ public class ShopEditRequestAction extends Action {
                 stmt.setString(6, shopUrl);
                 stmt.setString(7, shopAllergy); // 合体したアレルギー文字列
                 stmt.setString(8, shopGenre);
-                stmt.setString(9, shopPrice);
-                stmt.setString(10, shopPay);
+                stmt.setString(9, shopPrice);   // 単一選択の価格帯
+                stmt.setString(10, shopPay);    // テキスト入力された決済方法
                 stmt.setInt(11, shopSeat);
                 stmt.setString(12, shopReserve);
                 stmt.setString(13, requestNote);
