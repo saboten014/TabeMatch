@@ -16,15 +16,17 @@
 
 <style>
 .delete-confirm-container {
+	margin-top: 100px;
     width: 80%;
     max-width: 700px;
-    margin: 60px auto;
+    margin: 100px auto;
     padding: 40px;
     border: 2px solid #F44336;
     border-radius: 15px;
     background-color: #fff5f5;
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
     font-family: 'Kosugi Maru', sans-serif;
+
 }
 .warning-icon {
     text-align: center;
