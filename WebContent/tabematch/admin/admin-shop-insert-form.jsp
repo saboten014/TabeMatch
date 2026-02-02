@@ -128,7 +128,7 @@
                     <div class="checkbox-item">
                         <input type="checkbox"
                                name="allergyInfo"
-                               value="<%= allergen.getAllergenName() %>"
+                               value="<%= allergen.getAllergenId() %>"
                                id="allergy_<%= allergen.getAllergenId() %>">
                         <label for="allergy_<%= allergen.getAllergenId() %>">
                             <%= allergen.getAllergenName() %>
