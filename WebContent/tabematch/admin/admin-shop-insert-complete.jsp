@@ -4,6 +4,13 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
+<style>
+	body {
+	  background-color: #e8f8e8;
+	  }
+</style>
+
+
 <h2>店舗登録完了</h2>
 
 <div class="complete-container">

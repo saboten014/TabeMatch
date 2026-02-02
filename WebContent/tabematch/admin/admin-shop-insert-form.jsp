@@ -149,7 +149,7 @@
 
         <tr>
             <td colspan="2" align="center">
-                <input type="submit" value="リクエスト送信">
+                <input type="submit" value="登録">
                 <input type="reset" value="クリア">
             </td>
         </tr>
