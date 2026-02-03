@@ -254,7 +254,7 @@ h2 {
         </div>
 
         <div class="form-group">
-            <label>アレルギー対応項目（✅をチェック！）</label>
+            <label>対応食材項目（✅をチェック！）</label>
             <div class="allergy-grid">
                 <% if (allergenMaster != null) {
                     for (Allergen a : allergenMaster) {
@@ -320,7 +320,7 @@ h2 {
         </div>
 
         <div class="form-group">
-            <label>管理者へのひとこと</label>
+            <label>修正理由記入欄</label>
             <textarea name="requestNote" class="form-control" rows="3" placeholder="変更したい理由などがあれば教えてくださいね。"></textarea>
         </div>
 

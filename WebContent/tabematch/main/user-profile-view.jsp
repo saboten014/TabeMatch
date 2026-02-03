@@ -53,7 +53,7 @@
                     <td>********</td>
                 </tr>
                 <tr>
-                    <th>アレルギー</th>
+                    <th>NG食材</th>
                     <td>
                         <%
                             if (aList != null && !aList.isEmpty()) {

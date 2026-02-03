@@ -230,7 +230,7 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-top: 20px;">アレルギー情報</td>
+            <td style="vertical-align: top; padding-top: 20px;">NG食材情報</td>
             <td>
                 <div class="checkbox-grid">
 <%
@@ -248,10 +248,10 @@
 %>
                 </div>
                 <div class="other-allergy">
-                    <label for="otherAllergy">その他のアレルギー:</label>
+                    <label for="otherAllergy">要配慮食材:</label>
                     <input type="text" name="otherAllergy" id="otherAllergy" placeholder="例: とうもろこし、トマト">
                 </div>
-                <small>※該当するアレルギーをすべて選択してください（複数選択可）</small>
+                <small>※配慮が必要な食材をすべて選択してください（複数選択可）</small>
             </td>
         </tr>
         <!-- ユーザー区分を一般ユーザー（1）で固定 -->

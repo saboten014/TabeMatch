@@ -73,7 +73,7 @@
                             <span class="user-name-label"><%= uName %> 様</span>
                             <div style="font-size: 0.85rem; color: #888;">👥 <%= reserve.getNumOfPeople() %> 名</div>
                             <% if (!"なし".equals(allergyParam)) { %>
-                                <div style="color: #ff5e5e; font-size: 0.75rem; margin-top: 5px; font-weight: bold;">⚠️ アレルギーあり</div>
+                                <div style="color: #ff5e5e; font-size: 0.75rem; margin-top: 5px; font-weight: bold;">⚠️ 食材対応あり</div>
                             <% } %>
                         </a>
                     <% } %>

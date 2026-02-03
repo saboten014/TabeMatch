@@ -62,7 +62,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>アレルギー</th>
+                    <th>NG食材</th>
                     <td>
                         <div class="allergen-grid">
                             <%

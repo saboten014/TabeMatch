@@ -152,7 +152,7 @@ body {
             <span class="profile-item-value"><%= shop.getShopGenre() %></span>
         </div>
         <div class="profile-item">
-            <span class="profile-item-label">アレルギー対応情報</span>
+            <span class="profile-item-label">対応可能食材</span>
             <span class="profile-item-value"><%= shop.getShopAllergy() %></span>
         </div>
         <div class="profile-item">

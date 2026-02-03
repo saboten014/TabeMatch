@@ -44,7 +44,7 @@
         </tr>
 
         <tr>
-            <td>アレルギー対応<span class="required">*</span></td>
+            <td>対応可能食材<span class="required">*</span></td>
             <td>
 <%
     AllergenDAO allergenDao = new AllergenDAO();
