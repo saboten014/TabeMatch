@@ -372,7 +372,7 @@ public class ShopDAO extends DAO {
 		shop.setShopMail(rs.getString("SHOP_MAIL"));
 		shop.setShopTel(rs.getString("SHOP_TEL"));
 		shop.setShopDate(rs.getTimestamp("SHOP_DATE"));
-		shop.setShopTime(rs.getTime("SHOP_TIME"));
+		shop.setShopTime(rs.getString("SHOP_TIME"));
 		shop.setShopReserve(rs.getString("SHOP_RESERVE"));
 		shop.setShopGenre(rs.getString("SHOP_GENRE"));
 		shop.setShopPicture(rs.getString("SHOP_PICTURE"));
@@ -409,7 +409,7 @@ public class ShopDAO extends DAO {
                     shop.setShopDate(rs.getTimestamp("shop_date")); // Timestampのまま
 
                     // ★修正点1: java.sql.Timeで取得し、セットする
-                    shop.setShopTime(rs.getTime("shop_time"));
+                    shop.setShopTime(rs.getString("shop_time"));
 
                     shop.setShopReserve(rs.getString("shop_reserve"));
                     shop.setShopGenre(rs.getString("shop_genre"));

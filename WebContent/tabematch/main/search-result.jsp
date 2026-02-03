@@ -62,7 +62,12 @@
                         <td><span class="genre-tag"><%= shop.getShopGenre() %></span></td>
                         <td><%= shop.getShopAddress() %></td>
                         <td><%= shop.getShopPrice() != null ? shop.getShopPrice() : "-" %></td>
-                        <td><%= shop.getShopTime() != null ? shop.getShopTime() : "-" %></td>
+                        <td>
+						    <%
+						        Object t = shop.getShopTime();
+						        out.print(t != null ? t.toString() : "-");
+						    %>
+						</td>
                         <td>
                             <a href="ShopDetail.action?shopId=<%= shop.getShopId() %>" class="detail-btn">詳細を見る</a>
                         </td>

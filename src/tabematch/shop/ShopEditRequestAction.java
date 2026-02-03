@@ -62,6 +62,7 @@ public class ShopEditRequestAction extends Action {
             String shopAddress = req.getParameter("shopAddress");
             String shopTel = req.getParameter("shopTel");
             String shopUrl = req.getParameter("shopUrl");
+            String shopTime = req.getParameter("shopTime");
 
             // ★チェックボックス（配列）をカンマ区切りの1本の文字列に合体させる
             String[] allergyArray = req.getParameterValues("shopAllergies");
@@ -120,11 +121,12 @@ public class ShopEditRequestAction extends Action {
             dao.DAO daoObj = new dao.DAO();
             try (Connection con = daoObj.getConnection()) {
                 String requestId = "EDITREQ" + System.currentTimeMillis();
+             // SQL文字列の修正（shop_timeを追加）
                 String sql = "INSERT INTO shop_edit_requests " +
                              "(request_id, shop_id, shop_name, shop_address, shop_tel, shop_url, " +
                              "shop_allergy, shop_genre, shop_price, shop_pay, shop_seat, shop_reserve, " +
-                             "request_note, status, created_at) " +
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)";
+                             "shop_time, request_note, status, created_at) " + // ← shop_timeを追記
+                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)"; // ← ?を1つ増やす
 
                 PreparedStatement stmt = con.prepareStatement(sql);
                 stmt.setString(1, requestId);
@@ -139,7 +141,8 @@ public class ShopEditRequestAction extends Action {
                 stmt.setString(10, shopPay);    // テキスト入力された決済方法
                 stmt.setInt(11, shopSeat);
                 stmt.setString(12, shopReserve);
-                stmt.setString(13, requestNote);
+                stmt.setString(13, shopTime);    // 追加した項目のセット（13番目）
+                stmt.setString(14, requestNote); // requestNoteが13番から14番にスライド
 
                 int result = stmt.executeUpdate();
                 if (result > 0) {

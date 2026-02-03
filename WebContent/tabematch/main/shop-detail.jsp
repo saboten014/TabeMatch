@@ -56,6 +56,12 @@
                 <td><%= (shop.getShopAddress() != null && !shop.getShopAddress().isEmpty()) ? shop.getShopAddress() : "未登録" %></td>
             </tr>
             <tr>
+			    <th>定休日・営業時間</th>
+			    <td class="shop-time-cell">
+			        <%= (shop.getShopTime() != null && !shop.getShopTime().isEmpty()) ? shop.getShopTime() : "未登録" %>
+			    </td>
+			</tr>
+            <tr>
                 <th>電話番号</th>
                 <td><%= (shop.getShopTel() != null && !shop.getShopTel().isEmpty()) ? shop.getShopTel() : "未登録" %></td>
             </tr>

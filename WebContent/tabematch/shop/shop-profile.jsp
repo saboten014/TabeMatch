@@ -26,10 +26,13 @@
     String formattedDate = (shop.getShopDate() != null) ? sdf.format(shop.getShopDate()) : "情報なし";
 
     // 営業時間の整形（java.sql.Timeを文字列化）
-    String formattedTime = (shop.getShopTime() != null) ? shop.getShopTime().toString() : "情報なし";
+    String formattedTime = (shop.getShopTime() != null && !shop.getShopTime().isEmpty())
+                           ? shop.getShopTime() : "情報なし";
 
     // 予約可否の表示変換
     String reserveStatus = "1".equals(shop.getShopReserve()) ? "予約不可" : "予約受付中";
+
+
 %>
 
 <style>
@@ -127,6 +130,10 @@ body {
             <span class="profile-item-label">店舗名</span>
             <span class="profile-item-value"><%= shop.getShopName() %></span>
         </div>
+        <div class="profile-item">
+		    <span class="profile-item-label">定休日・営業時間</span>
+		    <span class="profile-item-value"><%= formattedTime %></span>
+		</div>
         <div class="profile-item">
             <span class="profile-item-label">住所</span>
             <span class="profile-item-value"><%= shop.getShopAddress() %></span>

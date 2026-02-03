@@ -1,6 +1,5 @@
 package bean;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Shop {
@@ -12,7 +11,7 @@ public class Shop {
 	private String shopMail;
 	private String shopTel;
 	private Timestamp shopDate;
-	private Time shopTime;
+	private String shopTime;
 	private String shopReserve;
 	private String shopGenre;
 	private String shopPicture;
@@ -93,12 +92,12 @@ public class Shop {
 		this.shopDate = shopDate;
 	}
 
-	public Time getShopTime() {
+	public String getShopTime() {
 		return shopTime;
 	}
 
-	public void setShopTime(Time shopTime) {
-		this.shopTime = shopTime;
+	public void setShopTime(String string) {
+		this.shopTime = string;
 	}
 
 	public String getShopReserve() {

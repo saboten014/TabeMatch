@@ -58,6 +58,7 @@ public class AdminShopEditRequestListAction extends Action {
             request.put("shopAddress", rs.getString("shop_address"));
             request.put("shopTel", rs.getString("shop_tel"));
             request.put("shopUrl", rs.getString("shop_url"));
+            request.put("shopTime", rs.getString("shop_time"));
             request.put("shopAllergy", rs.getString("shop_allergy"));
             request.put("shopGenre", rs.getString("shop_genre"));
             request.put("shopPrice", rs.getString("shop_price"));

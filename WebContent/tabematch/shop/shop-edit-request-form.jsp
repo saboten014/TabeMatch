@@ -253,6 +253,15 @@ h2 {
             <input type="tel" name="shopTel" class="form-control" value="<%= shop.getShopTel() %>" placeholder="00-0000-0000" required>
         </div>
 
+        <%-- 営業時間の入力項目を追加 --%>
+		<div class="form-group">
+		    <label>定休日・営業時間</label>
+		    <input type="text" name="shopTime" class="form-control"
+		           value="<%= shop.getShopTime() != null ? shop.getShopTime() : "" %>"
+		           placeholder="例：定休日：火　営業時間：10:00～20:00">
+		    <small style="color: #666; font-size: 0.85em;">定休日や詳しい営業時間を入力してください☘️</small>
+		</div>
+
         <div class="form-group">
             <label>対応食材項目（✅をチェック！）</label>
             <div class="allergy-grid">

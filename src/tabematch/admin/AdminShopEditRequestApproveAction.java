@@ -66,6 +66,7 @@ public class AdminShopEditRequestApproveAction extends Action {
             String shopAddress = rs.getString("shop_address");
             String shopTel = rs.getString("shop_tel");
             String shopUrl = rs.getString("shop_url");
+            String shopTime = rs.getString("shop_time");
             String shopAllergy = rs.getString("shop_allergy");
             String shopGenre = rs.getString("shop_genre");
             String shopPrice = rs.getString("shop_price");
@@ -76,12 +77,12 @@ public class AdminShopEditRequestApproveAction extends Action {
             rs.close();
             selectStmt.close();
 
-            // 4. shop テーブルを更新
+         // 4. shop テーブルを更新
             String updateShopSql = "UPDATE shop SET " +
                                    "shop_name = ?, shop_address = ?, shop_tel = ?, " +
                                    "shop_url = ?, shop_allergy = ?, shop_genre = ?, " +
                                    "shop_price = ?, shop_pay = ?, shop_seat = ?, " +
-                                   "shop_reserve = ? " +
+                                   "shop_reserve = ?, shop_time = ? " +
                                    "WHERE shop_id = ?";
 
             PreparedStatement updateShopStmt = con.prepareStatement(updateShopSql);
@@ -95,7 +96,8 @@ public class AdminShopEditRequestApproveAction extends Action {
             updateShopStmt.setString(8, shopPay);
             updateShopStmt.setInt(9, shopSeat);
             updateShopStmt.setString(10, shopReserve);
-            updateShopStmt.setString(11, shopId);
+            updateShopStmt.setString(11, shopTime);
+            updateShopStmt.setString(12, shopId);
 
             int updateResult = updateShopStmt.executeUpdate();
             updateShopStmt.close();

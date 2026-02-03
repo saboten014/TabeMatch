@@ -228,6 +228,14 @@ h1 {
                 </div>
                 <% } %>
 
+                <%-- 電話番号とURLの間あたりに追加 --%>
+				<% if (req.get("shopTime") != null) { %>
+				<div class="change-item">
+				    <div class="change-label">定休日・営業時間:</div>
+				    <div class="change-value"><%= req.get("shopTime") %></div>
+				</div>
+				<% } %>
+
                 <% if (req.get("shopGenre") != null) { %>
                 <div class="change-item">
                     <div class="change-label">ジャンル:</div>
@@ -237,7 +245,7 @@ h1 {
 
                 <% if (req.get("shopAllergy") != null) { %>
                 <div class="change-item">
-                    <div class="change-label">アレルギー対応:</div>
+                    <div class="change-label">対応可能食材:</div>
                     <div class="change-value"><%= req.get("shopAllergy") %></div>
                 </div>
                 <% } %>
