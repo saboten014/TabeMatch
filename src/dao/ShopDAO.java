@@ -656,29 +656,25 @@ public class ShopDAO extends DAO {
 
 
 	 public List<String> getShopAllergenNames(String shopId) throws Exception {
-	     List<String> list = new ArrayList<>();
-	     Shop shop = getShopById(shopId);
+		    List<String> list = new ArrayList<>();
+		    Shop shop = getShopById(shopId);
 
-	     if (shop != null && shop.getShopAllergy() != null) {
-	         // DBから "A01,A02" という文字列を取得
-	         String allergyStr = shop.getShopAllergy().replace("、", ",");
-	         String[] ids = allergyStr.split(",");
+		    if (shop != null && shop.getShopAllergy() != null && !shop.getShopAllergy().isEmpty()) {
+		        // 1. 生データが「卵,乳」という名前そのものなので、カンマで分けるだけ！
+		        String allergyStr = shop.getShopAllergy().replace("、", ",");
+		        String[] names = allergyStr.split(",");
 
-	         // 全アレルギーマスター情報を取得
-	         List<Allergen> masterList = getAllAllergens();
+		        for (String name : names) {
+		            String trimmedName = name.trim();
+		            if (!trimmedName.isEmpty()) {
+		                list.add(trimmedName); // そのままリストに追加
+		            }
+		        }
+		    }
 
-	         for (String id : ids) {
-	             String trimmedId = id.trim();
-	             // マスターからIDが一致する名前（卵など）を探してリストに入れる
-	             for (Allergen m : masterList) {
-	                 if (m.getAllergenId().equals(trimmedId)) {
-	                     list.add(m.getAllergenName());
-	                     break;
-	                 }
-	             }
-	         }
-	     }
-	     return list;
-	 }
+		    // デバッグ確認
+		    System.out.println("最終的な店舗対応アレルギー名: " + list);
+		    return list;
+		}
 
 }

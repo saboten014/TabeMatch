@@ -61,6 +61,9 @@ public class ReserveFormAction extends Action {
         // メソッド名を getShopAllergenNames に変える（※ShopDAOも修正してください）
         List<String> shopAllergenNames = shopDao.getShopAllergenNames(shopId);
 
+        System.out.println("マスター件数: " + allAllergens.size());
+        System.out.println("店舗対応アレルギー名: " + shopAllergenNames);
+
         // 6. リクエスト属性にセットしてフォワード
         req.setAttribute("shop", shop);
         req.setAttribute("allAllergens", allAllergens);
