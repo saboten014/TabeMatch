@@ -50,7 +50,7 @@
 
         <%-- アレルギー選択エリア（動的生成） --%>
         <div class="form-group">
-            <label>アレルギーをお持ちの食材（お店の対応状況）</label>
+            <label>配慮が必要な食材（お店の対応状況）</label>
             <p class="sub-label">※お店側で対応可能としている項目のみ選択できます。その他は「詳細」にご記入ください。</p>
 
             <div class="allergy-options">
@@ -84,9 +84,9 @@
                 </c:forEach>
             </div>
 
-            <label for="allergyNotes" class="mt-10">アレルギーに関する詳細</label>
+            <label for="allergyNotes" class="mt-10">食材の配慮に関する詳細</label>
             <textarea name="allergyNotes" id="allergyNotes" rows="3"
-                placeholder="例：つなぎの卵もNG、重度の症状がある、など"></textarea>
+                placeholder="例：つなぎの卵もNG、重度の症状がある、宗教上の理由で食べられない、など"></textarea>
         </div>
 
         <%-- お店へのメッセージ --%>

@@ -5,9 +5,7 @@
 <%@page import="dao.AllergenDAO" %>
 <%@include file="../../header.html" %>
 <%@include file="user_menu.jsp" %>
-<!-- Googleフォント -->
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
-<!-- css読み込み -->
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/search.css">
 <title>検索</title>
 
@@ -28,7 +26,9 @@
     // ログインユーザーのアレルギー情報を取得
     String[] userAllergens = null;
     if (loginUser != null && loginUser.getAllergenId() != null && !loginUser.getAllergenId().isEmpty()) {
-        userAllergens = loginUser.getAllergenId().split(",");
+        // PostgreSQLの配列形式 {A01,A02} から括弧を除去して分割
+        String cleanedIds = loginUser.getAllergenId().replace("{", "").replace("}", "");
+        userAllergens = cleanedIds.split(",");
     }
 %>
 
@@ -75,11 +75,7 @@
             </td>
         </tr>
         <tr>
-            <td>営業時間</td>
-            <td><input type="text" name="businessHours" placeholder="例: 11:00-22:00"></td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top; padding-top: 20px;">アレルギー情報</td>
+            <td style="vertical-align: top; padding-top: 20px;">要配慮食材</td>
             <td>
                 <div class="checkbox-grid">
 <%
@@ -88,10 +84,10 @@
     List<Allergen> allergenList = allergenDao.getAllAllergens();
 
     for (Allergen allergen : allergenList) {
-        // ログインユーザーのアレルゲンと一致する場合は自動チェック
         boolean isChecked = false;
         if (userAllergens != null) {
             for (String userAllergenId : userAllergens) {
+                // 前後の空白や残った括弧を念のため除去して比較
                 if (userAllergenId.trim().replace("{", "").replace("}", "").equals(allergen.getAllergenId())) {
                     isChecked = true;
                     break;
@@ -109,25 +105,30 @@
     }
 %>
                 </div>
-                <div class="other-allergy">
-                    <label for="otherAllergy">その他のアレルギー:</label>
-                    <input type="text" name="otherAllergy" id="otherAllergy" placeholder="例: とうもろこし、トマト">
+
+                <%-- 1行で表示するためのクラスを追加 --%>
+                <div class="user-info-area">
+                    <small class="allergy-text">※配慮が必要な食材を選択してください（あなたのNG食材情報:
+                    <%
+                        if (userAllergens != null && userAllergens.length > 0) {
+                            StringBuilder sb = new StringBuilder();
+                            for (String aid : userAllergens) {
+                                String cleanAid = aid.trim().replace("{", "").replace("}", "");
+                                if (!cleanAid.isEmpty()) {
+                                    Allergen userAllergen = allergenDao.getAllergenById(cleanAid);
+                                    if (userAllergen != null) {
+                                        if (sb.length() > 0) sb.append(", ");
+                                        sb.append(userAllergen.getAllergenName());
+                                    }
+                                }
+                            }
+                            out.print(sb.length() > 0 ? sb.toString() : "未設定");
+                        } else {
+                            out.print("未設定");
+                        }
+                    %>
+                    ）</small>
                 </div>
-                <small>※対応しているアレルゲンを選択してください（あなたのアレルギー情報:
-<%
-    if (userAllergens != null && userAllergens.length > 0) {
-        for (int i = 0; i < userAllergens.length; i++) {
-            Allergen userAllergen = allergenDao.getAllergenById(userAllergens[i].trim());
-            if (userAllergen != null) {
-                out.print(userAllergen.getAllergenName());
-                if (i < userAllergens.length - 1) out.print(", ");
-            }
-        }
-    } else {
-        out.print("未設定");
-    }
-%>
-                ）</small>
             </td>
         </tr>
         <tr>

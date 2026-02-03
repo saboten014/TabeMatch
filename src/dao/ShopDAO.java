@@ -281,21 +281,21 @@ public class ShopDAO extends DAO {
 
 	// アレルギー条件を構築するヘルパーメソッド
 	private String buildAllergyCondition(String[] allergyInfo) {
-		if (allergyInfo == null || allergyInfo.length == 0) {
-			return "";
-		}
+	    if (allergyInfo == null || allergyInfo.length == 0) {
+	        return "";
+	    }
 
-		StringBuilder condition = new StringBuilder(" AND (");
-		for (int i = 0; i < allergyInfo.length; i++) {
-			if (i > 0) {
-				condition.append(" OR ");
-			}
-			// WARNING: SQLインジェクションの脆弱性があるため、PreparedStatementで処理することを推奨
-			condition.append("SHOP_ALLERGY LIKE '%").append(allergyInfo[i]).append("%'");
-		}
-		condition.append(")");
+	    StringBuilder condition = new StringBuilder(" AND (");
+	    for (int i = 0; i < allergyInfo.length; i++) {
+	        if (i > 0) {
+	            condition.append(" OR ");
+	        }
+	        // DBの中身が "A01,A02" となっているため、ID（A01）で部分一致検索
+	        condition.append("SHOP_ALLERGY LIKE '%").append(allergyInfo[i]).append("%'");
+	    }
+	    condition.append(")");
 
-		return condition.toString();
+	    return condition.toString();
 	}
 
 	// 空文字チェック
@@ -654,19 +654,31 @@ public class ShopDAO extends DAO {
 		    return list;
 		}
 
-	 public List<String> getShopAllergenNames(String shopId) throws Exception {
-		    List<String> list = new ArrayList<>();
-		    Shop shop = getShopById(shopId);
 
-		    if (shop != null && shop.getShopAllergy() != null) {
-		        // 全角カンマと半角カンマの両方に対応
-		        String allergyStr = shop.getShopAllergy().replace("、", ",");
-		        String[] names = allergyStr.split(",");
-		        for (String name : names) {
-		            list.add(name.trim()); // 「卵」などの名前がリストに入る
-		        }
-		    }
-		    return list;
-		}
+	 public List<String> getShopAllergenNames(String shopId) throws Exception {
+	     List<String> list = new ArrayList<>();
+	     Shop shop = getShopById(shopId);
+
+	     if (shop != null && shop.getShopAllergy() != null) {
+	         // DBから "A01,A02" という文字列を取得
+	         String allergyStr = shop.getShopAllergy().replace("、", ",");
+	         String[] ids = allergyStr.split(",");
+
+	         // 全アレルギーマスター情報を取得
+	         List<Allergen> masterList = getAllAllergens();
+
+	         for (String id : ids) {
+	             String trimmedId = id.trim();
+	             // マスターからIDが一致する名前（卵など）を探してリストに入れる
+	             for (Allergen m : masterList) {
+	                 if (m.getAllergenId().equals(trimmedId)) {
+	                     list.add(m.getAllergenName());
+	                     break;
+	                 }
+	             }
+	         }
+	     }
+	     return list;
+	 }
 
 }

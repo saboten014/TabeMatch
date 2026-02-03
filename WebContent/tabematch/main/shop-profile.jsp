@@ -40,7 +40,7 @@
   </div>
 
   <div class="mb-3">
-    <label class="form-label">アレルギー対応</label>
+    <label class="form-label">対応可能食材</label>
     <input type="text" class="form-control" name="shopAllergy" value="<%= shop.getShopAllergy() %>">
   </div>
 

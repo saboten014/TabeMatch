@@ -60,7 +60,7 @@
             </div>
 
             <div class="info-item">
-                <span class="label">アレルギー要望</span>
+                <span class="label">食材要望</span>
                 <span class="value"><%= (reserve.getAllergyNotes() != null && !reserve.getAllergyNotes().isEmpty()) ? reserve.getAllergyNotes() : "特になし" %></span>
             </div>
 

@@ -55,14 +55,15 @@
     for (Allergen allergen : allergenList) {
 %>
                     <div class="checkbox-item">
-                        <input type="checkbox"
-                               name="allergyInfo"
-                               value="<%= allergen.getAllergenName() %>"
-                               id="allergy_<%= allergen.getAllergenId() %>">
-                        <label for="allergy_<%= allergen.getAllergenId() %>">
-                            <%= allergen.getAllergenName() %>
-                        </label>
-                    </div>
+					    <input type="checkbox"
+					           name="allergyInfo"
+					           <%-- ★ここを Name から Id に変更！ --%>
+					           value="<%= allergen.getAllergenId() %>"
+					           id="allergy_<%= allergen.getAllergenId() %>">
+					    <label for="allergy_<%= allergen.getAllergenId() %>">
+					        <%= allergen.getAllergenName() %>
+					    </label>
+					</div>
 <%
     }
 %>

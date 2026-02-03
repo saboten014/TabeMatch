@@ -77,7 +77,7 @@
 
                             <c:if test="${not empty r.allergyNotes}">
                                 <div class="allergy-box">
-                                    <strong>⚠️ アレルギー情報</strong>
+                                    <strong>⚠️ 要配慮食材情報</strong>
                                     <p>${r.allergyNotes}</p>
                                 </div>
                             </c:if>

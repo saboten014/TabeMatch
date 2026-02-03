@@ -1,11 +1,11 @@
 /* 検索画面のcssだよ */
 
  body {
-    background-color: #e8f8e8 !important;
-    font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
-    margin: 0;
-    padding: 0;
-  }
+   background-color: #e8f8e8 !important;
+   font-family: "Kosugi Maru", "Meiryo", sans-serif !important;
+   margin: 0;
+   padding: 0;
+ }
 
  /* ===== タイトル ===== */
 h1 {
@@ -15,18 +15,22 @@ h1 {
     text-align: center;
     color: #333;
     margin-bottom: 10px;
-  }
+ }
 
   /* ===== フォーム部分 ===== */
 .form-container {
     text-align: center;
     margin-top: 30px;
     margin-bottom: 50px;
-  }
+ }
 form {
     display: inline-block;
     text-align: left;
-  }
+    background: white; /* フォームを見やすくするために白背景を追加 */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+ }
   table {
     border-collapse: collapse;
     margin: 0 auto;
@@ -40,14 +44,15 @@ form {
     text-align: right;
     padding-right: 20px;
     font-weight: 500;
-    width: 180px;
+    width: 150px; /* 少し調整 */
     font-size: 18px;
   }
   input[type="text"],
   select {
     font-size: 16px;
     padding: 10px 12px;
-    width: 400px;
+    width: 100%; /* 親要素に合わせる */
+    max-width: 400px;
     border: 1px solid #aaa;
     border-radius: 6px;
     font-family: "Kosugi Maru", "Meiryo", sans-serif;
@@ -61,35 +66,46 @@ form {
   }
   small {
     color: #888;
-    font-size: 18px;
+    font-size: 14px; /* 少し小さくして補助テキストらしく */
     display: block;
-    margin-top: 5px;
+    margin-top: 10px;
+    line-height: 1.4;
   }
 
-  /* ===== チェックボックスのグリッド ===== */
+  /* ===== チェックボックスのグリッド（ここを重点的に修正） ===== */
   .checkbox-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 15px 20px;
+    /* 130pxの幅で並べられるだけ並べる（4〜5列程度になります） */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px 15px;
+    margin-top: 10px;
     margin-bottom: 15px;
-    width: 600px;
+    width: 650px; /* 全体の横幅を少し広げて余裕を持たせる */
+    background: #f9fdf9; /* ほんのり色をつけてエリアをわかりやすく */
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0eee0;
   }
   .checkbox-item {
     display: flex;
     align-items: center;
+    padding: 2px 0;
   }
   .checkbox-item input[type="checkbox"] {
     margin: 0;
     padding: 0;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
+    cursor: pointer;
+    accent-color: #ff9999; /* チェックした時の色をボタンに合わせる */
   }
   .checkbox-item label {
-    font-size: 18px;
+    font-size: 16px; /* 少し調整 */
     cursor: pointer;
-    margin-left: 5px;
-    white-space: nowrap;
+    margin-left: 8px;
+    white-space: nowrap; /* 改行させない */
+    color: #444;
   }
 
 /* ===== ボタン ===== */
@@ -126,14 +142,6 @@ form {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
-  /* その他アレルギー入力欄 */
-  .other-allergy {
-    margin-top: 10px;
-  }
-  .other-allergy input[type="text"] {
-    width: 400px;
-  }
-
   /* ===== エラーメッセージ ===== */
   .error-message {
     text-align: center;
@@ -145,4 +153,19 @@ form {
     padding: 12px 20px;
     border-radius: 6px;
     display: inline-block;
-    border
+    border: 1px solid #ffcccc;
+  }
+
+  /* アレルギー情報のテキストエリア */
+.user-info-area {
+    width: 600px;         /* checkbox-gridの幅に合わせる */
+    text-align: left;
+    margin-top: 5px;
+}
+
+.allergy-text {
+    color: #888;
+    font-size: 14px;
+    display: inline;      /* blockを解除して1行に */
+    white-space: nowrap;  /* 折り返しを禁止（入り切らない場合は正常に折り返させたいならnormalに） */
+}

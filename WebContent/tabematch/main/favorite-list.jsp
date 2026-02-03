@@ -47,7 +47,7 @@
                         <th style="width: 30%;">店舗名</th>
                         <th style="width: 15%;">ジャンル</th>
                         <th style="width: 15%;">価格帯</th>
-                        <th style="width: 30%;">アレルギー情報</th>
+                        <th style="width: 30%;">対応食材情報</th>
                         <th style="width: 10%;">詳細</th>
                     </tr>
                 </thead>
