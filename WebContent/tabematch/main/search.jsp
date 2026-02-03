@@ -133,12 +133,24 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;">
-                <input type="submit" value="検索">
-                <input type="reset" value="クリア">
-            </td>
+			    <input type="submit" value="検索">
+			    <input type="reset" value="クリア" onclick="allClear(event, this.form)">
+			</td>
         </tr>
     </table>
 </form>
 </div>
+
+<script>
+function allClear(event, form) {
+    // 1. 本来のリセット動作（初期値に戻す動き）を止める
+    event.preventDefault();
+
+    // 2. あとは全部空っぽにする（さっきと同じ）
+    form.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+    form.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+    form.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+}
+</script>
 
 <%@include file="../../footer.html" %>
