@@ -166,7 +166,17 @@
 
         <tr>
             <td>電話番号<span class="required">*</span></td>
-            <td><input type="text" name="number" maxlength="20" required></td>
+            <td>
+			    <input type="text"
+			           name="number"
+			           maxlength="20"
+			           required
+			           placeholder="090-1234-5678"
+			           pattern="[0-9\-]+"
+			           title="半角数字とハイフンのみ入力可能です"
+			           oninput="this.value = this.value.replace(/[^0-9\-]/g, '')">
+			    <small>※半角数字とハイフンのみ</small>
+			</td>
         </tr>
 
         <tr>

@@ -39,11 +39,14 @@
         <div class="form-item">
 		    <label>連絡先電話番号 <span style="color:red;">(必須)</span></label>
 		    <input type="tel" name="reserve_tel" required
-		           placeholder="09012345678"
-		           pattern="\d{10,11}"
-		           title="ハイフンなしで10桁または11桁の数字を入力してください"
+		           placeholder="090-1234-5678"
+		           <%-- patternを「数字またはハイフンが10文字以上」に変更 --%>
+		           pattern="[0-9\-]{10,}"
+		           title="10桁以上の電話番号を半角数字（ハイフン可）で入力してください"
+		           <%-- 入力制御を追加：数字とハイフン以外を即座に削除 --%>
+		           oninput="this.value = this.value.replace(/[^0-9\-]/g, '')"
 		           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-		    <p style="font-size: 0.8rem; color: #666;">※当日お店から連絡する場合があります。</p>
+		    <p style="font-size: 0.8rem; color: #666;">※ハイフンの有無はどちらでも構いません。</p>
 		</div>
 
         <hr>
