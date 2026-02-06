@@ -214,7 +214,7 @@
 
 <script>
 	document.addEventListener("DOMContentLoaded", () => {
-    // --- 1. 要素の取得（一括） ---
+    // --- 1. 要素の取得 ---
     const form = document.querySelector("form");
     const emailInput = document.getElementById("request_mail");
     const emailError = document.getElementById("email-error");
@@ -222,7 +222,7 @@
     const confirmInput = document.getElementById("confirmPassword");
     const passError = document.getElementById("pass-error");
     const confirmError = document.getElementById("confirm-error");
-    const telInput = document.getElementById("shop_tel");
+    const telInput = document.getElementById("shop_tel"); // 店舗電話番号
     const telError = document.getElementById("tel-error");
     const fileInput = document.querySelector(".file-input");
     const container = document.getElementById("preview-container");
@@ -281,18 +281,44 @@
     }
     if (confirmInput) confirmInput.addEventListener("input", checkMatch);
 
-    // --- 5. 電話番号・自動ハイフン ---
+    // --- 5. 電話番号の自動整形（ここが修正ポイント！） ---
     if (telInput) {
         telInput.addEventListener("input", () => {
-            let val = telInput.value.replace(/\D/g, "");
+            // ① 数字以外をすべて除去
+            let value = telInput.value.replace(/\D/g, "");
             let formatted = "";
-            if (val.length <= 3) formatted = val;
-            else if (val.length <= 7) formatted = val.substring(0, 3) + "-" + val.substring(3);
-            else formatted = val.substring(0, 3) + "-" + val.substring(3, 7) + "-" + val.substring(7, 11);
+            const len = value.length;
+
+            // ② ハイフン挿入ロジック
+            if (len <= 3) {
+                formatted = value;
+            } else if (len <= 6) {
+                // 031234 -> 03-1234
+                formatted = value.substring(0, 2) + "-" + value.substring(2);
+            } else if (len <= 10) {
+                // 固定電話（10桁）: 03-1234-5678 または 042-999-9999
+                if (value.startsWith("03") || value.startsWith("06")) {
+                    formatted = value.substring(0, 2) + "-" + value.substring(2, 6) + "-" + value.substring(6);
+                } else {
+                    formatted = value.substring(0, 3) + "-" + value.substring(3, 6) + "-" + value.substring(6);
+                }
+            } else {
+                // 携帯電話（11桁）: 090-1234-5678
+                formatted = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
+            }
 
             telInput.value = formatted;
+
+            // ③ バリデーション
             if (telError) {
-                telError.style.display = (val.length > 0 && val.length < 10) ? "block" : "none";
+                if (len > 0 && len !== 10 && len !== 11) {
+                    telError.textContent = "※電話番号は10桁（固定）または11桁（携帯）で入力してください";
+                    telError.style.display = "block";
+                    telInput.style.borderColor = "red";
+                } else {
+                    telError.style.display = "none";
+                    telInput.style.borderColor = (len === 0) ? "" : "#99ccff";
+                }
             }
         });
     }
@@ -308,7 +334,7 @@
                     reader.onload = (e) => {
                         const div = document.createElement("div");
                         div.className = "preview-item";
-                        div.innerHTML = `<img src="${e.target.result}" style="width:100px; height:100px; object-fit:cover; margin:5px; border-radius:5px;">`;
+                        div.innerHTML = `<img src="${e.target.result}" style="width:100px; height:100px; object-fit:cover; margin:5px; border-radius:5px; border:1px solid #ddd;">`;
                         container.appendChild(div);
                     };
                     reader.readAsDataURL(file);
@@ -322,19 +348,25 @@
     // --- 7. 送信ボタン押下時の最終チェック ---
     if (form) {
         form.addEventListener("submit", (e) => {
-            // メール形式チェック
+            // メール
             if (emailInput && !emailPattern.test(emailInput.value)) {
                 alert("メールアドレスを確認してください。");
-                e.preventDefault();
-                return;
+                e.preventDefault(); return;
             }
-            // パスワードチェック
+            // パスワード
             if (passInput && (passInput.value.length < 8 || !passPattern.test(passInput.value))) {
                 alert("パスワードは英数字8文字以上で入力してください。");
-                e.preventDefault();
-                return;
+                e.preventDefault(); return;
             }
-            // 一致チェック
+            // 電話番号
+            if (telInput) {
+                const telLen = telInput.value.replace(/\D/g, "").length;
+                if (telLen > 0 && telLen !== 10 && telLen !== 11) {
+                    alert("電話番号を正しく入力してください（10桁または11桁）。");
+                    e.preventDefault(); return;
+                }
+            }
+            // パスワード一致
             if (passInput && confirmInput && passInput.value !== confirmInput.value) {
                 alert("パスワードが一致しません。");
                 e.preventDefault();
@@ -343,7 +375,6 @@
     }
 });
 
-// パスワード表示切り替え（グローバル関数）
 function togglePassword(inputId, button) {
     const input = document.getElementById(inputId);
     if (!input) return;

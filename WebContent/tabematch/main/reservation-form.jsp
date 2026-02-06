@@ -21,32 +21,34 @@
 
         <%-- 基本予約情報 --%>
         <div class="form-group">
-            <label for="visitDate">来店日</label>
+            <label for="visitDate">来店日<span style="color:red;">*</span></label>
             <input type="date" name="visitDate" id="visitDate" required>
         </div>
 
         <div class="form-group">
-            <label for="visitTime">来店時間</label>
+            <label for="visitTime">来店時間<span style="color:red;">*</span></label>
             <input type="time" name="visitTime" id="visitTime" required>
         </div>
 
         <div class="form-group">
-		    <label for="numOfPeople">人数</label>
+		    <label for="numOfPeople">人数<span style="color:red;">*</span></label>
 		    <input type="number" name="numOfPeople" id="numOfPeople" min="1" max="10" value="1" required>
 		    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">※11名以上の予約は直接店舗へお電話でご確認ください。</p>
 		</div>
 
         <div class="form-item">
-		    <label>連絡先電話番号 <span style="color:red;">(必須)</span></label>
-		    <input type="tel" name="reserve_tel" required
+		    <label>連絡先電話番号 <span style="color:red;">*</span></label>
+		    <input type="tel" name="reserve_tel" id="reserve_tel" required
 		           placeholder="090-1234-5678"
-		           <%-- patternを「数字またはハイフンが10文字以上」に変更 --%>
-		           pattern="[0-9\-]{10,}"
-		           title="10桁以上の電話番号を半角数字（ハイフン可）で入力してください"
-		           <%-- 入力制御を追加：数字とハイフン以外を即座に削除 --%>
-		           oninput="this.value = this.value.replace(/[^0-9\-]/g, '')"
+		           maxlength="13"
+		           pattern="\d{2,4}-\d{2,4}-\d{4}"
+		           title="正しい電話番号の形式（例: 090-1234-5678）で入力してください"
+		           oninput="formatPhoneNumber(this)"
 		           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-		    <p style="font-size: 0.8rem; color: #666;">※ハイフンの有無はどちらでも構いません。</p>
+		    <div id="tel-error" style="color: red; font-size: 0.8rem; display: none; margin-top: 5px;">
+		        ※電話番号は10桁または11桁で入力してください
+		    </div>
+		    <p style="font-size: 0.8rem; color: #666;">※数字を入力すると自動でハイフンが入ります。</p>
 		</div>
 
         <hr>
@@ -87,7 +89,7 @@
                 </c:forEach>
             </div>
 
-            <label for="allergyNotes" class="mt-10">食材の配慮に関する詳細</label>
+            <label for="allergyNotes" class="mt-10">食材の配慮に関する詳細（任意）</label>
             <textarea name="allergyNotes" id="allergyNotes" rows="3"
                 placeholder="例：つなぎの卵もNG、重度の症状がある、宗教上の理由で食べられない、など"></textarea>
         </div>
@@ -192,6 +194,38 @@
     // イベントリスナーを設定
     numInput.addEventListener('change', validateNumOfPeople);
     numInput.addEventListener('input', validateNumOfPeople); // キーボード入力にも対応
+
+    /**
+     * 電話番号の自動ハイフン整形とバリデーション
+     */
+    function formatPhoneNumber(input) {
+        // ① 数字以外をすべて除去
+        let value = input.value.replace(/\D/g, "");
+        const telError = document.getElementById("tel-error");
+
+        // ② 桁数に応じてハイフンを挿入 (09012345678 -> 090-1234-5678)
+        let formatted = "";
+        if (value.length <= 3) {
+            formatted = value;
+        } else if (value.length <= 7) {
+            formatted = value.substring(0, 3) + "-" + value.substring(3);
+        } else {
+            formatted = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
+        }
+
+        // ③ 入力欄に値を戻す
+        input.value = formatted;
+
+        // ④ 簡易バリデーション
+        // 日本の電話番号は数字のみで10桁(固定電話)か11桁(携帯)
+        if (value.length > 0 && (value.length < 10 || value.length > 11)) {
+            telError.style.display = "block";
+            input.style.borderColor = "red";
+        } else {
+            telError.style.display = "none";
+            input.style.borderColor = "#ddd";
+        }
+    }
 
 </script>
 
