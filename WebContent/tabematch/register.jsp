@@ -203,25 +203,53 @@
         <tr>
             <td>メールアドレス<span class="required">*</span></td>
             <td>
-                <input type="email" name="userId" maxlength="50" required>
-                <small>50文字以内</small>
-            </td>
+			    <input type="text"
+			           name="request_mail"
+			           id="request_mail"
+			           maxlength="100"
+			           required
+			           placeholder="example@mail.com"
+			           pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+			           title="半角英数字で正しいメール形式を入力してください">
+			    <div id="email-error" class="error-text" style="color: red; font-size: 0.8em; display: none; font-weight: bold;">
+			        </div>
+			</td>
         </tr>
+
         <tr>
-            <td>パスワード<span class="required">*</span></td>
-            <td>
-                <input type="password" name="password" id="registerPassword" maxlength="225" required style="width: 280px; display: inline-block; vertical-align: middle;">
-                <button type="button" onclick="togglePassword('registerPassword', this)" style="display: inline-block; vertical-align: middle;">👁️ 表示</button>
-                <small>225文字以内</small>
-            </td>
-        </tr>
-        <tr>
-            <td>パスワード確認<span class="required">*</span></td>
-            <td>
-                <input type="password" name="passwordConfirm" id="confirmPassword" maxlength="225" required style="width: 280px; display: inline-block; vertical-align: middle;">
-                <button type="button" onclick="togglePassword('confirmPassword', this)" style="display: inline-block; vertical-align: middle;">👁️ 表示</button>
-            </td>
-        </tr>
+		    <td>パスワード<span class="required">*</span></td>
+		    <td>
+		        <div class="input-with-button">
+		            <input type="password"
+		                   name="password"
+		                   id="registerPassword"
+		                   maxlength="32"
+		                   required
+		                   pattern="^[a-zA-Z0-9]+$"
+		                   title="半角英数字のみ使用可能です">
+		            <button type="button" onclick="togglePassword('registerPassword', this)">👁️ 表示</button>
+		        </div>
+		        <div id="pass-error" class="error-text" style="color: red; font-size: 0.8em; display: none;"></div>
+		        <small>8～32文字の半角英数字</small>
+		    </td>
+		</tr>
+
+		<tr>
+		    <td>パスワード確認<span class="required">*</span></td>
+		    <td>
+		        <div class="input-with-button">
+		            <input type="password"
+		                   name="passwordConfirm"
+		                   id="confirmPassword"
+		                   maxlength="32"
+		                   required>
+		            <button type="button" onclick="togglePassword('confirmPassword', this)">👁️ 表示</button>
+		        </div>
+		        <div id="confirm-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
+		            ※パスワードが一致しません
+		        </div>
+		    </td>
+		</tr>
         <tr>
             <td>ユーザー名<span class="required">*</span></td>
             <td>
@@ -247,10 +275,6 @@
     }
 %>
                 </div>
-                <div class="other-allergy">
-                    <label for="otherAllergy">要配慮食材:</label>
-                    <input type="text" name="otherAllergy" id="otherAllergy" placeholder="例: とうもろこし、トマト">
-                </div>
                 <small>※配慮が必要な食材をすべて選択してください（複数選択可）</small>
             </td>
         </tr>
@@ -271,6 +295,111 @@
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // --- 要素の取得 ---
+    const form = document.querySelector("form");
+    const emailInput = document.getElementById("request_mail");
+    const emailError = document.getElementById("email-error");
+    const passInput = document.getElementById("registerPassword");
+    const confirmInput = document.getElementById("confirmPassword");
+    const passError = document.getElementById("pass-error");
+    const confirmError = document.getElementById("confirm-error");
+
+    // --- 正規表現パターン ---
+    const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const passPattern = /^[a-zA-Z0-9]+$/;
+
+    // --- 1. メールアドレスのバリデーション ---
+    if (emailInput) {
+        emailInput.addEventListener("input", () => {
+            const hasFullWidth = /[^\x01-\x7E]/.test(emailInput.value);
+
+            if (emailInput.value === "") {
+                emailError.style.display = "none";
+                emailInput.style.borderColor = "";
+            } else if (hasFullWidth) {
+                emailError.textContent = "※全角文字が含まれています";
+                emailError.style.display = "block";
+                emailInput.style.borderColor = "red";
+            } else if (!emailPattern.test(emailInput.value)) {
+                emailError.textContent = "※正しいメール形式で入力してください";
+                emailError.style.display = "block";
+                emailInput.style.borderColor = "red";
+            } else {
+                emailError.style.display = "none";
+                emailInput.style.borderColor = "#99ccff";
+            }
+        });
+    }
+
+    // --- 2. パスワードのバリデーション ---
+    const validatePassword = () => {
+        const passValue = passInput.value;
+        if (passValue === "") {
+            passError.style.display = "none";
+            passInput.style.borderColor = "";
+        } else if (!passPattern.test(passValue)) {
+            passError.textContent = "※英数字のみ（記号不可）で入力してください";
+            passError.style.display = "block";
+            passInput.style.borderColor = "red";
+        } else if (passValue.length < 8) {
+            passError.textContent = "※8文字以上で入力してください";
+            passError.style.display = "block";
+            passInput.style.borderColor = "red";
+        } else {
+            passError.style.display = "none";
+            passInput.style.borderColor = "#99ccff";
+        }
+        checkMatch(); // パスワードが変わったら一致チェックも再実行
+    };
+
+    const checkMatch = () => {
+        if (confirmInput.value === "") {
+            confirmError.style.display = "none";
+            confirmInput.style.borderColor = "";
+        } else if (passInput.value !== confirmInput.value) {
+            confirmError.style.display = "block";
+            confirmInput.style.borderColor = "red";
+        } else {
+            confirmError.style.display = "none";
+            confirmInput.style.borderColor = "#99ccff";
+        }
+    };
+
+    if (passInput) passInput.addEventListener("input", validatePassword);
+    if (confirmInput) confirmInput.addEventListener("input", checkMatch);
+
+    // --- 3. 送信時の最終ガード（1つのsubmitにまとめる） ---
+    form.addEventListener("submit", (e) => {
+        let hasError = false;
+        let messages = [];
+
+        // メールの最終チェック
+        if (!emailPattern.test(emailInput.value)) {
+            messages.push("メールアドレスの形式が正しくありません。");
+            hasError = true;
+        }
+
+        // パスワードの最終チェック
+        if (passInput.value.length < 8 || !passPattern.test(passInput.value)) {
+            messages.push("パスワードは英数字8文字以上で入力してください。");
+            hasError = true;
+        }
+
+        // 一致の最終チェック
+        if (passInput.value !== confirmInput.value) {
+            messages.push("パスワードが一致していません。");
+            hasError = true;
+        }
+
+        if (hasError) {
+            alert(messages.join("\n"));
+            e.preventDefault(); // 送信を中止
+        }
+    });
+});
+
+// togglePasswordは外に出したままでOK
 function togglePassword(inputId, button) {
     var input = document.getElementById(inputId);
     if (input.type === "password") {

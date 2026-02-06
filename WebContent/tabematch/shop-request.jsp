@@ -165,23 +165,37 @@
         </tr>
 
         <tr>
-            <td>電話番号<span class="required">*</span></td>
-            <td>
-			    <input type="text"
-			           name="number"
-			           maxlength="20"
-			           required
-			           placeholder="090-1234-5678"
-			           pattern="[0-9\-]+"
-			           title="半角数字とハイフンのみ入力可能です"
-			           oninput="this.value = this.value.replace(/[^0-9\-]/g, '')">
-			    <small>※半角数字とハイフンのみ</small>
-			</td>
-        </tr>
-
+		    <td>電話番号<span class="required">*</span></td>
+		    <td>
+		        <input type="text"
+		               name="number"
+		               id="shop_tel"
+		               maxlength="13"
+		               required
+		               placeholder="09012345678"
+		               title="電話番号を入力してください">
+		        <div id="tel-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
+		            ※正しい電話番号の形式ではありません
+		        </div>
+		        <small>※ハイフンは自動で入力されます</small>
+		    </td>
+		</tr>
         <tr>
             <td>メールアドレス<span class="required">*</span></td>
-            <td><input type="email" name="request_mail" maxlength="100" required></td>
+            <td>
+			    <input type="text"
+			           name="request_mail"
+			           id="request_mail"
+			           maxlength="100"
+			           required
+			           placeholder="example@mail.com"
+			           pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+			           title="正しいメールアドレスの形式で入力してください">
+			    <div id="email-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
+			        ※無効なメールアドレス形式です
+			    </div>
+			    <small>※半角英数字で入力してください</small>
+			</td>
         </tr>
 
         <tr>
@@ -197,35 +211,146 @@
 <div class="back-link">
     <a href="Login.action">← ログイン画面に戻る</a>
 </div>
+
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.querySelector(".file-input");
-  const container = document.getElementById("preview-container");
-  const countLabel = document.querySelector(".file-count");
+	document.addEventListener("DOMContentLoaded", () => {
+    // --- 1. 要素の取得（一括） ---
+    const form = document.querySelector("form");
+    const emailInput = document.getElementById("request_mail");
+    const emailError = document.getElementById("email-error");
+    const passInput = document.getElementById("registerPassword");
+    const confirmInput = document.getElementById("confirmPassword");
+    const passError = document.getElementById("pass-error");
+    const confirmError = document.getElementById("confirm-error");
+    const telInput = document.getElementById("shop_tel");
+    const telError = document.getElementById("tel-error");
+    const fileInput = document.querySelector(".file-input");
+    const container = document.getElementById("preview-container");
+    const countLabel = document.querySelector(".file-count");
 
-  input.addEventListener("change", () => {
-    container.innerHTML = ""; // 以前のプレビューをクリア
+    // --- 2. 共通パターン ---
+    const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const passPattern = /^[a-zA-Z0-9]+$/;
 
-    if (input.files && input.files.length > 0) {
-      countLabel.textContent = input.files.length + " 枚選択中";
-
-      Array.from(input.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const div = document.createElement("div");
-          div.className = "preview-item";
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          div.appendChild(img);
-          container.appendChild(div);
-        };
-        reader.readAsDataURL(file);
-      });
-    } else {
-      countLabel.textContent = "未選択";
+    // --- 3. メールアドレス・バリデーション ---
+    if (emailInput && emailError) {
+        emailInput.addEventListener("input", () => {
+            const hasFullWidth = /[^\x01-\x7E]/.test(emailInput.value);
+            if (emailInput.value === "") {
+                emailError.style.display = "none";
+                emailInput.style.borderColor = "";
+            } else if (hasFullWidth || !emailPattern.test(emailInput.value)) {
+                emailError.textContent = hasFullWidth ? "※全角文字が含まれています" : "※正しいメール形式で入力してください";
+                emailError.style.display = "block";
+                emailInput.style.borderColor = "red";
+            } else {
+                emailError.style.display = "none";
+                emailInput.style.borderColor = "#99ccff";
+            }
+        });
     }
-  });
+
+    // --- 4. パスワード・バリデーション ---
+    const checkMatch = () => {
+        if (!confirmInput || !passInput) return;
+        if (confirmInput.value === "") {
+            confirmError.style.display = "none";
+        } else if (passInput.value !== confirmInput.value) {
+            confirmError.style.display = "block";
+            confirmInput.style.borderColor = "red";
+        } else {
+            confirmError.style.display = "none";
+            confirmInput.style.borderColor = "#99ccff";
+        }
+    };
+
+    if (passInput && passError) {
+        passInput.addEventListener("input", () => {
+            if (passInput.value === "") {
+                passError.style.display = "none";
+            } else if (!passPattern.test(passInput.value) || passInput.value.length < 8) {
+                passError.textContent = passInput.value.length < 8 ? "※8文字以上必要です" : "※英数字のみ使用可能です";
+                passError.style.display = "block";
+                passInput.style.borderColor = "red";
+            } else {
+                passError.style.display = "none";
+                passInput.style.borderColor = "#99ccff";
+            }
+            checkMatch();
+        });
+    }
+    if (confirmInput) confirmInput.addEventListener("input", checkMatch);
+
+    // --- 5. 電話番号・自動ハイフン ---
+    if (telInput) {
+        telInput.addEventListener("input", () => {
+            let val = telInput.value.replace(/\D/g, "");
+            let formatted = "";
+            if (val.length <= 3) formatted = val;
+            else if (val.length <= 7) formatted = val.substring(0, 3) + "-" + val.substring(3);
+            else formatted = val.substring(0, 3) + "-" + val.substring(3, 7) + "-" + val.substring(7, 11);
+
+            telInput.value = formatted;
+            if (telError) {
+                telError.style.display = (val.length > 0 && val.length < 10) ? "block" : "none";
+            }
+        });
+    }
+
+    // --- 6. 画像プレビュー ---
+    if (fileInput && container) {
+        fileInput.addEventListener("change", () => {
+            container.innerHTML = "";
+            if (fileInput.files.length > 0) {
+                if (countLabel) countLabel.textContent = fileInput.files.length + " 枚選択中";
+                Array.from(fileInput.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const div = document.createElement("div");
+                        div.className = "preview-item";
+                        div.innerHTML = `<img src="${e.target.result}" style="width:100px; height:100px; object-fit:cover; margin:5px; border-radius:5px;">`;
+                        container.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else if (countLabel) {
+                countLabel.textContent = "未選択";
+            }
+        });
+    }
+
+    // --- 7. 送信ボタン押下時の最終チェック ---
+    if (form) {
+        form.addEventListener("submit", (e) => {
+            // メール形式チェック
+            if (emailInput && !emailPattern.test(emailInput.value)) {
+                alert("メールアドレスを確認してください。");
+                e.preventDefault();
+                return;
+            }
+            // パスワードチェック
+            if (passInput && (passInput.value.length < 8 || !passPattern.test(passInput.value))) {
+                alert("パスワードは英数字8文字以上で入力してください。");
+                e.preventDefault();
+                return;
+            }
+            // 一致チェック
+            if (passInput && confirmInput && passInput.value !== confirmInput.value) {
+                alert("パスワードが一致しません。");
+                e.preventDefault();
+            }
+        });
+    }
 });
+
+// パスワード表示切り替え（グローバル関数）
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const isPass = input.type === "password";
+    input.type = isPass ? "text" : "password";
+    button.textContent = isPass ? "🔒 非表示" : "👁️ 表示";
+}
 </script>
 
 <%@include file="../footer.html" %>

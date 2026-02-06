@@ -84,14 +84,23 @@ public class ShopRequestExecuteAction extends Action {
         String finalFileName = fileNames.toString();
 
         // --- 4. 入力チェック（取得済みの変数を使用） ---
+
+        String emailPattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
+
         if (isEmpty(address) || isEmpty(restaurantName) || allergySupportName.isEmpty() ||
             isEmpty(reservationStr) || isEmpty(businessHours) || isEmpty(payment) ||
             isEmpty(genre) || isEmpty(seat) || isEmpty(number) || isEmpty(request_mail)) {
 
             req.setAttribute("errorMessage", "必須項目をすべて入力してください。");
             url = "shop-request.jsp";
-        }
-        else {
+
+        }else if (!request_mail.matches(emailPattern)) { // メールのチェック
+
+            req.setAttribute("errorMessage", "無効なメールアドレス形式です。");
+            url = "shop-request.jsp";
+
+        } else {
             Request request = new Request();
             request.setRequestId(PasswordGenerator.generateRequestId());
             request.setAddress(address);
