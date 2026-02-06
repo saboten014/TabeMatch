@@ -85,7 +85,7 @@ public class AdminRequestApproveAction extends Action {
                 shop.setShopName(request.getRestaurantName());
                 shop.setShopAllergy(request.getAllergySupport());
                 shop.setShopMail(shopEmail);
-                shop.setShopTel(request.getNumber().replaceAll("[^0-9]", ""));
+                shop.setShopTel(request.getNumber());
                 shop.setShopReserve(request.getReservation() == 1 ? "可能" : "不可");
                 shop.setShopGenre(request.getGenre());
                 shop.setShopPicture(request.getPhoto());
@@ -93,6 +93,7 @@ public class AdminRequestApproveAction extends Action {
                 shop.setShopPay(request.getPayment());
                 shop.setShopSeat(extractSeatNumber(request.getSeat()));
                 shop.setShopUrl(request.getLink());
+                shop.setShopTime(request.getBusinessHours());
 
                 // 6. DBへの一括登録処理（トランザクション管理はDAO側を想定）
                 boolean userCreated = userDao.registerUser(shopUser);

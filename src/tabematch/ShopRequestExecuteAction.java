@@ -2,9 +2,10 @@ package tabematch;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Collection; // 追加
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
-import java.util.StringJoiner; // 追加
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.servlet.annotation.MultipartConfig;
@@ -12,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import bean.Allergen;
 import bean.Request;
+import dao.AllergenDAO;
 import dao.RequestDAO;
 import tool.Action;
 import util.PasswordGenerator;
@@ -25,13 +28,12 @@ import util.PasswordGenerator;
 public class ShopRequestExecuteAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest req, HttpServletResponse res)
-            throws Exception {
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         String url = "";
         RequestDAO requestDao = new RequestDAO();
 
-        // --- フォーム値取得 ---
+        // --- 1. フォーム値の取得（一度だけ取得して変数に格納） ---
         String address        = getFormField(req, "address");
         String restaurantName = getFormField(req, "restaurantName");
         String reservationStr = getFormField(req, "reservation");
@@ -44,47 +46,47 @@ public class ShopRequestExecuteAction extends Action {
         String number         = getFormField(req, "number");
         String request_mail   = getFormField(req, "request_mail");
 
+        // --- 2. アレルギーIDを「名前」に変換する処理 ---
         String[] allergyArray = req.getParameterValues("allergyInfo");
-        String allergySupport = (allergyArray != null) ? String.join(",", allergyArray) : "";
+        String allergySupportName = "";
 
-        // --- ★画像ファイル処理（複数対応版） ---
+        if (allergyArray != null && allergyArray.length > 0) {
+            AllergenDAO allergenDao = new AllergenDAO();
+            List<Allergen> masterList = allergenDao.getAllAllergens();
+            StringJoiner nameJoiner = new StringJoiner(",");
+
+            for (String selectedId : allergyArray) {
+                for (Allergen master : masterList) {
+                    if (master.getAllergenId().equals(selectedId)) {
+                        nameJoiner.add(master.getAllergenName());
+                        break;
+                    }
+                }
+            }
+            allergySupportName = nameJoiner.toString();
+        }
+
+        // --- 3. 画像ファイル処理 ---
         StringJoiner fileNames = new StringJoiner(",");
         String savePath = req.getServletContext().getRealPath("/upload");
         File uploadDir = new File(savePath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdir();
-        }
+        if (!uploadDir.exists()) { uploadDir.mkdir(); }
 
-        // 全てのPartを取得してループを回す
         Collection<Part> parts = req.getParts();
         for (Part part : parts) {
-            // inputのname属性が "photo" で、かつファイルが存在する場合
             if (part.getName().equals("photo") && part.getSize() > 0) {
                 String originalFileName = part.getSubmittedFileName();
                 String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFileName;
-
-                // サーバーに保存
                 part.write(savePath + File.separator + uniqueFileName);
-
-                // ファイル名をStringJoinerに追加
                 fileNames.add(uniqueFileName);
             }
         }
-
-        // 最終的なカンマ区切りの文字列（例: "uuid1.jpg,uuid2.png"）
         String finalFileName = fileNames.toString();
 
-        // --- 入力チェック ---
-        if (isEmpty(address) ||
-            isEmpty(restaurantName) ||
-            allergySupport.isEmpty() ||
-            isEmpty(reservationStr) ||
-            isEmpty(businessHours) ||
-            isEmpty(payment) ||
-            isEmpty(genre) ||
-            isEmpty(seat) ||
-            isEmpty(number) ||
-            isEmpty(request_mail)) {
+        // --- 4. 入力チェック（取得済みの変数を使用） ---
+        if (isEmpty(address) || isEmpty(restaurantName) || allergySupportName.isEmpty() ||
+            isEmpty(reservationStr) || isEmpty(businessHours) || isEmpty(payment) ||
+            isEmpty(genre) || isEmpty(seat) || isEmpty(number) || isEmpty(request_mail)) {
 
             req.setAttribute("errorMessage", "必須項目をすべて入力してください。");
             url = "shop-request.jsp";
@@ -94,19 +96,19 @@ public class ShopRequestExecuteAction extends Action {
             request.setRequestId(PasswordGenerator.generateRequestId());
             request.setAddress(address);
             request.setRestaurantName(restaurantName);
-            request.setAllergySupport(allergySupport);
+            // ★IDではなく「変換後の名前」をセット！
+            request.setAllergySupport(allergySupportName);
             request.setReservation(Integer.parseInt(reservationStr));
             request.setBusinessHours(businessHours);
             request.setPayment(payment);
             request.setGenre(genre);
-
-            // ★ここにカンマ区切りの文字列をセット
             request.setPhoto(finalFileName);
-
             request.setPriceRange(priceRange);
             request.setSeat(seat);
             request.setLink(link);
+
             request.setNumber(number);
+
             request.setCertification(1);
             request.setRequest_mail(request_mail);
 
@@ -124,9 +126,10 @@ public class ShopRequestExecuteAction extends Action {
         req.getRequestDispatcher(url).forward(req, res);
     }
 
+    // ★ストリームの読み込みを安定させた修正版メソッド
     private String getFormField(HttpServletRequest req, String name) throws Exception {
         Part part = req.getPart(name);
-        if (part == null) return null;
+        if (part == null || part.getSize() == 0) return null;
 
         try (InputStream is = part.getInputStream();
              Scanner s = new Scanner(is, "UTF-8")) {

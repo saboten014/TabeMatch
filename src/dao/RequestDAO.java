@@ -27,6 +27,11 @@ public class RequestDAO extends DAO {
 		stmt.setString(4, request.getAllergySupport());
 		stmt.setInt(5, request.getReservation());
 		stmt.setString(6, request.getBusinessHours());
+		//確かめよう
+		System.out.println(request.getBusinessHours());
+		if (request.getBusinessHours() == null) {
+		    System.out.println("ない！！！！");
+		}
 		stmt.setString(7, request.getPayment());
 		stmt.setString(8, request.getGenre());
 		stmt.setString(9, request.getPhoto());

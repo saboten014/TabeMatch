@@ -13,35 +13,36 @@ public class ShopDAO extends DAO {
 
 	// 店舗登録 (try-with-resources 適用)
 	public boolean insertShop(Shop shop) throws Exception {
+	    // SQLに shop_time を追加
+	    String sql = "INSERT INTO shop (shop_id, password, shop_address, shop_name, shop_allergy, shop_mail, " +
+	                 "shop_tel, shop_reserve, shop_genre, shop_picture, shop_price, shop_pay, shop_seat, shop_url, shop_time) " +
+	                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // ?を1つ追加
 
-		String sql = "INSERT INTO shop (shop_id, password, shop_address, shop_name, shop_allergy, shop_mail, " +
-					 "shop_tel, shop_reserve, shop_genre, shop_picture, shop_price, shop_pay, shop_seat, shop_url) " +
-					 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	    int result = 0;
 
-		int result = 0;
+	    try (Connection con = getConnection();
+	         PreparedStatement stmt = con.prepareStatement(sql)) {
 
-		try (Connection con = getConnection();
-			 PreparedStatement stmt = con.prepareStatement(sql)) {
+	        stmt.setString(1, shop.getShopId());
+	        stmt.setString(2, shop.getPassword());
+	        stmt.setString(3, shop.getShopAddress());
+	        stmt.setString(4, shop.getShopName());
+	        stmt.setString(5, shop.getShopAllergy());
+	        stmt.setString(6, shop.getShopMail());
+	        stmt.setString(7, shop.getShopTel());
+	        stmt.setString(8, shop.getShopReserve());
+	        stmt.setString(9, shop.getShopGenre());
+	        stmt.setString(10, shop.getShopPicture());
+	        stmt.setString(11, shop.getShopPrice());
+	        stmt.setString(12, shop.getShopPay());
+	        stmt.setInt(13, shop.getShopSeat());
+	        stmt.setString(14, shop.getShopUrl());
+	        // ★ここを追加！
+	        stmt.setString(15, shop.getShopTime());
 
-			stmt.setString(1, shop.getShopId());
-			stmt.setString(2, shop.getPassword());
-			stmt.setString(3, shop.getShopAddress());
-			stmt.setString(4, shop.getShopName());
-			stmt.setString(5, shop.getShopAllergy());
-			stmt.setString(6, shop.getShopMail());
-			stmt.setString(7, shop.getShopTel());
-			stmt.setString(8, shop.getShopReserve());
-			stmt.setString(9, shop.getShopGenre());
-			stmt.setString(10, shop.getShopPicture());
-			stmt.setString(11, shop.getShopPrice());
-			stmt.setString(12, shop.getShopPay());
-			stmt.setInt(13, shop.getShopSeat());
-			stmt.setString(14, shop.getShopUrl());
-
-			result = stmt.executeUpdate();
-		}
-
-		return result > 0;
+	        result = stmt.executeUpdate();
+	    }
+	    return result > 0;
 	}
 
 	// 全店舗を取得 (try-with-resources 適用)
@@ -602,10 +603,11 @@ public class ShopDAO extends DAO {
     public boolean insertShopForAdmin(Shop shop) throws Exception {
         Connection con = getConnection();
 
+        // SQLに shop_time を追加
         String sql = "INSERT INTO shop (shop_id, password, shop_name, shop_address, shop_mail, shop_tel, " +
                      "shop_url, shop_genre, shop_price, shop_pay, shop_seat, shop_reserve, shop_allergy, " +
-                     "shop_picture, is_public, shop_date) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE, now())";
+                     "shop_picture, is_public, shop_date, shop_time) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE, now(), ?)";
 
         PreparedStatement stmt = con.prepareStatement(sql);
         stmt.setString(1, shop.getShopId());
@@ -619,7 +621,6 @@ public class ShopDAO extends DAO {
         stmt.setString(9, shop.getShopPrice());
         stmt.setString(10, shop.getShopPay());
 
-        // 座席数の処理（nullの場合は0）
         if (shop.getShopSeat() != null) {
             stmt.setInt(11, shop.getShopSeat());
         } else {
@@ -629,6 +630,8 @@ public class ShopDAO extends DAO {
         stmt.setString(12, shop.getShopReserve());
         stmt.setString(13, shop.getShopAllergy());
         stmt.setString(14, shop.getShopPicture());
+        // ★ここを追加！
+        stmt.setString(15, shop.getShopTime());
 
         int result = stmt.executeUpdate();
         stmt.close();

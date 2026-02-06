@@ -55,8 +55,6 @@ if (list != null && !list.isEmpty()) {
         <th>ID</th>
         <th>住所</th>
         <th>メール</th>
-        <th>公開状態</th>
-        <th>登録日</th>
         <th>操作</th>
     </tr>
 <%
@@ -67,8 +65,6 @@ for (Shop s : list) {
     <td><%= s.getShopId() %></td>
     <td><%= s.getShopAddress() %></td>
     <td><%= s.getShopMail() %></td>
-    <td><%= s.getIsPublic() ? "公開" : "非公開" %></td>
-    <td><%= s.getShopDate() %></td>
     <td>
         <a href="AdminShopDetail.action?shopId=<%=s.getShopId()%>">詳細</a>
     </td>
