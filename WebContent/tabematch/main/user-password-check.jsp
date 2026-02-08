@@ -3,7 +3,6 @@
 <%@ include file="../../header.html" %>
 
 <%
-    // セッションからユーザー名を取得
     Users loginUser = (Users) session.getAttribute("user");
     String userName = (loginUser != null) ? loginUser.getUserName() : "ゲスト";
 %>
@@ -25,7 +24,6 @@
                 現在のパスワードを入力してください。
             </p>
 
-            <%-- エラーメッセージ表示 --%>
             <% String error = (String)request.getAttribute("errorMessage"); %>
             <% if (error != null) { %>
                 <div class="alert-danger" style="margin-bottom: 20px; padding: 10px; border-radius: 10px; background-color: #fff1f0; color: #e57373; border: 1px solid #ffcdd2;">
@@ -34,22 +32,22 @@
             <% } %>
 
             <form action="UserProfile.action" method="post">
-                <%-- Actionの「mode.equals("auth")」を動かすための隠しパラメータ --%>
                 <input type="hidden" name="mode" value="auth">
 
                 <div style="margin-bottom: 30px; position: relative; display: flex; align-items: center;">
                     <input type="password" name="password" id="currentPassInput" placeholder="現在のパスワード" required
                            style="width: 100%; padding: 15px; padding-right: 45px; border-radius: 15px; border: 2px solid #e8f5e9; font-size: 16px; outline: none; transition: border-color 0.3s;"
                            onfocus="this.style.borderColor='#81c784'" onblur="this.style.borderColor='#e8f5e9'">
-                    <%-- パスワード表示切り替えアイコン --%>
-                    <span id="toggleCurrentPass" style="position: absolute; right: 15px; cursor: pointer; font-size: 1.2em; user-select: none;">👁</span>
+
+                    <%-- アイコン部分を id="toggleCurrentPass" で制御 --%>
+                    <span id="toggleCurrentPass" style="position: absolute; right: 15px; cursor: pointer; font-size: 1.2em; user-select: none;">👁️</span>
                 </div>
 
-                <div class="btn" style="flex-direction: column; gap: 10px;">
+                <div class="btn" style="display: flex; flex-direction: column; gap: 10px;">
                     <button type="submit" class="btn-hensyu" style="border: none; width: 100%; cursor: pointer;">
                         次へ進む
                     </button>
-                    <a href="UserProfileView.action" class="btn-modoru" style="width: 100%; box-sizing: border-box; text-align: center; text-decoration: none;">
+                    <a href="UserProfileView.action" class="btn-modoru" style="width: 100%; box-sizing: border-box; text-align: center; text-decoration: none; display: block;">
                         キャンセル
                     </a>
                 </div>
@@ -58,12 +56,24 @@
     </div>
 </div>
 
-<%-- JavaScript: パスワードの表示/非表示切り替え --%>
 <script>
-    const toggle = document.getElementById('toggleCurrentPass');
-    const input = document.getElementById('currentPassInput');
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle = document.getElementById('toggleCurrentPass');
+        const input = document.getElementById('currentPassInput');
 
-    toggle.addEventListener('click', function() {
-        const isPassword = input.getAttribute('type') === 'password';
-        input.setAttribute('type', isPassword ? 'text' : 'password');
-        // 表示中のときは少しアイコンを薄くして状態を変化させる
+        if (toggle && input) {
+            toggle.addEventListener('click', function() {
+                // type属性の切り替え
+                const isPassword = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isPassword ? 'text' : 'password');
+
+                // アイコンの見た目を切り替え
+                // 👁️ (表示中) ↔️ 🙈 (隠し中)
+                this.textContent = isPassword ? '🙈' : '👁️';
+
+                // 少し色を変えて「有効化されている感」を出す
+                this.style.opacity = isPassword ? '0.5' : '1';
+            });
+        }
+    });
+</script>
