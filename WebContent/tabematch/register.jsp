@@ -201,20 +201,20 @@
 <form action="RegisterExecute.action" method="post">
     <table>
         <tr>
-            <td>メールアドレス<span class="required">*</span></td>
-            <td>
-			    <input type="text"
-			           name="request_mail"
-			           id="request_mail"
-			           maxlength="100"
-			           required
-			           placeholder="example@mail.com"
-			           pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-			           title="半角英数字で正しいメール形式を入力してください">
-			    <div id="email-error" class="error-text" style="color: red; font-size: 0.8em; display: none; font-weight: bold;">
-			        </div>
-			</td>
-        </tr>
+		    <td>メールアドレス<span class="required">*</span></td>
+		    <td>
+		        <input type="text"
+		               name="userId"
+		               id="request_mail"
+		               maxlength="100"
+		               required
+		               placeholder="example@mail.com"
+		               pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+		               title="半角英数字で正しいメール形式を入力してください">
+		        <div id="email-error" class="error-text" style="color: red; font-size: 0.8em; display: none; font-weight: bold;">
+		        </div>
+		    </td>
+		</tr>
 
         <tr>
 		    <td>パスワード<span class="required">*</span></td>
@@ -258,26 +258,27 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-top: 20px;">NG食材情報</td>
-            <td>
-                <div class="checkbox-grid">
-<%
-    // アレルゲン一覧を取得
-    AllergenDAO allergenDao = new AllergenDAO();
-    List<Allergen> allergenList = allergenDao.getAllAllergens();
-    for (Allergen allergen : allergenList) {
-%>
-                    <div class="checkbox-item">
-                        <input type="checkbox" name="allergenIds" value="<%= allergen.getAllergenId() %>" id="reg_allergy_<%= allergen.getAllergenId() %>">
-                        <label for="reg_allergy_<%= allergen.getAllergenId() %>"><%= allergen.getAllergenName() %></label>
-                    </div>
-<%
-    }
-%>
-                </div>
-                <small>※配慮が必要な食材をすべて選択してください（複数選択可）</small>
-            </td>
-        </tr>
+		    <td style="vertical-align: top; padding-top: 20px;">NG食材情報</td>
+		    <td>
+		        <div class="checkbox-grid">
+		<%
+		    // アレルゲン一覧を取得
+		    AllergenDAO allergenDao = new AllergenDAO();
+		    List<Allergen> allergenList = allergenDao.getAllAllergens();
+		    for (Allergen allergen : allergenList) {
+		%>
+		            <div class="checkbox-item">
+		                <%-- name="allergenIds" はAction側と一致しているのでそのままでOK --%>
+		                <input type="checkbox" name="allergenIds" value="<%= allergen.getAllergenId() %>" id="reg_allergy_<%= allergen.getAllergenId() %>">
+		                <label for="reg_allergy_<%= allergen.getAllergenId() %>"><%= allergen.getAllergenName() %></label>
+		            </div>
+		<%
+		    }
+		%>
+		        </div>
+		        <small>※配慮が必要な食材をすべて選択してください（複数選択可）</small>
+		    </td>
+		</tr>
         <!-- ユーザー区分を一般ユーザー（1）で固定 -->
         <input type="hidden" name="usersTypeId" value="1">
         <tr>

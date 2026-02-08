@@ -33,7 +33,6 @@
         <c:when test="${empty favoriteShopList}">
             <div class="no-favorites-message">
                 <p>現在、お気に入り登録されている店舗はありません。</p>
-                <p><a href="SearchAction">店舗検索ページへ</a></p>
             </div>
         </c:when>
 
