@@ -3,12 +3,52 @@
 <%@ include file="../../header.html" %>
 <%@ include file="user_menu.jsp" %>
 
-<%-- CSSの読み込み --%>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/reservation-form.css">
+
+<%-- 注意喚起用の追加スタイル --%>
+<style>
+    .shop-info-box {
+        background-color: #f0f7f0;
+        border: 1px solid #4CAF50;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .shop-info-title {
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 5px;
+        font-size: 0.95em;
+    }
+    .shop-info-content {
+        font-size: 1.1em;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .caution-box {
+        background-color: #fff9c4;
+        border-left: 4px solid #fbc02d;
+        padding: 10px 15px;
+        font-size: 0.85em;
+        color: #5d4037;
+    }
+</style>
 
 <div class="container">
     <h2>予約情報の入力</h2>
     <p class="shop-name-display">予約先：<strong>${shop.shopName}</strong></p>
+
+    <%-- 店舗の営業時間・定休日を表示 --%>
+    <div class="shop-info-box">
+        <div class="shop-info-title">📅 店舗の営業時間・定休日</div>
+        <div class="shop-info-content">
+            <c:out value="${not empty shop.shopTime ? shop.shopTime : '店舗へ直接ご確認ください'}" />
+        </div>
+        <div class="caution-box">
+            ⚠️ <strong>ご注意：</strong><br>
+            休業日に予約を入れた場合、店舗都合により予約がキャンセルされる可能性があります。上記の日程をよくご確認の上、入力をお願いします☘️
+        </div>
+    </div>
 
     <%-- エラーメッセージの表示 --%>
     <c:if test="${not empty errorMessage}">
@@ -16,7 +56,6 @@
     </c:if>
 
     <form action="ReserveExecute.action" method="post" class="reserve-form">
-        <%-- 店舗IDを隠しフィールドで送信 --%>
         <input type="hidden" name="shopId" value="${shop.shopId}">
 
         <%-- 基本予約情報 --%>
@@ -31,39 +70,32 @@
         </div>
 
         <div class="form-group">
-		    <label for="numOfPeople">人数<span style="color:red;">*</span></label>
-		    <input type="number" name="numOfPeople" id="numOfPeople" min="1" max="10" value="1" required>
-		    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">※11名以上の予約は直接店舗へお電話でご確認ください。</p>
-		</div>
+            <label for="numOfPeople">人数<span style="color:red;">*</span></label>
+            <input type="number" name="numOfPeople" id="numOfPeople" min="1" max="10" value="1" required>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">※11名以上の予約は直接店舗へお電話でご確認ください。</p>
+        </div>
 
         <div class="form-item">
-		    <label>連絡先電話番号 <span style="color:red;">*</span></label>
-		    <input type="tel" name="reserve_tel" id="reserve_tel" required
-		           placeholder="090-1234-5678"
-		           maxlength="13"
-		           pattern="\d{2,4}-\d{2,4}-\d{4}"
-		           title="正しい電話番号の形式（例: 090-1234-5678）で入力してください"
-		           oninput="formatPhoneNumber(this)"
-		           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-		    <div id="tel-error" style="color: red; font-size: 0.8rem; display: none; margin-top: 5px;">
-		        ※電話番号は10桁または11桁で入力してください
-		    </div>
-		    <p style="font-size: 0.8rem; color: #666;">※数字を入力すると自動でハイフンが入ります。</p>
-		</div>
+            <label>連絡先電話番号 <span style="color:red;">*</span></label>
+            <input type="tel" name="reserve_tel" id="reserve_tel" required
+                   placeholder="09012345678"
+                   maxlength="13"
+                   style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box;">
+            <div id="tel-error" style="color: red; font-size: 0.8rem; display: none; margin-top: 5px;">
+                ※電話番号は10桁または11桁で入力してください
+            </div>
+        </div>
 
         <hr>
 
-        <%-- アレルギー選択エリア（動的生成） --%>
+        <%-- アレルギー選択エリア --%>
         <div class="form-group">
             <label>配慮が必要な食材（お店の対応状況）</label>
             <p class="sub-label">※お店側で対応可能としている項目のみ選択できます。その他は「詳細」にご記入ください。</p>
 
             <div class="allergy-options">
-                <%-- 全アレルゲンマスターをループ --%>
                 <c:forEach var="a" items="${allAllergens}">
                     <c:set var="isAvailable" value="false" />
-
-                    <%-- お店の対応リスト（名前リスト）に含まれているか判定 --%>
                     <c:forEach var="shopOkName" items="${shopAllergenNames}">
                         <c:if test="${a.allergenName == shopOkName}">
                             <c:set var="isAvailable" value="true" />
@@ -72,14 +104,12 @@
 
                     <c:choose>
                         <c:when test="${isAvailable}">
-                            <%-- 対応可：緑色のラベル --%>
                             <label class="allergy-item available">
                                 <input type="checkbox" name="allergy" value="${a.allergenName}">
                                 <span class="allergen-name">${a.allergenName}</span>
                             </label>
                         </c:when>
                         <c:otherwise>
-                            <%-- 対応不可：グレーアウト＆無効化 --%>
                             <label class="allergy-item unavailable">
                                 <input type="checkbox" name="allergy" value="${a.allergenName}" disabled>
                                 <span class="allergen-name">${a.allergenName}</span>
@@ -94,13 +124,11 @@
                 placeholder="例：つなぎの卵もNG、重度の症状がある、宗教上の理由で食べられない、など"></textarea>
         </div>
 
-        <%-- お店へのメッセージ --%>
         <div class="form-group">
             <label for="message">お店へのメッセージ（任意）</label>
             <textarea name="message" id="message" rows="3"></textarea>
         </div>
 
-        <%-- ボタンエリア --%>
         <div class="button-group">
             <button type="submit" class="btn-submit">予約を確定する</button>
             <a href="search.jsp" class="btn-back">戻る</a>
@@ -108,125 +136,107 @@
     </form>
 </div>
 
-
 <script>
-    // 現在の日時を取得
+document.addEventListener("DOMContentLoaded", () => {
+    // --- 1. 日付・時間の制御 ---
     const now = new Date();
-
-    // 日付フィールドの最小値を今日に設定
     const dateInput = document.getElementById('visitDate');
     const today = now.toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
 
-    // 時間フィールドの制御
     const timeInput = document.getElementById('visitTime');
-
-    // 2時間後の時刻を計算
     const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
     const hours = String(twoHoursLater.getHours()).padStart(2, '0');
     const minutes = String(twoHoursLater.getMinutes()).padStart(2, '0');
     const minTime = hours + ':' + minutes;
 
-    // 日付が変更されたときと、ページ読み込み時に時間制限をチェック
     function updateTimeRestriction() {
-        const selectedDate = dateInput.value;
-
-        if (selectedDate === today) {
-            // 今日が選択された場合、2時間後以降のみ選択可能
+        if (dateInput.value === today) {
             timeInput.setAttribute('min', minTime);
-
-            // 既に入力されている時間が制限より前なら、クリア
             if (timeInput.value && timeInput.value < minTime) {
                 timeInput.value = '';
             }
         } else {
-            // 今日以外の日付が選択された場合、時間制限なし
             timeInput.removeAttribute('min');
         }
     }
 
-    // 時間が入力されたときにもチェック
     function validateTime() {
-        const selectedDate = dateInput.value;
-        const selectedTime = timeInput.value;
-
-        if (selectedDate === today && selectedTime && selectedTime < minTime) {
+        if (dateInput.value === today && timeInput.value && timeInput.value < minTime) {
             alert('予約時間は2時間後（' + minTime + '）以降を選択してください。');
             timeInput.value = '';
         }
     }
 
-    // イベントリスナーを設定
     dateInput.addEventListener('change', updateTimeRestriction);
     timeInput.addEventListener('change', validateTime);
-    timeInput.addEventListener('blur', validateTime);
-
-    // ページ読み込み時に初期チェックを実行
     updateTimeRestriction();
 
-    // フォーム送信時のバリデーション
-    document.querySelector('.reserve-form').addEventListener('submit', function(e) {
-        const selectedDate = dateInput.value;
-        const selectedTime = timeInput.value;
-
-        if (selectedDate === today && selectedTime) {
-            const selectedDateTime = new Date(selectedDate + 'T' + selectedTime);
-
-            if (selectedDateTime < twoHoursLater) {
-                e.preventDefault();
-                alert('予約時間は2時間後（' + minTime + '）以降を選択してください。');
-                return false;
-            }
-        }
-    });
-
- // 人数フィールドの制御
+    // --- 2. 人数制限 ---
     const numInput = document.getElementById('numOfPeople');
-
     function validateNumOfPeople() {
         const val = parseInt(numInput.value);
         if (val > 10) {
             alert('WEBからの予約は10名様までとなります。\n11名以上の場合は、直接店舗へお電話にてお問い合わせください。');
-            numInput.value = 10; // 最大値にリセット
+            numInput.value = 10;
         }
     }
-
-    // イベントリスナーを設定
     numInput.addEventListener('change', validateNumOfPeople);
-    numInput.addEventListener('input', validateNumOfPeople); // キーボード入力にも対応
+    numInput.addEventListener('input', validateNumOfPeople);
 
-    /**
-     * 電話番号の自動ハイフン整形とバリデーション
-     */
-    function formatPhoneNumber(input) {
-        // ① 数字以外をすべて除去
-        let value = input.value.replace(/\D/g, "");
-        const telError = document.getElementById("tel-error");
+    // --- 3. 電話番号の自動整形 ---
+    const telInput = document.getElementById("reserve_tel");
+    const telError = document.getElementById("tel-error");
 
-        // ② 桁数に応じてハイフンを挿入 (09012345678 -> 090-1234-5678)
-        let formatted = "";
-        if (value.length <= 3) {
-            formatted = value;
-        } else if (value.length <= 7) {
-            formatted = value.substring(0, 3) + "-" + value.substring(3);
-        } else {
-            formatted = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
-        }
+    if (telInput) {
+        telInput.addEventListener("input", () => {
+            let value = telInput.value.replace(/\D/g, "");
+            let formatted = "";
+            const len = value.length;
 
-        // ③ 入力欄に値を戻す
-        input.value = formatted;
+            if (len <= 3) {
+                formatted = value;
+            } else if (len <= 6) {
+                formatted = value.substring(0, 3) + "-" + value.substring(3);
+            } else if (len <= 10) {
+                if (value.startsWith("03") || value.startsWith("06")) {
+                    formatted = value.substring(0, 2) + "-" + value.substring(2, 6) + "-" + value.substring(6);
+                } else {
+                    formatted = value.substring(0, 3) + "-" + value.substring(3, 6) + "-" + value.substring(6);
+                }
+            } else {
+                formatted = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
+            }
+            telInput.value = formatted;
 
-        // ④ 簡易バリデーション
-        // 日本の電話番号は数字のみで10桁(固定電話)か11桁(携帯)
-        if (value.length > 0 && (value.length < 10 || value.length > 11)) {
-            telError.style.display = "block";
-            input.style.borderColor = "red";
-        } else {
-            telError.style.display = "none";
-            input.style.borderColor = "#ddd";
-        }
+            if (len > 0 && len !== 10 && len !== 11) {
+                telError.style.display = "block";
+                telInput.style.borderColor = "red";
+            } else {
+                telError.style.display = "none";
+                telInput.style.borderColor = (len === 0) ? "#ddd" : "#4CAF50";
+            }
+        });
     }
 
+    // --- 4. 送信時の最終チェック ---
+    document.querySelector('.reserve-form').addEventListener('submit', function(e) {
+        if (dateInput.value === today && timeInput.value) {
+            const selectedDateTime = new Date(dateInput.value + 'T' + timeInput.value);
+            if (selectedDateTime < twoHoursLater) {
+                e.preventDefault();
+                alert('予約時間は2時間後（' + minTime + '）以降を選択してください。');
+                return;
+            }
+        }
+        const telLen = telInput.value.replace(/\D/g, "").length;
+        if (telLen > 0 && telLen !== 10 && telLen !== 11) {
+            e.preventDefault();
+            alert("電話番号を10桁または11桁で正しく入力してください。");
+            return;
+        }
+    });
+});
 </script>
 
 <%@ include file="../../footer.html" %>

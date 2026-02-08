@@ -175,9 +175,22 @@ body {
             <span class="profile-item-value"><%= reserveStatus %></span>
         </div>
         <div class="profile-item" style="width: 100%;">
-            <span class="profile-item-label">店舗URL</span>
-            <span class="profile-item-value"><a href="<%= shop.getShopUrl() %>" target="_blank"><%= shop.getShopUrl() %></a></span>
-        </div>
+		    <span class="profile-item-label">店舗URL</span>
+		    <span class="profile-item-value">
+		        <%
+		            String url = shop.getShopUrl();
+		            if (url != null && !url.trim().isEmpty() && !"null".equals(url)) {
+		        %>
+		            <a href="<%= url %>" target="_blank"><%= url %></a>
+		        <%
+		            } else {
+		        %>
+		            未設定
+		        <%
+		            }
+		        %>
+		    </span>
+</div>
         <div class="profile-item" style="width: 100%;">
             <span class="profile-item-label">メイン画像ファイル名</span>
             <span class="profile-item-value"><%= shop.getShopPicture() %></span>

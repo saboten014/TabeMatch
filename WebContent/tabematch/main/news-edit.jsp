@@ -114,18 +114,6 @@ textarea {
             <textarea id="news_text" name="news_text" class="form-control" required><%= news.getNewsText() %></textarea>
         </div>
 
-        <div class="form-group">
-            <label for="role">公開対象ロール</label>
-            <select id="role" name="role" class="form-control">
-                <%-- ロール選択肢をループで生成し、既存の値を選択済みにする --%>
-                <% for (String role : roles) { %>
-                    <option value="<%= role %>"
-                        <%= role.equals(news.getRole()) ? "selected" : "" %>>
-                        <%= role.substring(0, 1).toUpperCase() + role.substring(1) %>
-                    </option>
-                <% } %>
-            </select>
-        </div>
 
         <button type="submit" class="btn-update">更新する</button>
 

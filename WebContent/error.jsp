@@ -19,7 +19,7 @@
 %>
 
 <p style="text-align: center;">
-	<a class="in-btn" href="<%= request.getContextPath() %>/tabematch/Login.action">ログイン画面に戻る</a>
+	<a class="in-btn" href="/TabeMatch/tabematch/Login.action">ログイン画面に戻る</a>
 </p>
 
 <%@include file="footer.html" %>

@@ -152,4 +152,121 @@ button {
     </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form");
+    const emailInput = document.getElementById("newEmail");
+    const newPassInput = document.getElementById("newPassword");
+    const confirmPassInput = document.getElementById("confirmPassword");
+
+    // --- エラー表示用の要素を動的に作成する関数 ---
+    const createErrorElement = (id) => {
+        const div = document.createElement("div");
+        div.id = id + "-error";
+        div.style.color = "red";
+        div.style.fontSize = "0.8em";
+        div.style.marginTop = "5px";
+        div.style.display = "none";
+        return div;
+    };
+
+    // 入力項目の下にエラー表示エリアを挿入
+    emailInput.after(createErrorElement("email"));
+    newPassInput.after(createErrorElement("pass"));
+    confirmPassInput.after(createErrorElement("confirm"));
+
+    const emailError = document.getElementById("email-error");
+    const passError = document.getElementById("pass-error");
+    const confirmError = document.getElementById("confirm-error");
+
+    // --- 正規表現パターン ---
+    const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const passPattern = /^[a-zA-Z0-9]+$/; // 半角英数字のみ（記号なし）
+
+    // --- 1. メールアドレスのバリデーション ---
+    // --- 1. メールアドレスのバリデーション (強化版) ---
+emailInput.addEventListener("input", () => {
+    // 全角文字、またはPunycodeへの変換の兆候 (xn--) があるかチェック
+    const hasFullWidth = /[^\x01-\x7E]/.test(emailInput.value);
+    const isPunycode = emailInput.value.includes("xn--");
+
+    if (emailInput.value === "") {
+        emailError.style.display = "none";
+        emailInput.style.borderColor = "#ddd";
+    } else if (hasFullWidth || isPunycode) {
+        // もし全角やPunycodeが入ったら即座にエラー
+        emailError.textContent = "※全角文字（日本語ドメイン）は使用できません";
+        emailError.style.display = "block";
+        emailInput.style.borderColor = "red";
+    } else if (!emailPattern.test(emailInput.value)) {
+        emailError.textContent = "※正しいメール形式で入力してください";
+        emailError.style.display = "block";
+        emailInput.style.borderColor = "red";
+    } else {
+        emailError.style.display = "none";
+        emailInput.style.borderColor = "#81c784";
+    }
+});
+
+    // --- 2. パスワードのバリデーション ---
+    const validatePassword = () => {
+        const val = newPassInput.value;
+        if (val === "") {
+            passError.style.display = "none";
+            newPassInput.style.borderColor = "#ddd";
+        } else if (!passPattern.test(val)) {
+            passError.textContent = "※半角英数字のみ（記号・全角不可）で入力してください";
+            passError.style.display = "block";
+            newPassInput.style.borderColor = "red";
+        } else if (val.length < 8 || val.length > 32) {
+            passError.textContent = "※8文字以上32文字以内で入力してください";
+            passError.style.display = "block";
+            newPassInput.style.borderColor = "red";
+        } else {
+            passError.style.display = "none";
+            newPassInput.style.borderColor = "#81c784";
+        }
+        checkMatch();
+    };
+
+    const checkMatch = () => {
+        if (confirmPassInput.value === "") {
+            confirmError.style.display = "none";
+        } else if (newPassInput.value !== confirmPassInput.value) {
+            confirmError.textContent = "※新しいパスワードが一致しません";
+            confirmError.style.display = "block";
+        } else {
+            confirmError.style.display = "none";
+        }
+    };
+
+    newPassInput.addEventListener("input", validatePassword);
+    confirmPassInput.addEventListener("input", checkMatch);
+
+    // --- 3. 送信時の最終チェック ---
+    form.addEventListener("submit", (e) => {
+        let hasError = false;
+
+        // メールチェック
+        if (!emailPattern.test(emailInput.value) || /[^\x01-\x7E]/.test(emailInput.value)) {
+            hasError = true;
+        }
+        // パスワードチェック（空欄でない場合のみ）
+        if (newPassInput.value !== "") {
+            if (!passPattern.test(newPassInput.value) || newPassInput.value.length < 8 || newPassInput.value.length > 32) {
+                hasError = true;
+            }
+            if (newPassInput.value !== confirmPassInput.value) {
+                hasError = true;
+            }
+        }
+
+        if (hasError) {
+            alert("入力内容に誤りがあります。確認してください。");
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
 <%@include file="../../footer.html" %>

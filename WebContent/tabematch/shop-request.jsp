@@ -55,15 +55,14 @@
     for (Allergen allergen : allergenList) {
 %>
                     <div class="checkbox-item">
-					    <input type="checkbox"
-					           name="allergyInfo"
-					           <%-- ★ここを Name から Id に変更！ --%>
-					           value="<%= allergen.getAllergenId() %>"
-					           id="allergy_<%= allergen.getAllergenId() %>">
-					    <label for="allergy_<%= allergen.getAllergenId() %>">
-					        <%= allergen.getAllergenName() %>
-					    </label>
-					</div>
+                        <input type="checkbox"
+                               name="allergyInfo"
+                               value="<%= allergen.getAllergenId() %>"
+                               id="allergy_<%= allergen.getAllergenId() %>">
+                        <label for="allergy_<%= allergen.getAllergenId() %>">
+                            <%= allergen.getAllergenName() %>
+                        </label>
+                    </div>
 <%
     }
 %>
@@ -72,14 +71,14 @@
             </td>
         </tr>
         <tr>
-		    <td>予約の可否<span class="required">*</span></td>
-		    <td>
-		        <input type="radio" name="reservation" value="1" id="res_yes" required>
-		        <label for="res_yes">可能</label>
-		        <input type="radio" name="reservation" value="2" id="res_no">
-		        <label for="res_no">不可</label>
-		    </td>
-		</tr>
+            <td>予約の可否<span class="required">*</span></td>
+            <td>
+                <input type="radio" name="reservation" value="1" id="res_yes" required>
+                <label for="res_yes">可能</label>
+                <input type="radio" name="reservation" value="2" id="res_no">
+                <label for="res_no">不可</label>
+            </td>
+        </tr>
 
         <tr>
             <td>営業日・営業時間<span class="required">*</span></td>
@@ -161,41 +160,49 @@
 
         <tr>
             <td>HPへのリンク</td>
-            <td><input type="text" name="link" maxlength="255"></td>
+            <td><input type="text"
+                       name="link"
+                       id="shop_link"
+                       maxlength="255"
+                       placeholder="https://example.com">
+                <div id="url-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
+                    ※有効なURL形式（http://〜 または https://〜）で入力してください
+                </div>
+            </td>
         </tr>
 
         <tr>
-		    <td>電話番号<span class="required">*</span></td>
-		    <td>
-		        <input type="text"
-		               name="number"
-		               id="shop_tel"
-		               maxlength="13"
-		               required
-		               placeholder="09012345678"
-		               title="電話番号を入力してください">
-		        <div id="tel-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
-		            ※正しい電話番号の形式ではありません
-		        </div>
-		        <small>※ハイフンは自動で入力されます</small>
-		    </td>
-		</tr>
+            <td>電話番号<span class="required">*</span></td>
+            <td>
+                <input type="text"
+                       name="number"
+                       id="shop_tel"
+                       maxlength="13"
+                       required
+                       placeholder="09012345678"
+                       title="電話番号を入力してください">
+                <div id="tel-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
+                    ※正しい電話番号の形式ではありません
+                </div>
+                <small>※ハイフンは自動で入力されます</small>
+            </td>
+        </tr>
         <tr>
             <td>メールアドレス<span class="required">*</span></td>
             <td>
-			    <input type="text"
-			           name="request_mail"
-			           id="request_mail"
-			           maxlength="100"
-			           required
-			           placeholder="example@mail.com"
-			           pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-			           title="正しいメールアドレスの形式で入力してください">
-			    <div id="email-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
-			        ※無効なメールアドレス形式です
-			    </div>
-			    <small>※半角英数字で入力してください</small>
-			</td>
+                <input type="text"
+                       name="request_mail"
+                       id="request_mail"
+                       maxlength="100"
+                       required
+                       placeholder="example@mail.com"
+                       pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+                       title="正しいメールアドレスの形式で入力してください">
+                <div id="email-error" class="error-text" style="color: red; font-size: 0.8em; display: none;">
+                    ※無効なメールアドレス形式です
+                </div>
+                <small>※半角英数字で入力してください</small>
+            </td>
         </tr>
 
         <tr>
@@ -203,7 +210,7 @@
                 <input type="submit" value="リクエスト送信">
                 <input type="reset" value="クリア">
             </td>
-
+        </tr>
     </table>
 </form>
 </div>
@@ -213,24 +220,22 @@
 </div>
 
 <script>
-	document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     // --- 1. 要素の取得 ---
     const form = document.querySelector("form");
     const emailInput = document.getElementById("request_mail");
     const emailError = document.getElementById("email-error");
-    const passInput = document.getElementById("registerPassword");
-    const confirmInput = document.getElementById("confirmPassword");
-    const passError = document.getElementById("pass-error");
-    const confirmError = document.getElementById("confirm-error");
-    const telInput = document.getElementById("shop_tel"); // 店舗電話番号
+    const telInput = document.getElementById("shop_tel");
     const telError = document.getElementById("tel-error");
+    const urlInput = document.getElementById("shop_link");
+    const urlError = document.getElementById("url-error");
     const fileInput = document.querySelector(".file-input");
     const container = document.getElementById("preview-container");
     const countLabel = document.querySelector(".file-count");
 
     // --- 2. 共通パターン ---
     const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    const passPattern = /^[a-zA-Z0-9]+$/;
+    const urlPattern = /^https?:\/\/[\w/:%#\$&\?\(\)~\.=\+\-]+$/;
 
     // --- 3. メールアドレス・バリデーション ---
     if (emailInput && emailError) {
@@ -250,75 +255,58 @@
         });
     }
 
-    // --- 4. パスワード・バリデーション ---
-    const checkMatch = () => {
-        if (!confirmInput || !passInput) return;
-        if (confirmInput.value === "") {
-            confirmError.style.display = "none";
-        } else if (passInput.value !== confirmInput.value) {
-            confirmError.style.display = "block";
-            confirmInput.style.borderColor = "red";
-        } else {
-            confirmError.style.display = "none";
-            confirmInput.style.borderColor = "#99ccff";
-        }
-    };
-
-    if (passInput && passError) {
-        passInput.addEventListener("input", () => {
-            if (passInput.value === "") {
-                passError.style.display = "none";
-            } else if (!passPattern.test(passInput.value) || passInput.value.length < 8) {
-                passError.textContent = passInput.value.length < 8 ? "※8文字以上必要です" : "※英数字のみ使用可能です";
-                passError.style.display = "block";
-                passInput.style.borderColor = "red";
-            } else {
-                passError.style.display = "none";
-                passInput.style.borderColor = "#99ccff";
-            }
-            checkMatch();
-        });
-    }
-    if (confirmInput) confirmInput.addEventListener("input", checkMatch);
-
-    // --- 5. 電話番号の自動整形（ここが修正ポイント！） ---
+    // --- 4. 電話番号の自動整形 ---
     if (telInput) {
         telInput.addEventListener("input", () => {
-            // ① 数字以外をすべて除去
             let value = telInput.value.replace(/\D/g, "");
             let formatted = "";
             const len = value.length;
 
-            // ② ハイフン挿入ロジック
             if (len <= 3) {
                 formatted = value;
             } else if (len <= 6) {
-                // 031234 -> 03-1234
                 formatted = value.substring(0, 2) + "-" + value.substring(2);
             } else if (len <= 10) {
-                // 固定電話（10桁）: 03-1234-5678 または 042-999-9999
                 if (value.startsWith("03") || value.startsWith("06")) {
                     formatted = value.substring(0, 2) + "-" + value.substring(2, 6) + "-" + value.substring(6);
                 } else {
                     formatted = value.substring(0, 3) + "-" + value.substring(3, 6) + "-" + value.substring(6);
                 }
             } else {
-                // 携帯電話（11桁）: 090-1234-5678
                 formatted = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
             }
 
             telInput.value = formatted;
 
-            // ③ バリデーション
             if (telError) {
                 if (len > 0 && len !== 10 && len !== 11) {
-                    telError.textContent = "※電話番号は10桁（固定）または11桁（携帯）で入力してください";
+                    telError.textContent = "※電話番号は10桁または11桁で入力してください";
                     telError.style.display = "block";
                     telInput.style.borderColor = "red";
                 } else {
                     telError.style.display = "none";
                     telInput.style.borderColor = (len === 0) ? "" : "#99ccff";
                 }
+            }
+        });
+    }
+
+    // --- 5. URL（HPリンク）バリデーション ---
+    if (urlInput && urlError) {
+        urlInput.addEventListener("input", () => {
+            const value = urlInput.value;
+            const hasFullWidth = /[^\x01-\x7E]/.test(value);
+
+            if (value === "") {
+                urlError.style.display = "none";
+                urlInput.style.borderColor = "";
+            } else if (hasFullWidth || !urlPattern.test(value)) {
+                urlError.textContent = hasFullWidth ? "※全角文字は使用できません" : "※http:// または https:// から始まる形式で入力してください";
+                urlError.style.display = "block";
+                urlInput.style.borderColor = "red";
+            } else {
+                urlError.style.display = "none";
+                urlInput.style.borderColor = "#99ccff";
             }
         });
     }
@@ -353,11 +341,6 @@
                 alert("メールアドレスを確認してください。");
                 e.preventDefault(); return;
             }
-            // パスワード
-            if (passInput && (passInput.value.length < 8 || !passPattern.test(passInput.value))) {
-                alert("パスワードは英数字8文字以上で入力してください。");
-                e.preventDefault(); return;
-            }
             // 電話番号
             if (telInput) {
                 const telLen = telInput.value.replace(/\D/g, "").length;
@@ -366,15 +349,19 @@
                     e.preventDefault(); return;
                 }
             }
-            // パスワード一致
-            if (passInput && confirmInput && passInput.value !== confirmInput.value) {
-                alert("パスワードが一致しません。");
-                e.preventDefault();
+            // URLチェック
+            if (urlInput && urlInput.value !== "") {
+                const hasFullWidth = /[^\x01-\x7E]/.test(urlInput.value);
+                if (hasFullWidth || !urlPattern.test(urlInput.value)) {
+                    alert("HPへのリンクを正しく入力してください。");
+                    e.preventDefault(); return;
+                }
             }
         });
     }
 });
 
+// パスワード表示切り替え（必要に応じて使用）
 function togglePassword(inputId, button) {
     const input = document.getElementById(inputId);
     if (!input) return;
