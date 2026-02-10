@@ -17,7 +17,7 @@ public class AdminShopInsertExecuteAction extends Action {
 
         req.setCharacterEncoding("UTF-8");
 
-        // ★パラメータ取得（shop-request.jspのname属性に統一）
+        // 1. パラメータ取得
         String password = req.getParameter("password");
         String restaurantName = req.getParameter("restaurantName");
         String address = req.getParameter("address");
@@ -29,24 +29,23 @@ public class AdminShopInsertExecuteAction extends Action {
         String payment = req.getParameter("payment");
         String seat = req.getParameter("seat");
         String reservationStr = req.getParameter("reservation");
+        // ★追加：JSPで入力した営業時間を受け取る
+        String businessHours = req.getParameter("businessHours");
 
-        // ★アレルギー情報をチェックボックスから取得（allergenNameが入る）
+        // 2. アレルギー情報を取得
         String[] allergyArray = req.getParameterValues("allergyInfo");
         String allergySupport = (allergyArray != null) ? String.join(",", allergyArray) : "";
 
-        // ★予約可否の変換（1=可能, 2=不可 → "可能"/"不可"）
+        // 3. データの加工
         String shopReserve = "不可";
-        if (reservationStr != null && reservationStr.equals("1")) {
+        if ("1".equals(reservationStr)) {
             shopReserve = "可能";
         }
 
-        // ★座席数の抽出（AdminRequestApproveActionと同じ処理）
         Integer shopSeat = extractSeatNumber(seat);
-
-        // ★店舗IDを自動生成
         String shopId = PasswordGenerator.generateShopId();
 
-        // 1. 店舗情報を作成
+        // 4. Shopオブジェクトの作成
         Shop shop = new Shop();
         shop.setShopId(shopId);
         shop.setPassword(password);
@@ -61,32 +60,32 @@ public class AdminShopInsertExecuteAction extends Action {
         shop.setShopSeat(shopSeat);
         shop.setShopReserve(shopReserve);
         shop.setShopAllergy(allergySupport);
+        // ★追加：営業時間をセット（フィールド名はShop Beanに合わせて調整してください）
+        shop.setShopTime(businessHours);
         shop.setIsPublic(true);
 
-        // 2. 店舗ユーザーアカウントを作成
+        // 5. Usersオブジェクトの作成
         Users shopUser = new Users();
-        shopUser.setUserId(request_mail);       // メールアドレスをuserIdに
-        shopUser.setPassword(password);         // 管理者が入力したパスワード
-        shopUser.setUserName(restaurantName);   // 店舗名をユーザー名に
-        shopUser.setUsersTypeId("2");           // 店舗ユーザー
-
+        shopUser.setUserId(request_mail);
+        shopUser.setPassword(password);
+        shopUser.setUserName(restaurantName);
+        shopUser.setUsersTypeId("2");
         shopUser.setAllergenId(allergySupport);
 
-        // 3. DAOで登録
         ShopDAO shopDao = new ShopDAO();
         UserDAO userDao = new UserDAO();
 
         try {
-            // ★ユーザーアカウントを先に作成
+            // トランザクション制御がない場合、User登録後にShop登録が失敗するとデータが不整合になるため注意
             boolean userCreated = userDao.registerUser(shopUser);
 
             if (!userCreated) {
-                req.setAttribute("errorMessage", "ユーザーアカウントの作成に失敗しました。");
+                req.setAttribute("errorMessage", "ユーザーアカウントの作成に失敗しました（既に登録されているメールアドレスの可能性があります）。");
+                // JSPのファイル名に合わせて修正してください
                 req.getRequestDispatcher("admin-shop-insert-form.jsp").forward(req, res);
                 return;
             }
 
-            // ★店舗情報を登録
             boolean shopCreated = shopDao.insertShopForAdmin(shop);
 
             if (!shopCreated) {
@@ -95,36 +94,29 @@ public class AdminShopInsertExecuteAction extends Action {
                 return;
             }
 
-            // 成功
-            req.setAttribute("successMessage", "店舗とユーザーアカウントを登録しました。");
+            // 成功時の処理
+            req.setAttribute("successMessage", "店舗「" + restaurantName + "」の登録が完了しました。");
             req.setAttribute("shopId", shopId);
+
+            // パスはプロジェクトの構造に合わせて調整してください
+            req.getRequestDispatcher("admin-shop-insert-complete.jsp").forward(req, res);
 
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("errorMessage", "登録中にエラーが発生しました: " + e.getMessage());
+            req.setAttribute("errorMessage", "システムエラーが発生しました: " + e.getMessage());
             req.getRequestDispatcher("admin-shop-insert-form.jsp").forward(req, res);
-            return;
         }
-
-        req.getRequestDispatcher("/tabematch/admin/admin-shop-insert-complete.jsp").forward(req, res);
     }
 
-    // ★座席情報から数字を抽出するヘルパーメソッド（AdminRequestApproveActionと同じ）
     private int extractSeatNumber(String seatInfo) {
-        if (seatInfo == null || seatInfo.isEmpty()) {
-            return 0;
-        }
-
-        // 数字を抽出して合計
+        if (seatInfo == null || seatInfo.isEmpty()) return 0;
         String[] numbers = seatInfo.replaceAll("[^0-9]", " ").trim().split("\\s+");
         int total = 0;
         for (String num : numbers) {
             if (!num.isEmpty()) {
                 try {
                     total += Integer.parseInt(num);
-                } catch (NumberFormatException e) {
-                    // 無視
-                }
+                } catch (NumberFormatException e) { /* Ignore */ }
             }
         }
         return total;
